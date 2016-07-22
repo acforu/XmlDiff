@@ -1,0 +1,13 @@
+<NewObj ObjName="None" Version="1">
+	<FirstBuy>
+		<FirstBuyCfg IsStaticArray="0" ArrayCount="1" [XlsProp]="1">		
+			<FirstBuyCfgItem iFirstBuyId="2" IdName="" desc="商品描述商品描述商品描述商品描述商品描述" iCommodityId="313" enumPriceType="PriceType_MoneyBinding" iPrice="0"/>	
+			<FirstBuyCfgItem iFirstBuyId="3" IdName="" desc="商品描述商品描述商品描述商品描述商品描述" iCommodityId="313" enumPriceType="PriceType_MoneyBinding" iPrice="0"/>	
+			<FirstBuyCfgItem iFirstBuyId="4" IdName="" desc="商品描述商品描述商品描述商品描述商品描述" iCommodityId="313" enumPriceType="PriceType_MoneyBinding" iPrice="0"/>	
+			<FirstBuyCfgItem iFirstBuyId="5" IdName="" desc="商品描述商品描述商品描述商品描述商品描述" iCommodityId="313" enumPriceType="PriceType_MoneyBinding" iPrice="0"/>				
+						<FirstBuyCfgItem iFirstBuyId="6" IdName="" desc="商品描述商品描述商品描述商品描述商品描述" iCommodityId="666" enumPriceType="PriceType_MoneyBinding" iPrice="666"/>	
+		</FirstBuyCfg>
+	</FirstBuy>
+	<GameObj mFullName="None" mFlags="1024"/>
+</NewObj>
+
