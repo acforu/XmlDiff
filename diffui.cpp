@@ -15,6 +15,25 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	textEditR->setLineWrapMode(QPlainTextEdit::NoWrap);
 	textEditR ->setObjectName(QString::fromUtf8("textEditR"));
 
+	const int tabStop = 4;  // 4 characters
+	QFontMetrics metrics(textEditL->font());
+	textEditL->setTabStopWidth(tabStop * metrics.width(' '));
+	textEditR->setTabStopWidth(tabStop * metrics.width(' '));
+
+	textEditL->setReadOnly(true);
+	textEditL->setUndoRedoEnabled(false);
+	//textEditL->setLineWrapMode(QPlainTextEdit::NoWrap);
+	//textEditL->setCenterOnScroll(true);
+
+	textEditR->setReadOnly(true);
+	textEditR->setUndoRedoEnabled(false);
+	//textEditR->setLineWrapMode(QPlainTextEdit::NoWrap);
+	//textEditR->setCenterOnScroll(true);
+
+	//textEditL->setMaximumBlockCount(20);
+	//textEditR->setMaximumBlockCount(20);
+	//textEditL->settab
+
 	//QScrollBar* bar = new QScrollBar(this);
 	//textEditL->setVerticalScrollBar(bar);
 	//textEditR->setVerticalScrollBar(bar);
@@ -27,7 +46,7 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	cursorL = new QTextCursor(textEditL->document());
 	cursorR = new QTextCursor(textEditR->document());
 
-
+	
 	//textEditPlain = new QPlainTextEdit(ui.centralWidget);
 	//textEditPlain->setLineWrapMode(QPlainTextEdit::NoWrap);
 	//textEditPlain ->setObjectName(QString::fromUtf8("textEditPlaint"));
@@ -55,6 +74,7 @@ void DiffUI::resizeEvent( QResizeEvent *event )
 
 void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 {
+
 	//textEditL->setUpdatesEnabled( false );
 	//textEditPlain->appendPlainText(text);
 	//textEditL->setUpdatesEnabled( true );
@@ -79,11 +99,11 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 QTextBlockFormat bf = cursor->blockFormat();
 	 if (type == TextColor_Modify)
 	 {
-		bf.setBackground(QBrush(QColor(255,227,227)));
+		 bf.setBackground(QBrush(QColor(255,227,227)));
 	 }
 	 else
 	 {
-		bf.clearBackground();
+		 bf.clearBackground();
 	 }
 
 	 cursor->setBlockFormat(bf);
@@ -97,7 +117,9 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 */
 	 //cursor->beginEditBlock();
 	 cursor->insertText(text,format);
-	 cursor->insertText("\n");
+	 //textEditL->appendPlainText(text);
+	
+	 //cursor->insertText("\n");
 	 //cursor->endEditBlock();
 
 

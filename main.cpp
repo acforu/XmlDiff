@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
 
 	XmlDiff diff;
 	w.BeginEditBlock();
-//	diff.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml",&w);
 	diff.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml",&w);
+//	diff.Diff(".\\test_case\\firstbuy\\large.xml",".\\test_case\\firstbuy\\b.xml",&w);
 	w.EndEditBlock();
 
 

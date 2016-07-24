@@ -17,8 +17,12 @@ public:
 signals:
 	void scrollContentChanged();
 
+private slots:
+	void update();
 private:
 	Ui::DiffTextEdit ui;
+	int deltaX;
+	int deltaY;
 };
 
 #endif // DIFFTEXTEDIT_H

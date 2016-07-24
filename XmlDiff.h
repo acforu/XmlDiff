@@ -62,7 +62,7 @@ private:
 	std::list<DiffNodeResult> DiffNodesAcceptModify( const std::vector<xml_node<>*>& nodeLVector, const std::vector<xml_node<>*>& nodeRVector);
 
 	const char* GetDiffTypeString(DiffType type);
-	void DumpResult(const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui);
+	void DumpResult(const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent);
 	void DumpResult(const std::list<DiffNodeResult>& diffNodeList);
 	size_t NodeStringDistance(xml_node<> *nodeL, xml_node<> *nodeR);
 
