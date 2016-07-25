@@ -6,6 +6,7 @@
 #include "RapidXml/rapidxml.hpp"
 #include <utility>
 #include <list>
+#include <set>
 #include "diffui.h"
 
 using namespace rapidxml;

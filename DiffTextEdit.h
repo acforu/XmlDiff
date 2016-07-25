@@ -14,6 +14,8 @@ public:
 
     virtual void scrollContentsBy(int dx, int dy);
 
+    QTextBlock firstBlockInViewport() const;
+   
 signals:
 	void scrollContentChanged();
 

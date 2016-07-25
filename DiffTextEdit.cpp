@@ -34,3 +34,8 @@ void DiffTextEdit::update()
 	//	deltaX = deltaY = 0;
 	//}
 }
+
+QTextBlock DiffTextEdit::firstBlockInViewport() const
+{
+	return QPlainTextEdit::firstVisibleBlock();
+}

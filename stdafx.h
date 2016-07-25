@@ -12,4 +12,5 @@
 #include <sstream>  
 #include "RapidXml\rapidxml_print.hpp"
 #include "RapidXml\rapidxml.hpp"
+#include <set>  
 

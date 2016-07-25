@@ -433,6 +433,9 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		}
 		else if (iter->type == DiffType_Add)
 		{
+			ui->MarkModifyTag();
+
+
 			char* out = rapidxml::internal::print_node(buff, iter->node, 0,indent);
 			//*out++ = '\n';
 			*out++ = 0;
@@ -450,6 +453,9 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		}
 		else if(iter->type == DiffType_Del)
 		{
+			ui->MarkModifyTag();
+
+
 			char * out = rapidxml::internal::print_node(buff, iter->node, 0,indent);
 			//*out++ = '\n';
 			*out++ = 0;
@@ -514,6 +520,8 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				{
 					//cout<< attrIt->name << " ";
 					//cout << "add " << attrIt->prev << endl;
+					ui->MarkModifyTag();
+
 					char* out = buff;
 					
 					out = rapidxml::internal::fill_chars(out,indent,'\t');
@@ -533,6 +541,9 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				}
 				else if (attrIt->type == DiffType_Del)
 				{
+					ui->MarkModifyTag();
+
+
 					//cout<< attrIt->name << " ";
 					//cout << "del " << attrIt->prev << endl;
 					char* out = buff;
@@ -554,6 +565,9 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				}
 				else if (attrIt->type == DiffType_Modify)
 				{
+					ui->MarkModifyTag();
+
+
 					//cout<< attrIt->name << " ";
 					//cout << "modify " <<attrIt->prev << " " << attrIt->curr << endl;
 					out = buff;

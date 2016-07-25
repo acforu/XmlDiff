@@ -32,6 +32,9 @@ public:
 	void BeginEditBlock();
 	void EndEditBlock();
 	void AppendText(const char* text,TexTSide side, TextFormatType type);
+	int GetTotalBlocks();
+	void MoveToBlock(int block);
+	void MarkModifyTag();
 
 private slots: 
 	void onLScrollContentChanged();
@@ -39,6 +42,7 @@ private slots:
 	void onValueChanged(int);
 	void onLTextUpdateRequest(const QRect & rect, int dy);
 	void onRTextUpdateRequest(const QRect & rect, int dy);
+	void nextDiffLine();
 
 private:
 	Ui::DiffUIClass ui;
@@ -46,9 +50,12 @@ private:
     DiffTextEdit *textEditR;
     //QPlainTextEdit  *textEditPlain;
 
+	QAction * nextModifyAction;
 private:
 	QTextCursor* cursorL;
 	QTextCursor* cursorR;
+	std::set<int> ModifyTags;
+
 };
 
 #endif // DIFFUI_H
