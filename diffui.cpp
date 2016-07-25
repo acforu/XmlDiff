@@ -22,6 +22,15 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 
 	textEditL->setReadOnly(true);
 	textEditL->setUndoRedoEnabled(false);
+
+	QPalette p = textEditL->palette(); // define pallete for textEdit.. 
+	p.setColor(QPalette::Base, Qt::white); // set color "Red" for textedit base
+	//p.setColor(QPalette::Text, Qt::blue); // set text color which is selected from color pallete
+	textEditL->setPalette(p);
+	textEditR->setPalette(p);
+
+
+
 	//textEditL->setLineWrapMode(QPlainTextEdit::NoWrap);
 	//textEditL->setCenterOnScroll(true);
 
@@ -99,16 +108,34 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 QTextBlockFormat bf = cursor->blockFormat();
 	 if (type == TextColor_Modify)
 	 {
-		 bf.setBackground(QBrush(QColor(255,227,227)));
+		 //236,236,255 blue
+		 //217,255,217 green
+		 //255,227,227 red
+		 if (side == TextSide_Left)
+		 {
+			bf.setBackground(QBrush(QColor(236,236,255)));
+		 }
+		 else
+		 {
+			bf.setBackground(QBrush(QColor(217,255,217)));
+		 }
 	 }
 	 else
 	 {
 		 bf.clearBackground();
 	 }
 
+
+
+
 	 cursor->setBlockFormat(bf);
 
 	 QTextCharFormat format;
+	 format.setFontPointSize(12);
+	 if (type == TextColor_Modify)
+	 {
+		//format.setFontWeight(QFont::Bold);
+	 }
 	 QString the_text;
 	 /* some computations to get the text to insert and
 	 set the local character formatting, which varies inside
@@ -116,7 +143,7 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 to insertText
 	 */
 	 //cursor->beginEditBlock();
-	 cursor->insertText(text,format);
+	 cursor->insertText(QString::fromUtf8(text),format);
 	 //textEditL->appendPlainText(text);
 	
 	 //cursor->insertText("\n");

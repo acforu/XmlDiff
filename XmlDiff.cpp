@@ -25,10 +25,10 @@ bool XmlDiff::Diff( std::string file1, std::string file2,DiffUI* ui)
 	std::list<DiffNodeResult> diffResult = DiffSibling(a.doc.first_node(),b.doc.first_node());
 	DumpResult(diffResult,ui,0);
 
-	/*static char buff[XmlTextBuffSize];
-	print(buff,*a.doc.first_node());
-	ui->AppendText(buff,TextSide_Left,TextColor_Modify);
-	ui->AppendText(buff,TextSide_Right,TextColor_Normal);*/
+	//static char buff[XmlTextBuffSize];
+	//print(buff,*a.doc.first_node());
+	//ui->AppendText(buff,TextSide_Left,TextColor_Modify);
+	//ui->AppendText(buff,TextSide_Right,TextColor_Normal);
 
 	//DumpResult(diffResult);
 
@@ -372,7 +372,7 @@ const char* XmlDiff::GetDiffTypeString(DiffType type)
 
 
 
-void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList)
+void XmlDiff::DumpResultLog( const std::list<DiffNodeResult>& diffNodeList)
 {
 	FOR_EACH(iter,diffNodeList)
 	{
@@ -410,7 +410,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList)
 					cout << "modify " <<attrIt->prev << " " << attrIt->curr << endl;
 				}
 			}
-			DumpResult(iter->child);
+			DumpResultLog(iter->child);
 		}
 		//cout <<  *iter->node << endl;
 	}
@@ -427,7 +427,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 			//print(std::ostream_iterator<char>(cout), *iter->node, 0);
 			char * out = rapidxml::internal::print_node(buff, iter->node, 0,indent);
 			//*out++ = '\n';
-			//*out++ = 0;
+			*out++ = 0;
 			ui->AppendText(buff,TextSide_Left,TextColor_Normal);
 			ui->AppendText(buff,TextSide_Right,TextColor_Normal);
 		}
@@ -435,7 +435,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		{
 			char* out = rapidxml::internal::print_node(buff, iter->node, 0,indent);
 			//*out++ = '\n';
-			//*out++ = 0;
+			*out++ = 0;
 			ui->AppendText(buff,TextSide_Right,TextColor_Modify);
 			out = buff;
 			while(*out != '\0')
@@ -452,7 +452,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		{
 			char * out = rapidxml::internal::print_node(buff, iter->node, 0,indent);
 			//*out++ = '\n';
-			//*out++ = 0;
+			*out++ = 0;
 			ui->AppendText(buff,TextSide_Left,TextColor_Modify);
 			out = buff;
 			while(*out != '\0')
@@ -482,10 +482,12 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 			{
 				if (attrIt->type == DiffType_Unchanged)
 				{
+					*out++ = char(' ');
 					out = CopyString(attrIt->name,out);
 					*out++ = char('=');
+					*out++ = char('"');
 					out = CopyString(attrIt->prev,out);
-					*out++ = char(' ');
+					*out++ = char('"');
 				}
 				else
 				{
@@ -521,7 +523,12 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					*out++ = '\n';
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Right,TextColor_Modify);
-					ui->AppendText("\n",TextSide_Left,TextColor_Normal);
+
+					int enterCount = GetEnterCount(buff);
+					out = buff;
+					out = rapidxml::internal::fill_chars(out,enterCount,'\n');
+					*out++ = '\0';
+					ui->AppendText(out,TextSide_Left,TextColor_Normal);
 
 				}
 				else if (attrIt->type == DiffType_Del)
@@ -537,7 +544,13 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					*out++ = '\n';
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Left,TextColor_Modify);
-					ui->AppendText("\n",TextSide_Right,TextColor_Normal);
+
+					int enterCount = GetEnterCount(buff);
+					out = buff;
+					out = rapidxml::internal::fill_chars(out,enterCount,'\n');
+					*out++ = '\0';
+					ui->AppendText(out,TextSide_Right,TextColor_Normal);
+
 				}
 				else if (attrIt->type == DiffType_Modify)
 				{
@@ -552,6 +565,8 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					*out++ = '\n';
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Left,TextColor_Modify);
+					int leftEnterCount = GetEnterCount(buff);
+
 
 					out = buff;
 					out = rapidxml::internal::fill_chars(out,indent,'\t');
@@ -561,6 +576,23 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					*out++ = '\n';
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Right,TextColor_Modify);
+					int RightEnterCount = GetEnterCount(buff);
+
+					//ZeroMemory(buff,ARRAYSIZE(buff));
+					if (leftEnterCount < RightEnterCount)
+					{
+						out = buff;
+						out = rapidxml::internal::fill_chars(out,RightEnterCount-leftEnterCount,'\n');
+						*out++ = '\0';
+						ui->AppendText(buff,TextSide_Left,TextColor_Modify);
+					}
+					else if(leftEnterCount > RightEnterCount)
+					{
+						out = buff;
+						out = rapidxml::internal::fill_chars(out,leftEnterCount-RightEnterCount,'\n');
+						*out++ = '\0';
+						ui->AppendText(buff,TextSide_Right,TextColor_Modify);
+					}
 				}
 			}
 
@@ -578,6 +610,18 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 
 
 			DumpResult(iter->child,ui,indent+1);
+			//ZeroMemory(buff,ARRAYSIZE(buff));
+			out = buff;
+			out = rapidxml::internal::fill_chars(out,indent,'\t');
+			*out = char('<'), ++out;
+			*out = char('\\'), ++out;
+			out = rapidxml::internal::copy_chars(iter->node->name(), iter->node->name() + iter->node->name_size(), out);
+			*out = char('>'), ++out;
+			*out++ = '\n';
+			*out++ = 0;
+
+			ui->AppendText(buff,TextSide_Left,TextColor_Normal);
+			ui->AppendText(buff,TextSide_Right,TextColor_Normal);
 		}
 		//cout <<  *iter->node << endl;
 	}

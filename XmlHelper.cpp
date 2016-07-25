@@ -221,3 +221,14 @@ char* CopyString( const char *begin, char* out )
 		*out++ = *begin++;
 	return out;
 }
+
+int GetEnterCount( const char *begin )
+{
+	int ret = 0;
+	while (*begin != '\0')
+	{
+		if(*begin++ == '\n')
+			++ret;
+	}
+	return ret;
+}

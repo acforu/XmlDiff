@@ -63,7 +63,7 @@ private:
 
 	const char* GetDiffTypeString(DiffType type);
 	void DumpResult(const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent);
-	void DumpResult(const std::list<DiffNodeResult>& diffNodeList);
+	void DumpResultLog(const std::list<DiffNodeResult>& diffNodeList);
 	size_t NodeStringDistance(xml_node<> *nodeL, xml_node<> *nodeR);
 
 	NodeMatchResult XmlDiff::DiffStringListAcceptModify( const std::vector<string>& stringVecL, const std::vector<string>& stringVecR);

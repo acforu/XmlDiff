@@ -9,6 +9,7 @@ enum TextFormatType
 {
 	TextColor_Normal,
 	TextColor_Modify,
+	TextColor_Pad,
 };
 
 enum TexTSide

@@ -18,3 +18,4 @@ int DiffLines( const std::vector<std::string>& nodeLVec, const std::vector<std::
 int CalcStringDist( const std::list<std::pair<int,int>>& trace,const std::vector<std::string>& nodeLVec, const std::vector<std::string>& nodeRVec);
 
 char* CopyString(const char *begin, char* out);
+int GetEnterCount(const char *begin);
