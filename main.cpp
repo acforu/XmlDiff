@@ -13,18 +13,25 @@ void myMessageOutput(QtMsgType, const char * msg)
 
 int main(int argc, char *argv[])
 {
-
 	AllocConsole(); 
 	freopen("CONOUT$","w+t",stdout); 
 	freopen("CONIN$","r+t",stdin); 
 
-	system("mode con:cols=100 lines=1000");  
+	//system("mode con:cols=100 lines=1000");  
 
 	QApplication a(argc, argv);
-	qInstallMsgHandler(myMessageOutput);
+	//qInstallMsgHandler(myMessageOutput);
+
+	//if (argc < 3)
+	//{
+	//	return 0;
+	//}
+
+	//std::string file1(argv[1]);
+	//std::string file2(argv[2]);
 
 	DiffUI w;
-	w.show();
+	w.showMaximized();
 
 	LARGE_INTEGER frequency;        // ticks per second
 	LARGE_INTEGER t1, t2;           // ticks
@@ -34,11 +41,11 @@ int main(int argc, char *argv[])
 	QueryPerformanceCounter(&t1);
 
 	XmlDiff diff;
-	//w.BeginEditBlock();
-	//diff.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml",&w);
-	diff.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml",&w);
-	//diff.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml",&w);
-	//w.EndEditBlock();
+	w.BeginEditBlock();
+//	diff.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml",&w);
+	diff.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml",&w);
+
+	w.EndEditBlock();
 
 
 	QueryPerformanceCounter(&t2);

@@ -70,11 +70,12 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	//nextModifyAction->setShortcuts(QKeySequence::Open);
 	//nextModifyAction->setStatusTip(tr("Open an existing file"));
 	//nextModifyAction->setWhatsThis(tr("next diff"));
-	
+	nextModifyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
 	connect(nextModifyAction, SIGNAL(triggered()), this, SLOT(nextDiffLine()));
 
 
 	prevModifyAction = new QAction(QIcon("./resource/Left-96.png"), tr("prev diff(ctrl+1)"), this); 
+	prevModifyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
 	//nextModifyAction->setShortcuts(QKeySequence::Open);
 	//nextModifyAction->setStatusTip(tr("Open an existing file"));
 	//nextModifyAction->setWhatsThis(tr("next diff"));

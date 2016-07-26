@@ -324,11 +324,14 @@ bool XmlDiff::CompareNode( xml_node<> *nodeL, xml_node<> *nodeR )
 	static char buffL[XmlTextBuffSize];
 	static char buffR[XmlTextBuffSize];
 
-	ZeroMemory(buffL,ARRAYSIZE(buffL));
-	ZeroMemory(buffR,ARRAYSIZE(buffR));
+	//ZeroMemory(buffL,ARRAYSIZE(buffL));
+	//ZeroMemory(buffR,ARRAYSIZE(buffR));
 
-	print(buffL,*nodeL);
-	print(buffR,*nodeR);
+	char *out = print(buffL,*nodeL);
+	*out = '\0';
+	out = print(buffR,*nodeR);
+	*out = '\0';
+
 	return strcmp(buffL,buffR)==0;
 }
 
