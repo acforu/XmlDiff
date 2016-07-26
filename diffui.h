@@ -43,6 +43,7 @@ private slots:
 	void onLTextUpdateRequest(const QRect & rect, int dy);
 	void onRTextUpdateRequest(const QRect & rect, int dy);
 	void nextDiffLine();
+	void prevDiffLine();
 
 private:
 	Ui::DiffUIClass ui;
@@ -51,6 +52,7 @@ private:
     //QPlainTextEdit  *textEditPlain;
 
 	QAction * nextModifyAction;
+	QAction * prevModifyAction;
 private:
 	QTextCursor* cursorL;
 	QTextCursor* cursorR;

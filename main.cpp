@@ -18,6 +18,8 @@ int main(int argc, char *argv[])
 	freopen("CONOUT$","w+t",stdout); 
 	freopen("CONIN$","r+t",stdin); 
 
+	system("mode con:cols=100 lines=1000");  
+
 	QApplication a(argc, argv);
 	qInstallMsgHandler(myMessageOutput);
 
@@ -32,11 +34,11 @@ int main(int argc, char *argv[])
 	QueryPerformanceCounter(&t1);
 
 	XmlDiff diff;
-	w.BeginEditBlock();
+	//w.BeginEditBlock();
 	//diff.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml",&w);
 	diff.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml",&w);
 	//diff.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml",&w);
-	w.EndEditBlock();
+	//w.EndEditBlock();
 
 
 	QueryPerformanceCounter(&t2);

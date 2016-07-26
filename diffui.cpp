@@ -66,14 +66,26 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	QObject::connect(textEditL,SIGNAL(updateRequest(const QRect & , int )),this,SLOT(onLTextUpdateRequest(const QRect & , int )));
 	QObject::connect(textEditR,SIGNAL(updateRequest(const QRect & , int )),this,SLOT(onRTextUpdateRequest(const QRect & , int )));
 
-	//QObject::connect(ui.nextDiff,SIGNAL(click()),this,SLOT(nextDiffLine()));
-
-	nextModifyAction = new QAction(QIcon(":/images/doc-open"), tr("&Open..."), this); 
+	nextModifyAction = new QAction(QIcon("./resource/Right-96.png"), tr("next diff(ctrl+2)"), this); 
 	//nextModifyAction->setShortcuts(QKeySequence::Open);
-	nextModifyAction->setStatusTip(tr("Open an existing file"));
+	//nextModifyAction->setStatusTip(tr("Open an existing file"));
+	//nextModifyAction->setWhatsThis(tr("next diff"));
+	
 	connect(nextModifyAction, SIGNAL(triggered()), this, SLOT(nextDiffLine()));
 
+
+	prevModifyAction = new QAction(QIcon("./resource/Left-96.png"), tr("prev diff(ctrl+1)"), this); 
+	//nextModifyAction->setShortcuts(QKeySequence::Open);
+	//nextModifyAction->setStatusTip(tr("Open an existing file"));
+	//nextModifyAction->setWhatsThis(tr("next diff"));
+
+	connect(prevModifyAction, SIGNAL(triggered()), this, SLOT(prevDiffLine()));
+
+	ui.mainToolBar->addAction(prevModifyAction);
 	ui.mainToolBar->addAction(nextModifyAction);
+	ui.mainToolBar->setFixedHeight(48);
+	ui.mainToolBar->setIconSize(QSize(48,48));
+	
 }
 
 DiffUI::~DiffUI()
@@ -91,7 +103,10 @@ void DiffUI::resizeEvent( QResizeEvent *event )
 
 void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 {
-
+	if (side == TextSide_Left)
+	{
+		qDebug() << "block prev " << GetTotalBlocks() << endl;
+	}
 	//textEditL->setUpdatesEnabled( false );
 	//textEditPlain->appendPlainText(text);
 	//textEditL->setUpdatesEnabled( true );
@@ -157,7 +172,12 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 //cursor->insertText("\n");
 	 //cursor->endEditBlock();
 
-
+	 if (side == TextSide_Left)
+	 {
+		 qDebug() << "content: " << QString::fromUtf8(text) << endl;
+		 qDebug() << "block after " << GetTotalBlocks() << endl;
+	 }
+	 
 	 //cursor.movePosition(QTextCursor::Down);
 }
 
@@ -232,7 +252,7 @@ void DiffUI::onRTextUpdateRequest( const QRect & rect, int dy )
 
 int DiffUI::GetTotalBlocks()
 {
-	assert(textEditL->blockCount() == textEditR->blockCount());
+	//assert(textEditL->blockCount() == textEditR->blockCount());
 	return textEditL->blockCount();
 }
 
@@ -244,41 +264,52 @@ void DiffUI::MoveToBlock( int block )
 	//cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, 5);
 	//textEditL->setTextCursor(cursor);
 	//return;
+	int curBlockNum  = textEditL->firstBlockInViewport().blockNumber();
 
+	qDebug() << "firstBlockVisable " << curBlockNum << endl;
+	qDebug() << "MoveToBlock " << block << endl;
 
-	textEditL->moveCursor(QTextCursor::End);
-	QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); // ln-1 because line number starts from 0
-	textEditL->setTextCursor(cursorL);
-//	textEditL->ensureCursorVisible();
+	if (block < textEditL->document()->blockCount())
+	{
+		textEditL->moveCursor(QTextCursor::End);
+		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
+		textEditL->setTextCursor(cursorL);
+	}
 
-	textEditR->moveCursor(QTextCursor::End);
-	QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); // ln-1 because line number starts from 0
-	textEditR->setTextCursor(cursorR);
+	if (block < textEditR->document()->blockCount())
+	{
+		textEditR->moveCursor(QTextCursor::End);
+		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
+		textEditR->setTextCursor(cursorR);
+	}
+
 }
 
 void DiffUI::nextDiffLine()
 {
 	QTextBlock block = textEditL->firstBlockInViewport();
-	//cursor.movePosition(QTextCursor::StartOfLine);
-
-	//
-	////int curBlockNum  = cursor.positionInBlock();
-	//QTextBlock block = cursor.block();
 	int curBlockNum  = block.blockNumber();
-	
-	qDebug() << curBlockNum << endl;
-
 	auto iter = ModifyTags.upper_bound(curBlockNum);
-	qDebug() << *iter << endl;
 	if (iter != ModifyTags.end())
 	{
 		MoveToBlock(*iter);
-		//MoveToBlock(curBlockNum+1 );
 	}
 }
 
 void DiffUI::MarkModifyTag()
 {
-	ModifyTags.insert(GetTotalBlocks());
+	ModifyTags.insert(GetTotalBlocks()-1);
+}
+
+void DiffUI::prevDiffLine()
+{
+	QTextBlock block = textEditL->firstBlockInViewport();
+	int curBlockNum  = block.blockNumber();
+	auto iter = ModifyTags.lower_bound(curBlockNum);
+	if (iter != ModifyTags.begin())
+	{
+		int target = *(--iter);
+		MoveToBlock(target);
+	}
 }
 
