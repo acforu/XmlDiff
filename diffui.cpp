@@ -173,11 +173,11 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 //cursor->insertText("\n");
 	 //cursor->endEditBlock();
 
-	 if (side == TextSide_Left)
-	 {
-		 qDebug() << "content: " << QString::fromUtf8(text) << endl;
-		 qDebug() << "block after " << GetTotalBlocks() << endl;
-	 }
+	 //if (side == TextSide_Left)
+	 //{
+		// qDebug() << "content: " << QString::fromUtf8(text) << endl;
+		// qDebug() << "block after " << GetTotalBlocks() << endl;
+	 //}
 	 
 	 //cursor.movePosition(QTextCursor::Down);
 }

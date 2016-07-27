@@ -13,6 +13,10 @@ size_t StringDistance(const std::string &s1, const std::string &s2)
 	if( m==0 ) return n;
 	if( n==0 ) return m;
 
+	qDebug() << "StringDistance" << m << n << endl;
+
+	Profiler inst;
+
 	size_t *costs = new size_t[n + 1];
 
 	for( size_t k=0; k<=n; k++ ) costs[k] = k;
@@ -48,10 +52,23 @@ size_t StringDistance(const std::string &s1, const std::string &s2)
 }
 
 void split(const string &s, char delim, vector<string> &elems) {
-	stringstream ss(s);
-	string item;
-	while (getline(ss, item, delim)) {
-		elems.push_back(item);
+	//stringstream ss(s);
+	//string item;
+	//while (getline(ss, item, delim)) {
+	//	elems.push_back(item);
+	//}
+
+	for (size_t i = 0,beg = 0; i < s.length(); ++i)
+	{
+		if (s[i]==delim)
+		{
+			elems.push_back(s.substr(beg,i-beg));
+			beg = i + 1;
+		}
+		if (i == s.length() - 1)
+		{
+			elems.push_back(s.substr(beg,i-beg));
+		}
 	}
 }
 
@@ -231,4 +248,28 @@ int GetEnterCount( const char *begin )
 			++ret;
 	}
 	return ret;
+}
+
+Profiler::Profiler()
+{
+	QueryPerformanceFrequency(&frequency);
+	Start();
+}
+
+Profiler::~Profiler()
+{
+	Stop();
+}
+
+void Profiler::Stop()
+{
+	QueryPerformanceCounter(&t2);
+	elapsedTime = (t2.QuadPart - t1.QuadPart) * 1000.0 / frequency.QuadPart / 1000;
+	cout.precision(6);
+	cout << "cost time: " << std::fixed << elapsedTime << endl;
+}
+
+void Profiler::Start()
+{
+	QueryPerformanceCounter(&t1);
 }

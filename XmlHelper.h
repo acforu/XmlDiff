@@ -19,3 +19,17 @@ int CalcStringDist( const std::list<std::pair<int,int>>& trace,const std::vector
 
 char* CopyString(const char *begin, char* out);
 int GetEnterCount(const char *begin);
+
+class Profiler
+{
+public:
+	Profiler();
+	~Profiler();
+	void Start();
+	void Stop();
+
+private:
+	LARGE_INTEGER frequency;        // ticks per second
+	LARGE_INTEGER t1, t2;           // ticks
+	double elapsedTime;
+};

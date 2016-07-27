@@ -448,7 +448,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 			{
 				if (*out == '\n')
 				{
-					ui->AppendText("\n",TextSide_Left,TextColor_Modify);
+					ui->AppendText("\n",TextSide_Left,TextColor_Normal);
 				}
 				++out;
 			}
@@ -468,7 +468,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 			{
 				if (*out == '\n')
 				{
-					ui->AppendText("\n",TextSide_Right,TextColor_Modify);
+					ui->AppendText("\n",TextSide_Right,TextColor_Normal);
 				}
 				++out;
 			}
@@ -530,7 +530,9 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					out = rapidxml::internal::fill_chars(out,indent,'\t');
 					out = CopyString(attrIt->name,out);
 					*out++ = char('=');
+					*out++ = char('"');
 					out = CopyString(attrIt->prev,out);
+					*out++ = char('"');
 					*out++ = '\n';
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Right,TextColor_Modify);
@@ -539,7 +541,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					out = buff;
 					out = rapidxml::internal::fill_chars(out,enterCount,'\n');
 					*out++ = '\0';
-					ui->AppendText(out,TextSide_Left,TextColor_Normal);
+					ui->AppendText(buff,TextSide_Left,TextColor_Normal);
 
 				}
 				else if (attrIt->type == DiffType_Del)
@@ -554,16 +556,19 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					out = rapidxml::internal::fill_chars(out,indent,'\t');
 					out = CopyString(attrIt->name,out);
 					*out++ = char('=');
+					*out++ = char('"');
 					out = CopyString(attrIt->prev,out);
+					*out++ = char('"');
 					*out++ = '\n';
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Left,TextColor_Modify);
 
 					int enterCount = GetEnterCount(buff);
+					//ZeroMemory(buff,ARRAYSIZE(buff));
 					out = buff;
 					out = rapidxml::internal::fill_chars(out,enterCount,'\n');
 					*out++ = '\0';
-					ui->AppendText(out,TextSide_Right,TextColor_Normal);
+					ui->AppendText(buff,TextSide_Right,TextColor_Normal);
 
 				}
 				else if (attrIt->type == DiffType_Modify)
@@ -578,7 +583,9 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					out = rapidxml::internal::fill_chars(out,indent,'\t');
 					out = CopyString(attrIt->name,out);
 					*out++ = char('=');
+					*out++ = char('"');
 					out = CopyString(attrIt->prev,out);
+					*out++ = char('"');
 					*out++ = '\n';
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Left,TextColor_Modify);
@@ -589,7 +596,9 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					out = rapidxml::internal::fill_chars(out,indent,'\t');
 					out = CopyString(attrIt->name,out);
 					*out++ = char('=');
+					*out++ = char('"');
 					out = CopyString(attrIt->curr,out);
+					*out++ = char('"');
 					*out++ = '\n';
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Right,TextColor_Modify);
@@ -758,14 +767,16 @@ std::list<DiffNodeResult> XmlDiff::DiffNodesAcceptModify( const std::vector<xml_
 	vector<string> stringVecL,stringVecR;
 	FOR_EACH(iter,nodeLVector)
 	{
-		ZeroMemory(buff,ARRAYSIZE(buff));
-		print(buff,**iter);
+		//ZeroMemory(buff,ARRAYSIZE(buff));
+		char * out = print(buff,**iter);
+		*out = '\0';
 		stringVecL.push_back(buff);
 	}
 	FOR_EACH(iter,nodeRVector)
 	{
-		ZeroMemory(buff,ARRAYSIZE(buff));
-		print(buff,**iter);
+		//ZeroMemory(buff,ARRAYSIZE(buff));
+		char* out = print(buff,**iter);
+		*out = '\0';
 		stringVecR.push_back(buff);
 	}
 	
@@ -821,11 +832,13 @@ size_t XmlDiff::NodeStringDistance( xml_node<> *nodeL, xml_node<> *nodeR )
 	static char buffL[2000];
 	static char buffR[2000];
 
-	ZeroMemory(buffL,ARRAYSIZE(buffL));
-	ZeroMemory(buffR,ARRAYSIZE(buffR));
+	//ZeroMemory(buffL,ARRAYSIZE(buffL));
+	//ZeroMemory(buffR,ARRAYSIZE(buffR));
 
-	print(buffL,*nodeL);
-	print(buffR,*nodeR);
+	char* out = print(buffL,*nodeL);
+	*out = '\0';
+	out = print(buffR,*nodeR);
+	*out = '\0';
 
 	if (Compare(buffL,buffR))
 		return 0;
