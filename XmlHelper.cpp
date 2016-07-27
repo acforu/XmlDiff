@@ -2,6 +2,7 @@
 #include "XmlHelper.h"
 #include <iosfwd>
 
+#define SIMPLIFY_STRING_DIST_CALC 1
 
 using namespace std;
 
@@ -211,7 +212,11 @@ int CalcStringDist( const std::list<std::pair<int,int>>& trace,const std::vector
 			nodesR.append(nodeRVec[indexR]);
 		}
 
+#if SIMPLIFY_STRING_DIST_CALC 
+		ret += StringDistSimplify(nodesL,nodesR);
+#else
 		ret += StringDistance(nodesL,nodesR);
+#endif
 		++indexL;
 		++indexR;
 	}
@@ -227,8 +232,11 @@ int CalcStringDist( const std::list<std::pair<int,int>>& trace,const std::vector
 		nodesR.append(nodeRVec[indexR]);
 	}
 
+#if SIMPLIFY_STRING_DIST_CALC 
+	ret += StringDistSimplify(nodesL,nodesR);
+#else
 	ret += StringDistance(nodesL,nodesR);
-
+#endif
 	return ret;
 }
 
@@ -250,6 +258,11 @@ int GetEnterCount( const char *begin )
 	return ret;
 }
 
+size_t StringDistSimplify( const std::string &s1, const std::string &s2 )
+{
+	return s1.size() + s2.size();
+}
+
 Profiler::Profiler()
 {
 	QueryPerformanceFrequency(&frequency);
@@ -266,7 +279,7 @@ void Profiler::Stop()
 	QueryPerformanceCounter(&t2);
 	elapsedTime = (t2.QuadPart - t1.QuadPart) * 1000.0 / frequency.QuadPart / 1000;
 	cout.precision(6);
-	cout << "cost time: " << std::fixed << elapsedTime << endl;
+	cout << "cost time: " << std::fixed << elapsedTime * 1000 << "ms" << endl;
 }
 
 void Profiler::Start()

@@ -104,10 +104,10 @@ void DiffUI::resizeEvent( QResizeEvent *event )
 
 void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 {
-	if (side == TextSide_Left)
-	{
-		qDebug() << "block prev " << GetTotalBlocks() << endl;
-	}
+	//if (side == TextSide_Left)
+	//{
+	//	qDebug() << "block prev " << GetTotalBlocks() << endl;
+	//}
 	//textEditL->setUpdatesEnabled( false );
 	//textEditPlain->appendPlainText(text);
 	//textEditL->setUpdatesEnabled( true );
