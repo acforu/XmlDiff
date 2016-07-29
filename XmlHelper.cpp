@@ -13,22 +13,23 @@ size_t StringDistance(const std::string &s1, const std::string &s2)
 	if( m==0 ) return n;
 	if( n==0 ) return m;
 
-	if (abs(m-n))
+	if (abs(int(m-n)) > 60)
 	{
-		return abs(m-n);
+		return abs(int(m+n));
 	}
-	if (m+n > 2000)
-	{
-	qDebug() << "-----------------------------------------------";
-	qDebug() << "StringDistance" << m << n << endl;
 
-		qDebug() << "-----------------------------------" << endl;
-		qDebug() << QString::fromUtf8(s1.c_str()) << endl;
-		qDebug() << "-----------------------------------" << endl;
-		qDebug() << QString::fromUtf8(s2.c_str()) << endl;
-		qDebug() << "-----------------------------------" << endl;
-		return m+n;
-	}
+	//if (m+n > 2000)
+	//{
+	//qDebug() << "-----------------------------------------------";
+	//qDebug() << "StringDistance" << m << n << endl;
+
+	//	qDebug() << "-----------------------------------" << endl;
+	//	qDebug() << QString::fromUtf8(s1.c_str()) << endl;
+	//	qDebug() << "-----------------------------------" << endl;
+	//	qDebug() << QString::fromUtf8(s2.c_str()) << endl;
+	//	qDebug() << "-----------------------------------" << endl;
+	//	return m+n;
+	//}
 
 	//Profiler inst;
 

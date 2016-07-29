@@ -529,6 +529,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					//cout << "add " << attrIt->prev << endl;
 					ui->MarkModifyTag();
 
+					ui->AddNewLine();
 					char* out = buff;
 					
 					out = rapidxml::internal::fill_chars(out,indent,'\t');
@@ -551,6 +552,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				else if (attrIt->type == DiffType_Del)
 				{
 					ui->MarkModifyTag();
+					ui->AddNewLine();
 
 
 					//cout<< attrIt->name << " ";
@@ -578,6 +580,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				else if (attrIt->type == DiffType_Modify)
 				{
 					ui->MarkModifyTag();
+					ui->AddNewLine();
 
 
 					//cout<< attrIt->name << " ";

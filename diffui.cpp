@@ -314,3 +314,9 @@ void DiffUI::prevDiffLine()
 	}
 }
 
+void DiffUI::AddNewLine()
+{
+	AppendText("\n",TextSide_Left,TextColor_Normal);
+	AppendText("\n",TextSide_Right,TextColor_Normal);
+}
+

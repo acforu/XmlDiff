@@ -35,6 +35,7 @@ public:
 	int GetTotalBlocks();
 	void MoveToBlock(int block);
 	void MarkModifyTag();
+	void AddNewLine();
 
 private slots: 
 	void onLScrollContentChanged();
