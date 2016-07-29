@@ -2,7 +2,6 @@
 #include "XmlHelper.h"
 #include <iosfwd>
 
-#define SIMPLIFY_STRING_DIST_CALC 1
 
 using namespace std;
 
@@ -14,9 +13,24 @@ size_t StringDistance(const std::string &s1, const std::string &s2)
 	if( m==0 ) return n;
 	if( n==0 ) return m;
 
+	if (abs(m-n))
+	{
+		return abs(m-n);
+	}
+	if (m+n > 2000)
+	{
+	qDebug() << "-----------------------------------------------";
 	qDebug() << "StringDistance" << m << n << endl;
 
-	Profiler inst;
+		qDebug() << "-----------------------------------" << endl;
+		qDebug() << QString::fromUtf8(s1.c_str()) << endl;
+		qDebug() << "-----------------------------------" << endl;
+		qDebug() << QString::fromUtf8(s2.c_str()) << endl;
+		qDebug() << "-----------------------------------" << endl;
+		return m+n;
+	}
+
+	//Profiler inst;
 
 	size_t *costs = new size_t[n + 1];
 

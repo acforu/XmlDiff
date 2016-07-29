@@ -8,7 +8,6 @@ using namespace std;
 
 typedef  size_t AddressType;
 
-#define ENABLE_LOG 0
 
 const int XmlTextBuffSize = 10000000;
 
@@ -326,6 +325,11 @@ bool XmlDiff::CompareNode( xml_node<> *nodeL, xml_node<> *nodeR )
 
 	//ZeroMemory(buffL,ARRAYSIZE(buffL));
 	//ZeroMemory(buffR,ARRAYSIZE(buffR));
+
+	//if (!Compare(nodeL->name(),nodeR->name()))
+	//{
+	//	return false;
+	//}
 
 	char *out = print(buffL,*nodeL);
 	*out = '\0';
@@ -768,14 +772,14 @@ std::list<DiffNodeResult> XmlDiff::DiffNodesAcceptModify( const std::vector<xml_
 	FOR_EACH(iter,nodeLVector)
 	{
 		//ZeroMemory(buff,ARRAYSIZE(buff));
-		char * out = print(buff,**iter);
+		char * out = print(buff,**iter,print_attributes_separate_by_enter);
 		*out = '\0';
 		stringVecL.push_back(buff);
 	}
 	FOR_EACH(iter,nodeRVector)
 	{
 		//ZeroMemory(buff,ARRAYSIZE(buff));
-		char* out = print(buff,**iter);
+		char* out = print(buff,**iter,print_attributes_separate_by_enter);
 		*out = '\0';
 		stringVecR.push_back(buff);
 	}

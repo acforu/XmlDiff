@@ -256,6 +256,8 @@ namespace rapidxml
     //! and using the flag will disable it.
     //! <br><br>
     //! See xml_document::parse() function.
+    const int print_attributes_separate_by_enter = 0x1000;
+
     const int parse_default = 0;
     
     //! A combination of parse flags that forbids any modifications of the source text. 

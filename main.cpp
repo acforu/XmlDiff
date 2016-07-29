@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	{
 		//	diff.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml",&w);
 		//diff.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml",&w);
-		diff.Diff(".\\test_case\\quest\\a.xml",".\\test_case\\quest\\b.xml",&w);
+		diff.Diff(".\\test_case\\quest1\\a.xml",".\\test_case\\quest1\\b.xml",&w);
 	}
 	
 

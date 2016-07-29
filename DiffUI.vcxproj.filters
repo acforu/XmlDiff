@@ -88,6 +88,9 @@
     <ClInclude Include="GeneratedFiles\ui_DiffTextEdit.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="diffui.h">

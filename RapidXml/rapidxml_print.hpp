@@ -198,6 +198,10 @@ namespace rapidxml
                         out = copy_and_expand_chars(attribute->value(), attribute->value() + attribute->value_size(), Ch('\''), out);
                         *out = Ch('"'), ++out;
                     }
+					if (flags & print_attributes_separate_by_enter)
+					{
+		               *out = Ch('\n'), ++out;
+					}
                 }
             }
             return out;
