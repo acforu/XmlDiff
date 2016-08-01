@@ -36,6 +36,7 @@ public:
 	void MoveToBlock(int block);
 	void MarkModifyTag();
 	void AddNewLine();
+	void HighLightBlocks(int beg,int end);
 
 private slots: 
 	void onLScrollContentChanged();
@@ -54,6 +55,9 @@ private:
 
 	QAction * nextModifyAction;
 	QAction * prevModifyAction;
+	QWidget* drawLineCanvas;
+	int curDiffBlockNum;
+
 private:
 	QTextCursor* cursorL;
 	QTextCursor* cursorR;

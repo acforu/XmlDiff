@@ -15,7 +15,14 @@ public:
     virtual void scrollContentsBy(int dx, int dy);
 
     QTextBlock firstBlockInViewport() const;
-   
+    int BlockTopLinePos(int blockNum);
+
+	int CurDiffBlockNum() const { return curDiffBlockNum; }
+	void CurDiffBlockNum(int val) { curDiffBlockNum = val; }
+
+protected:
+	void paintEvent(QPaintEvent *event);
+	//void changeEvent(QEvent *e);
 signals:
 	void scrollContentChanged();
 
@@ -25,6 +32,8 @@ private:
 	Ui::DiffTextEdit ui;
 	int deltaX;
 	int deltaY;
+	int curDiffBlockNum;
+	
 };
 
 #endif // DIFFTEXTEDIT_H

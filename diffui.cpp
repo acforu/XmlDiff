@@ -86,6 +86,8 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	ui.mainToolBar->addAction(nextModifyAction);
 	ui.mainToolBar->setFixedHeight(48);
 	ui.mainToolBar->setIconSize(QSize(48,48));
+
+
 	
 }
 
@@ -229,6 +231,10 @@ void DiffUI::onLTextUpdateRequest( const QRect & rect, int dy )
 		prevHBarPos = newHBarPos;
 		textEditR->horizontalScrollBar()->setSliderPosition(newHBarPos);
 	}
+
+	textEditL->viewport()->update();
+	textEditR->viewport()->update();
+	
 }
 
 void DiffUI::onRTextUpdateRequest( const QRect & rect, int dy )
@@ -249,6 +255,9 @@ void DiffUI::onRTextUpdateRequest( const QRect & rect, int dy )
 		prevHBarPos = newHBarPos;
 		textEditL->horizontalScrollBar()->setSliderPosition(newHBarPos);
 	}
+
+	textEditL->viewport()->update();
+	textEditR->viewport()->update();
 }
 
 int DiffUI::GetTotalBlocks()
@@ -259,22 +268,19 @@ int DiffUI::GetTotalBlocks()
 
 void DiffUI::MoveToBlock( int block )
 {
-	//textEditL->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);
-	//QTextCursor cursor = textEditL->textCursor();
-	////cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, block);
-	//cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, 5);
-	//textEditL->setTextCursor(cursor);
-	//return;
-	int curBlockNum  = textEditL->firstBlockInViewport().blockNumber();
+	
+	//int curBlockNum  = textEditL->firstBlockInViewport().blockNumber();
 
-	qDebug() << "firstBlockVisable " << curBlockNum << endl;
-	qDebug() << "MoveToBlock " << block << endl;
+
+	//qDebug() << "MoveToBlock " << block << endl;
+
 
 	if (block < textEditL->document()->blockCount())
 	{
 		textEditL->moveCursor(QTextCursor::End);
 		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
 		textEditL->setTextCursor(cursorL);
+		textEditL->CurDiffBlockNum(block);
 	}
 
 	if (block < textEditR->document()->blockCount())
@@ -282,7 +288,11 @@ void DiffUI::MoveToBlock( int block )
 		textEditR->moveCursor(QTextCursor::End);
 		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
 		textEditR->setTextCursor(cursorR);
+
+		textEditR->CurDiffBlockNum(block);
 	}
+	/*qDebug() << "firstBlockVisable " << curBlockNum << endl;
+	qDebug() << "block top line " << textEditL->BlockTopLinePos(block) << endl;*/
 
 }
 
@@ -319,4 +329,14 @@ void DiffUI::AddNewLine()
 	AppendText("\n",TextSide_Left,TextColor_Normal);
 	AppendText("\n",TextSide_Right,TextColor_Normal);
 }
+
+void DiffUI::HighLightBlocks( int beg,int end )
+{
+	/*QTextBlock block = textEditL->document()->findBlockByNumber(beg); 
+
+	int top = (int) textEditL->blockBoundingGeometry(block).translated(textEditL->contentOffset()).top();
+	int bottom = top + (int) textEditL->blockBoundingRect(block).height();*/
+
+}
+
 
