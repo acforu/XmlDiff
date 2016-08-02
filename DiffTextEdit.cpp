@@ -62,12 +62,14 @@ void DiffTextEdit::paintEvent( QPaintEvent *event )
 
 	
 	QPainter painter(viewport());	
-	painter.setPen(QPen(Qt::black, 12, Qt::SolidLine, Qt::RoundCap));
+	painter.setPen(QPen(Qt::red, 2, Qt::SolidLine, Qt::FlatCap));
 
 
-	int top = BlockTopLinePos(curDiffBlockNum);
+	int top = BlockTopLinePos(diffBeginBlockNum);
 	painter.drawLine(0, top, viewport()->width(), top);
 
+	int bottom = BlockTopLinePos(diffEndBlockNum) ;//+ (int) blockBoundingRect(document()->findBlockByNumber(diffEndBlockNum)).height();
+	painter.drawLine(0, bottom , viewport()->width(), bottom );
 
 }
 

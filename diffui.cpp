@@ -274,23 +274,26 @@ void DiffUI::MoveToBlock( int block )
 
 	//qDebug() << "MoveToBlock " << block << endl;
 
-
+	int lineCount = textEditL->
 	if (block < textEditL->document()->blockCount())
 	{
 		textEditL->moveCursor(QTextCursor::End);
 		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
+		cursorL.movePosition(QTextCursor::Up);
+
 		textEditL->setTextCursor(cursorL);
-		textEditL->CurDiffBlockNum(block);
 	}
 
 	if (block < textEditR->document()->blockCount())
 	{
 		textEditR->moveCursor(QTextCursor::End);
 		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
-		textEditR->setTextCursor(cursorR);
+		cursorR.movePosition(QTextCursor::Up);
 
-		textEditR->CurDiffBlockNum(block);
+		textEditR->setTextCursor(cursorR);
 	}
+
+	HighLightDiffBlocks(block);
 	/*qDebug() << "firstBlockVisable " << curBlockNum << endl;
 	qDebug() << "block top line " << textEditL->BlockTopLinePos(block) << endl;*/
 
@@ -300,24 +303,31 @@ void DiffUI::nextDiffLine()
 {
 	QTextBlock block = textEditL->firstBlockInViewport();
 	int curBlockNum  = block.blockNumber();
-	auto iter = ModifyTags.upper_bound(curBlockNum);
-	if (iter != ModifyTags.end())
+	auto iter = ModifyBegTags.upper_bound(curBlockNum);
+	if (iter != ModifyBegTags.end())
 	{
 		MoveToBlock(*iter);
 	}
 }
 
-void DiffUI::MarkModifyTag()
+void DiffUI::ModifyMarkBegin()
 {
-	ModifyTags.insert(GetTotalBlocks()-1);
+	ModifyBegTags.insert(GetTotalBlocks()-1);
+//	qDebug() << "ModifyMarkBegin" << GetTotalBlocks()-1 <<endl;
 }
 
+void DiffUI::ModifyMarkEnd()
+{
+	ModifyEndTags.insert(GetTotalBlocks()-1);
+	//qDebug() << "ModifyMarkEnd" << GetTotalBlocks()-1 <<endl;
+
+}
 void DiffUI::prevDiffLine()
 {
 	QTextBlock block = textEditL->firstBlockInViewport();
 	int curBlockNum  = block.blockNumber();
-	auto iter = ModifyTags.lower_bound(curBlockNum);
-	if (iter != ModifyTags.begin())
+	auto iter = ModifyBegTags.lower_bound(curBlockNum);
+	if (iter != ModifyBegTags.begin())
 	{
 		int target = *(--iter);
 		MoveToBlock(target);
@@ -326,17 +336,35 @@ void DiffUI::prevDiffLine()
 
 void DiffUI::AddNewLine()
 {
-	AppendText("\n",TextSide_Left,TextColor_Normal);
-	AppendText("\n",TextSide_Right,TextColor_Normal);
+	//AppendText("\n",TextSide_Left,TextColor_Normal);
+	//AppendText("\n",TextSide_Right,TextColor_Normal);
 }
 
-void DiffUI::HighLightBlocks( int beg,int end )
+//void DiffUI::HighLightBlocks( int beg,int end )
+//{
+//	/*QTextBlock block = textEditL->document()->findBlockByNumber(beg); 
+//
+//	int top = (int) textEditL->blockBoundingGeometry(block).translated(textEditL->contentOffset()).top();
+//	int bottom = top + (int) textEditL->blockBoundingRect(block).height();*/
+//
+//}
+
+
+void DiffUI::HighLightDiffBlocks( int startblockNum )
 {
-	/*QTextBlock block = textEditL->document()->findBlockByNumber(beg); 
+	auto iter = ModifyEndTags.upper_bound(startblockNum);
+	if (iter == ModifyEndTags.end())
+		return;
 
-	int top = (int) textEditL->blockBoundingGeometry(block).translated(textEditL->contentOffset()).top();
-	int bottom = top + (int) textEditL->blockBoundingRect(block).height();*/
+	int endBlockNum = *iter;
 
+	textEditL->DiffBeginBlockNum(startblockNum);
+	textEditR->DiffBeginBlockNum(startblockNum);
+
+	textEditL->DiffEndBlockNum(endBlockNum);
+	textEditR->DiffEndBlockNum(endBlockNum);
+
+	//qDebug() << "HighLightDiffBlocks" << startblockNum << endBlockNum << endl;
 }
 
 

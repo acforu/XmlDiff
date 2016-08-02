@@ -34,9 +34,10 @@ public:
 	void AppendText(const char* text,TexTSide side, TextFormatType type);
 	int GetTotalBlocks();
 	void MoveToBlock(int block);
-	void MarkModifyTag();
+	void ModifyMarkBegin();
+	void ModifyMarkEnd();
 	void AddNewLine();
-	void HighLightBlocks(int beg,int end);
+	void HighLightDiffBlocks(int startblockNum);
 
 private slots: 
 	void onLScrollContentChanged();
@@ -61,7 +62,8 @@ private:
 private:
 	QTextCursor* cursorL;
 	QTextCursor* cursorR;
-	std::set<int> ModifyTags;
+	std::set<int> ModifyBegTags;
+	std::set<int> ModifyEndTags;
 
 };
 

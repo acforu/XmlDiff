@@ -440,7 +440,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		}
 		else if (iter->type == DiffType_Add)
 		{
-			ui->MarkModifyTag();
+			ui->ModifyMarkBegin();
 
 
 			char* out = rapidxml::internal::print_node(buff, iter->node, 0,indent);
@@ -456,11 +456,13 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				}
 				++out;
 			}
+
+			ui->ModifyMarkEnd();
 			//ui->AppendText("\n",TextSide_Left,TextColor_Modify);
 		}
 		else if(iter->type == DiffType_Del)
 		{
-			ui->MarkModifyTag();
+			ui->ModifyMarkBegin();
 
 
 			char * out = rapidxml::internal::print_node(buff, iter->node, 0,indent);
@@ -476,6 +478,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				}
 				++out;
 			}
+			ui->ModifyMarkEnd();
 			//ui->AppendText("\n",TextSide_Right,TextColor_Modify);
 		}
 		else
@@ -527,7 +530,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				{
 					//cout<< attrIt->name << " ";
 					//cout << "add " << attrIt->prev << endl;
-					ui->MarkModifyTag();
+					ui->ModifyMarkBegin();
 
 					ui->AddNewLine();
 					char* out = buff;
@@ -548,10 +551,13 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Left,TextColor_Normal);
 
+					ui->ModifyMarkEnd();
+
+
 				}
 				else if (attrIt->type == DiffType_Del)
 				{
-					ui->MarkModifyTag();
+					ui->ModifyMarkBegin();
 					ui->AddNewLine();
 
 
@@ -576,10 +582,12 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					*out++ = '\0';
 					ui->AppendText(buff,TextSide_Right,TextColor_Normal);
 
+					ui->ModifyMarkEnd();
+
 				}
 				else if (attrIt->type == DiffType_Modify)
 				{
-					ui->MarkModifyTag();
+					ui->ModifyMarkBegin();
 					ui->AddNewLine();
 
 
@@ -626,6 +634,9 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 						*out++ = '\0';
 						ui->AppendText(buff,TextSide_Right,TextColor_Modify);
 					}
+
+					ui->ModifyMarkEnd();
+
 				}
 			}
 

@@ -17,9 +17,11 @@ public:
     QTextBlock firstBlockInViewport() const;
     int BlockTopLinePos(int blockNum);
 
-	int CurDiffBlockNum() const { return curDiffBlockNum; }
-	void CurDiffBlockNum(int val) { curDiffBlockNum = val; }
+	int DiffBeginBlockNum() const { return diffBeginBlockNum; }
+	void DiffBeginBlockNum(int val) { diffBeginBlockNum = val; }
 
+	int DiffEndBlockNum() const { return diffEndBlockNum; }
+	void DiffEndBlockNum(int val) { diffEndBlockNum = val; }
 protected:
 	void paintEvent(QPaintEvent *event);
 	//void changeEvent(QEvent *e);
@@ -32,8 +34,9 @@ private:
 	Ui::DiffTextEdit ui;
 	int deltaX;
 	int deltaY;
-	int curDiffBlockNum;
-	
+	int diffBeginBlockNum;
+	int diffEndBlockNum;
+
 };
 
 #endif // DIFFTEXTEDIT_H
