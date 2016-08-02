@@ -15,6 +15,7 @@ public:
     virtual void scrollContentsBy(int dx, int dy);
 
     QTextBlock firstBlockInViewport() const;
+	QTextBlock lastBlockInViewport();
     int BlockTopLinePos(int blockNum);
 
 	int DiffBeginBlockNum() const { return diffBeginBlockNum; }

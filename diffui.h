@@ -57,8 +57,8 @@ private:
 	QAction * nextModifyAction;
 	QAction * prevModifyAction;
 	QWidget* drawLineCanvas;
-	int curDiffBlockNum;
 
+	int curHighLightBeginBlockNum;
 private:
 	QTextCursor* cursorL;
 	QTextCursor* cursorR;

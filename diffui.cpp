@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "diffui.h"
+#pragma optimize("",off)
 
 DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -88,7 +89,7 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	ui.mainToolBar->setIconSize(QSize(48,48));
 
 
-	
+	curHighLightBeginBlockNum = -1;
 }
 
 DiffUI::~DiffUI()
@@ -274,12 +275,15 @@ void DiffUI::MoveToBlock( int block )
 
 	//qDebug() << "MoveToBlock " << block << endl;
 
-	int lineCount = textEditL->
+	int lineCount = textEditL->height() /(textEditL->fontMetrics().height() + textEditL->fontMetrics().lineSpacing());
+
+	//qDebug() << "lineCount " << lineCount << endl;
+
 	if (block < textEditL->document()->blockCount())
 	{
 		textEditL->moveCursor(QTextCursor::End);
 		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
-		cursorL.movePosition(QTextCursor::Up);
+		cursorL.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount/2);
 
 		textEditL->setTextCursor(cursorL);
 	}
@@ -288,7 +292,7 @@ void DiffUI::MoveToBlock( int block )
 	{
 		textEditR->moveCursor(QTextCursor::End);
 		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
-		cursorR.movePosition(QTextCursor::Up);
+		cursorR.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount/2);
 
 		textEditR->setTextCursor(cursorR);
 	}
@@ -303,6 +307,7 @@ void DiffUI::nextDiffLine()
 {
 	QTextBlock block = textEditL->firstBlockInViewport();
 	int curBlockNum  = block.blockNumber();
+	curBlockNum = max(curHighLightBeginBlockNum,curBlockNum);
 	auto iter = ModifyBegTags.upper_bound(curBlockNum);
 	if (iter != ModifyBegTags.end())
 	{
@@ -324,8 +329,14 @@ void DiffUI::ModifyMarkEnd()
 }
 void DiffUI::prevDiffLine()
 {
-	QTextBlock block = textEditL->firstBlockInViewport();
+	QTextBlock block = textEditL->lastBlockInViewport();
 	int curBlockNum  = block.blockNumber();
+	
+
+	//qDebug() << "prevDiffLine" << curBlockNum << curHighLightBeginBlockNum << endl;
+	//qDebug() << "prevDiffLine" << curBlockNum << block.text() << endl;
+
+	curBlockNum = min(curBlockNum,curHighLightBeginBlockNum);
 	auto iter = ModifyBegTags.lower_bound(curBlockNum);
 	if (iter != ModifyBegTags.begin())
 	{
@@ -365,6 +376,8 @@ void DiffUI::HighLightDiffBlocks( int startblockNum )
 	textEditR->DiffEndBlockNum(endBlockNum);
 
 	//qDebug() << "HighLightDiffBlocks" << startblockNum << endBlockNum << endl;
+
+	curHighLightBeginBlockNum = startblockNum;
 }
 
 
