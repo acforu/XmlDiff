@@ -42,6 +42,7 @@ struct NodeMatchResult
 class XmlDiff
 {
 public:
+	XmlDiff(){}
 	bool Diff( std::string file1, std::string file2,DiffUI* ui);
 
 	void test();

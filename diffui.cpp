@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "diffui.h"
-#pragma optimize("",off)
+#include "XmlDiff.h"
+//#pragma optimize("",off)
 
 DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -83,13 +84,26 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 
 	connect(prevModifyAction, SIGNAL(triggered()), this, SLOT(prevDiffLine()));
 
+	
+	QAction* exitAction = new QAction(QIcon("./resource/close-96.png"),"Exit",this); 
+	exitAction->setShortcut(QKeySequence(Qt::Key_Escape));
+	connect(exitAction, SIGNAL(triggered()), this, SLOT(exitApp()));
+
+	QAction* switchAppAction = new QAction(QIcon("./resource/bc.png"),"beyond compare",this); 
+	connect(switchAppAction, SIGNAL(triggered()), this, SLOT(switchApp()));
+
 	ui.mainToolBar->addAction(prevModifyAction);
 	ui.mainToolBar->addAction(nextModifyAction);
+	ui.mainToolBar->addAction(switchAppAction);
+	ui.mainToolBar->addAction(exitAction);
+
 	ui.mainToolBar->setFixedHeight(48);
 	ui.mainToolBar->setIconSize(QSize(48,48));
 
 
 	curHighLightBeginBlockNum = -1;
+
+	diffInst = new XmlDiff();
 }
 
 DiffUI::~DiffUI()
@@ -378,6 +392,25 @@ void DiffUI::HighLightDiffBlocks( int startblockNum )
 	//qDebug() << "HighLightDiffBlocks" << startblockNum << endBlockNum << endl;
 
 	curHighLightBeginBlockNum = startblockNum;
+}
+
+bool DiffUI::Diff( std::string file1, std::string file2)
+{
+	this->file1 = file1.c_str();
+	this->file2 = file2.c_str();
+
+	return diffInst->Diff(file1,file2,this);
+}
+
+void DiffUI::exitApp()
+{
+	QApplication::quit();
+}
+
+void DiffUI::switchApp()
+{
+	QString params = " " + file1 + " " +file2;
+	ShellExecuteA(NULL, "open", "D:/Beyond Compare/Beyond Compare 4/BCompare.exe", params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
 }
 
 

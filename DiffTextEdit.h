@@ -33,8 +33,6 @@ private slots:
 	void update();
 private:
 	Ui::DiffTextEdit ui;
-	int deltaX;
-	int deltaY;
 	int diffBeginBlockNum;
 	int diffEndBlockNum;
 

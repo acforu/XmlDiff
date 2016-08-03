@@ -18,6 +18,8 @@ enum TexTSide
 	TextSide_Right,
 };
 
+class XmlDiff;
+
 class DiffUI : public QMainWindow
 {
 	Q_OBJECT
@@ -39,6 +41,9 @@ public:
 	void AddNewLine();
 	void HighLightDiffBlocks(int startblockNum);
 
+
+	bool Diff( std::string file1, std::string file2);
+
 private slots: 
 	void onLScrollContentChanged();
 	void onRScrollContentChanged();
@@ -47,6 +52,8 @@ private slots:
 	void onRTextUpdateRequest(const QRect & rect, int dy);
 	void nextDiffLine();
 	void prevDiffLine();
+	void switchApp();
+	void exitApp();
 
 private:
 	Ui::DiffUIClass ui;
@@ -64,7 +71,8 @@ private:
 	QTextCursor* cursorR;
 	std::set<int> ModifyBegTags;
 	std::set<int> ModifyEndTags;
-
+	XmlDiff* diffInst;
+	QString file1,file2;
 };
 
 #endif // DIFFUI_H

@@ -10,9 +10,7 @@ DiffTextEdit::DiffTextEdit(QWidget *parent)
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 	timer->start(1000);
 
-	deltaX = deltaY = 0;
-
-
+	diffBeginBlockNum = diffEndBlockNum = -1;
 }
 
 DiffTextEdit::~DiffTextEdit()
@@ -28,11 +26,6 @@ void DiffTextEdit::scrollContentsBy( int dx, int dy )
 
 void DiffTextEdit::update()
 {
-	//if(deltaX != 0 || deltaY != 0)
-	//{
-	//	QPlainTextEdit::scrollContentsBy(deltaX,deltaY);		
-	//	deltaX = deltaY = 0;
-	//}
 }
 
 QTextBlock DiffTextEdit::firstBlockInViewport() const
@@ -61,6 +54,11 @@ void DiffTextEdit::paintEvent( QPaintEvent *event )
 	QPlainTextEdit::paintEvent(event);
 
 	
+	if (diffBeginBlockNum < 0 || diffEndBlockNum < 0)
+	{
+		return;
+	}
+
 	QPainter painter(viewport());	
 	painter.setPen(QPen(Qt::red, 2, Qt::SolidLine, Qt::FlatCap));
 
