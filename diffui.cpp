@@ -410,7 +410,7 @@ void DiffUI::exitApp()
 void DiffUI::switchApp()
 {
 	QString params = " " + file1 + " " +file2;
-	ShellExecuteA(NULL, "open", "D:/Beyond Compare/Beyond Compare 4/BCompare.exe", params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
+	ShellExecuteA(NULL, "open", "BCompare.exe", params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
 }
 
 
