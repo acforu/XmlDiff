@@ -68,7 +68,7 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	QObject::connect(textEditL,SIGNAL(updateRequest(const QRect & , int )),this,SLOT(onLTextUpdateRequest(const QRect & , int )));
 	QObject::connect(textEditR,SIGNAL(updateRequest(const QRect & , int )),this,SLOT(onRTextUpdateRequest(const QRect & , int )));
 
-	nextModifyAction = new QAction(QIcon("./resource/Right-96.png"), tr("next diff(ctrl+2)"), this); 
+	nextModifyAction = new QAction(QIcon(":/right.png"), tr("next diff(ctrl+2)"), this); 
 	//nextModifyAction->setShortcuts(QKeySequence::Open);
 	//nextModifyAction->setStatusTip(tr("Open an existing file"));
 	//nextModifyAction->setWhatsThis(tr("next diff"));
@@ -76,7 +76,7 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	connect(nextModifyAction, SIGNAL(triggered()), this, SLOT(nextDiffLine()));
 
 
-	prevModifyAction = new QAction(QIcon("./resource/Left-96.png"), tr("prev diff(ctrl+1)"), this); 
+	prevModifyAction = new QAction(QIcon(":/left.png"), tr("prev diff(ctrl+1)"), this); 
 	prevModifyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
 	//nextModifyAction->setShortcuts(QKeySequence::Open);
 	//nextModifyAction->setStatusTip(tr("Open an existing file"));
@@ -85,11 +85,11 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	connect(prevModifyAction, SIGNAL(triggered()), this, SLOT(prevDiffLine()));
 
 	
-	QAction* exitAction = new QAction(QIcon("./resource/close-96.png"),"Exit",this); 
+	QAction* exitAction = new QAction(QIcon(":/close.png"),"Exit",this); 
 	exitAction->setShortcut(QKeySequence(Qt::Key_Escape));
 	connect(exitAction, SIGNAL(triggered()), this, SLOT(exitApp()));
 
-	QAction* switchAppAction = new QAction(QIcon("./resource/bc.png"),"beyond compare",this); 
+	QAction* switchAppAction = new QAction(QIcon(":/bc.png"),"beyond compare",this); 
 	connect(switchAppAction, SIGNAL(triggered()), this, SLOT(switchApp()));
 
 	ui.mainToolBar->addAction(prevModifyAction);
@@ -410,7 +410,7 @@ void DiffUI::exitApp()
 void DiffUI::switchApp()
 {
 	QString params = " " + file1 + " " +file2;
-	ShellExecuteA(NULL, "open", "BCompare.exe", params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
+	ShellExecuteA(NULL, "open", "./BCompare.exe", params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
 }
 
 
