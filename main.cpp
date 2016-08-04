@@ -28,31 +28,51 @@ int main(int argc, char *argv[])
 	//}
 
 
-
+	//qDebug() << "StringDistSift4" << StringDistSift4("ABCDEFG","ABCD1E1F1") <<endl;
 
 
 	Profiler profile;
 
 	DiffUI w;
-	w.showMaximized();
 
-	w.BeginEditBlock();
 	if (argc >= 3)
 	{
-		//std::string file1(argv[1]);
-		//std::string file2(argv[2]);
-		w.Diff(argv[1],argv[2]);
+		QString fileL = QString::fromLocal8Bit(argv[1]);
+		QString fileR = QString::fromLocal8Bit(argv[2]);
+
+		bool isXml = true;
+		if(QFileInfo(fileL).suffix() != QString("xml") ||
+			QFileInfo(fileR).suffix() != QString("xml") )
+		{
+			isXml = false;
+		}
+
+		if (!isXml)
+		{
+			UseBeyondCompare(fileL,fileR);
+			return 0;
+		}
+
+		bool ret = w.Diff(argv[1],argv[2]);
+		if(!ret)
+		{
+			UseBeyondCompare(fileL,fileR);
+			return 0;
+		}
+		else
+		{
+			w.showMaximized();
+		}
 	}
 	else
 	{
-		//	diff.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml",&w);
-		w.Diff(".\\test_case\\commodity_mbcs\\a.xml",".\\test_case\\commodity_mbcs\\b.xml");
-		//w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
+		//w.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml");
+		w.showMaximized();
+		w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
 		//w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
 	}
 	
 
-	w.EndEditBlock();
 
 
 	profile.Stop();

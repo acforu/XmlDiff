@@ -122,4 +122,3 @@ public:
 	std::vector<int> vec;
 };
 
-

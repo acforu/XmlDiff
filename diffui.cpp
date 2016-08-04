@@ -107,10 +107,9 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 
 	encodeType = EncodeType_UTF8;
 
-
+	ui.actionUtf_8->setChecked(true);
 	connect(ui.actionANSI, SIGNAL(triggered()), this, SLOT(switchANSI()));
 	connect(ui.actionUtf_8, SIGNAL(triggered()), this, SLOT(switchUTF8()));
-
 }
 
 DiffUI::~DiffUI()
@@ -428,9 +427,8 @@ void DiffUI::exitApp()
 
 void DiffUI::switchApp()
 {
-	QString params = QString(" ") + "\"" + file1 + "\" \"" +file2 + "\"";
-	QString appPath = QCoreApplication::applicationDirPath() + QString("//BCompare.exe");
-	ShellExecuteA(NULL, "open", appPath.toLocal8Bit().constData(), params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
+	UseBeyondCompare();
+
 	////system("dir");
 	//qDebug() << appPath << endl;
 
@@ -443,6 +441,7 @@ void DiffUI::switchUTF8()
 	{
 		encodeType = EncodeType_UTF8;
 		ClearText();
+		ui.actionANSI->setChecked(false);
 		diffInst->RenderText();
 	}
 }
@@ -453,6 +452,7 @@ void DiffUI::switchANSI()
 	{
 		encodeType = EncodeType_ANSI;
 		ClearText();
+		ui.actionUtf_8->setChecked(false);
 		diffInst->RenderText();
 	}
 }
@@ -463,4 +463,14 @@ void DiffUI::ClearText()
 	textEditR->clear();
 }
 
+void DiffUI::UseBeyondCompare()
+{
+	::UseBeyondCompare(file1,file2);
+}
 
+void UseBeyondCompare( QString fileL, QString fileR )
+{
+	QString params = QString(" ") + "\"" + fileL + "\" \"" +fileR + "\"";
+	QString appPath = QCoreApplication::applicationDirPath() + QString("//BCompare.exe");
+	ShellExecuteA(NULL, "open", appPath.toLocal8Bit().constData(),params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
+}

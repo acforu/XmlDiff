@@ -1009,7 +1009,9 @@ void XmlDiff::GenMatchResult( DiffContext& context, int fromL, int fromR )
 
 void XmlDiff::RenderText()
 {
+	diffUIView->BeginEditBlock();
 	DumpResult(diffResult,diffUIView,0);
+	diffUIView->EndEditBlock();
 }
 
 

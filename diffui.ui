@@ -42,11 +42,17 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionUtf_8">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>UTF-8</string>
    </property>
   </action>
   <action name="actionANSI">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>ANSI</string>
    </property>

@@ -13,5 +13,6 @@
 #include "RapidXml\rapidxml_print.hpp"
 #include "RapidXml\rapidxml.hpp"
 #include <set>  
+#include <cmath>  
 #include "windows.h"
 

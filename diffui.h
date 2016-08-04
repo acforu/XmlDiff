@@ -24,6 +24,10 @@ enum EncodeType
 	EncodeType_ANSI,
 };
 
+void UseBeyondCompare( QString fileL, QString fileR );
+
+
+
 class XmlDiff;
 
 class DiffUI : public QMainWindow
@@ -50,6 +54,7 @@ public:
 
 	bool Diff( std::string file1, std::string file2);
 	void ClearText();
+	void UseBeyondCompare();
 
 private slots: 
 	void onLScrollContentChanged();
