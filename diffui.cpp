@@ -409,8 +409,13 @@ void DiffUI::exitApp()
 
 void DiffUI::switchApp()
 {
-	QString params = " " + file1 + " " +file2;
-	ShellExecuteA(NULL, "open", "./BCompare.exe", params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
+	QString params = QString(" ") + "\"" + file1 + "\" \"" +file2 + "\"";
+	QString appPath = QCoreApplication::applicationDirPath() + QString("//BCompare.exe");
+	ShellExecuteA(NULL, "open", appPath.toLocal8Bit().constData(), params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
+	////system("dir");
+	//qDebug() << appPath << endl;
+
+	//qDebug() << params.toLocal8Bit().constData()<< endl;
 }
 
 

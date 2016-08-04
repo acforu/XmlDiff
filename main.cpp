@@ -13,14 +13,14 @@ void myMessageOutput(QtMsgType, const char * msg)
 
 int main(int argc, char *argv[])
 {
-	//AllocConsole(); 
-	//freopen("CONOUT$","w+t",stdout); 
-	//freopen("CONIN$","r+t",stdin); 
+	AllocConsole(); 
+	freopen("CONOUT$","w+t",stdout); 
+	freopen("CONIN$","r+t",stdin); 
 
-	//system("mode con:cols=100 lines=1000");  
+	system("mode con:cols=100 lines=1000");  
 
 	QApplication a(argc, argv);
-	//qInstallMsgHandler(myMessageOutput);
+	qInstallMsgHandler(myMessageOutput);
 
 	//if (argc < 3)
 	//{
