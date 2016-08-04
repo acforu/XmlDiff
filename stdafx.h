@@ -10,9 +10,10 @@
 #include <iostream>
 #include <hash_map>
 #include <sstream>  
-#include "RapidXml\rapidxml_print.hpp"
-#include "RapidXml\rapidxml.hpp"
 #include <set>  
 #include <cmath>  
+#include <algorithm>
 #include "windows.h"
+#include "RapidXml\rapidxml_print.hpp"
+#include "RapidXml\rapidxml.hpp"
 

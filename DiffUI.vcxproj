@@ -110,6 +110,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StringBuff.cpp" />
     <ClCompile Include="XmlDiff.cpp" />
     <ClCompile Include="XmlHelper.cpp" />
   </ItemGroup>
@@ -127,6 +128,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="GeneratedFiles\ui_DiffTextEdit.h" />
     <ClInclude Include="GeneratedFiles\ui_diffui.h" />
+    <ClInclude Include="StringBuff.h" />
     <ClInclude Include="XmlDiff.h" />
     <ClInclude Include="XmlHelper.h" />
     <CustomBuild Include="diffui.h">

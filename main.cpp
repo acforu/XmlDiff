@@ -6,6 +6,7 @@
 #include <QtGlobal>
 #include "XmlHelper.h"
 
+
 void myMessageOutput(QtMsgType, const char * msg)
 {
 	cout << msg << endl;
@@ -13,11 +14,13 @@ void myMessageOutput(QtMsgType, const char * msg)
 
 int main(int argc, char *argv[])
 {
+#if ENABLE_CONSOLE 
 	AllocConsole(); 
 	freopen("CONOUT$","w+t",stdout); 
 	freopen("CONIN$","r+t",stdin); 
 
 	system("mode con:cols=100 lines=1000");  
+#endif
 
 	QApplication a(argc, argv);
 	qInstallMsgHandler(myMessageOutput);
@@ -68,8 +71,8 @@ int main(int argc, char *argv[])
 	{
 		//w.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml");
 		w.showMaximized();
-		w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
-		//w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
+		//w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
+		w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
 	}
 	
 
