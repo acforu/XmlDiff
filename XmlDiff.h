@@ -42,9 +42,12 @@ struct NodeMatchResult
 class XmlDiff
 {
 public:
-	XmlDiff(){}
-	bool Diff( std::string file1, std::string file2,DiffUI* ui);
-
+	XmlDiff(DiffUI* ui)
+	{
+		diffUIView = ui;
+	}
+	bool Diff( std::string file1, std::string file2);
+	void RenderText();
 	void test();
 private:
 	//bool DiffLevel( xml_node<> *nodeL, xml_node<> *nodeR, DiffNodeResult& result);
@@ -76,7 +79,9 @@ private:
 	void GenMatchResult(DiffContext& context, int fromL, int fromR);
 
 private:
-	//std::hash_set<xml_node<>*> matchNodes;
+	DiffUI* diffUIView;
+	std::list<DiffNodeResult> diffResult;
+	XmlFile xmlFileL,xmlFileR;
 };
 
 

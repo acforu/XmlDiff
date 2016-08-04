@@ -12,17 +12,15 @@ typedef  size_t AddressType;
 const int XmlTextBuffSize = 10000000;
 
 
-bool XmlDiff::Diff( std::string file1, std::string file2,DiffUI* ui)
+bool XmlDiff::Diff( std::string file1, std::string file2)
 {
-	XmlFile a,b;
-	if(!a.Parse(file1))
+	if(!xmlFileL.Parse(file1))
 		return false;
 
-	if(!b.Parse(file2))
+	if(!xmlFileR.Parse(file2))
 		return false;
 
-	std::list<DiffNodeResult> diffResult = DiffSibling(a.doc.first_node(),b.doc.first_node());
-	DumpResult(diffResult,ui,0);
+	diffResult = DiffSibling(xmlFileL.doc.first_node(),xmlFileR.doc.first_node());
 
 	//static char buff[XmlTextBuffSize];
 	//print(buff,*a.doc.first_node());
@@ -204,6 +202,9 @@ bool XmlFile::Parse( std::string filename )
 	{
 		return false;
 	}
+
+	doc.clear();
+
 	size_t size = (size_t)file.tellg();
 	file.seekg (0, ios::beg);
 
@@ -1004,6 +1005,11 @@ void XmlDiff::GenMatchResult( DiffContext& context, int fromL, int fromR )
 		context.resL[fromL] = context.resR[fromR] = DiffType_Modify;
 		GenMatchResult(context,fromL+1,fromR+1);
 	}
+}
+
+void XmlDiff::RenderText()
+{
+	DumpResult(diffResult,diffUIView,0);
 }
 
 

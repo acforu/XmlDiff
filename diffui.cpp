@@ -103,7 +103,14 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 
 	curHighLightBeginBlockNum = -1;
 
-	diffInst = new XmlDiff();
+	diffInst = new XmlDiff(this);
+
+	encodeType = EncodeType_UTF8;
+
+
+	connect(ui.actionANSI, SIGNAL(triggered()), this, SLOT(switchANSI()));
+	connect(ui.actionUtf_8, SIGNAL(triggered()), this, SLOT(switchUTF8()));
+
 }
 
 DiffUI::~DiffUI()
@@ -184,7 +191,16 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 to insertText
 	 */
 	 //cursor->beginEditBlock();
-	 cursor->insertText(QString::fromUtf8(text),format);
+
+	 if (encodeType == EncodeType_UTF8)
+	 {
+		cursor->insertText(QString::fromUtf8(text),format);
+	 }
+	 else if (encodeType == EncodeType_ANSI)
+	 {
+		cursor->insertText(QString::fromLocal8Bit(text),format);
+	 }
+
 	 //textEditL->appendPlainText(text);
 	
 	 //cursor->insertText("\n");
@@ -399,7 +415,10 @@ bool DiffUI::Diff( std::string file1, std::string file2)
 	this->file1 = file1.c_str();
 	this->file2 = file2.c_str();
 
-	return diffInst->Diff(file1,file2,this);
+	bool ret = diffInst->Diff(file1,file2);
+	if (ret)
+		diffInst->RenderText();
+	return ret;
 }
 
 void DiffUI::exitApp()
@@ -416,6 +435,32 @@ void DiffUI::switchApp()
 	//qDebug() << appPath << endl;
 
 	//qDebug() << params.toLocal8Bit().constData()<< endl;
+}
+
+void DiffUI::switchUTF8()
+{
+	if(encodeType != EncodeType_UTF8)
+	{
+		encodeType = EncodeType_UTF8;
+		ClearText();
+		diffInst->RenderText();
+	}
+}
+
+void DiffUI::switchANSI()
+{
+	if(encodeType != EncodeType_ANSI)
+	{
+		encodeType = EncodeType_ANSI;
+		ClearText();
+		diffInst->RenderText();
+	}
+}
+
+void DiffUI::ClearText()
+{
+	textEditL->clear();
+	textEditR->clear();
 }
 
 

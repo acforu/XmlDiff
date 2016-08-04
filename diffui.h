@@ -18,6 +18,12 @@ enum TexTSide
 	TextSide_Right,
 };
 
+enum EncodeType
+{
+	EncodeType_UTF8,
+	EncodeType_ANSI,
+};
+
 class XmlDiff;
 
 class DiffUI : public QMainWindow
@@ -43,6 +49,7 @@ public:
 
 
 	bool Diff( std::string file1, std::string file2);
+	void ClearText();
 
 private slots: 
 	void onLScrollContentChanged();
@@ -54,7 +61,10 @@ private slots:
 	void prevDiffLine();
 	void switchApp();
 	void exitApp();
+	void switchUTF8();
+	void switchANSI();
 
+	
 private:
 	Ui::DiffUIClass ui;
     DiffTextEdit *textEditL;
@@ -73,6 +83,7 @@ private:
 	std::set<int> ModifyEndTags;
 	XmlDiff* diffInst;
 	QString file1,file2;
+	EncodeType encodeType;
 };
 
 #endif // DIFFUI_H
