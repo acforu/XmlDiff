@@ -17,6 +17,10 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	textEditR->setLineWrapMode(QPlainTextEdit::NoWrap);
 	textEditR ->setObjectName(QString::fromUtf8("textEditR"));
 
+	QFont font = QFont("Microsoft YaHei UI", 11, QFont::Normal, false);
+	textEditL->setFont(font);
+	textEditR->setFont(font);
+
 	const int tabStop = 4;  // 4 characters
 	QFontMetrics metrics(textEditL->font());
 	textEditL->setTabStopWidth(tabStop * metrics.width(' '));
@@ -110,6 +114,9 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	ui.actionUtf_8->setChecked(true);
 	connect(ui.actionANSI, SIGNAL(triggered()), this, SLOT(switchANSI()));
 	connect(ui.actionUtf_8, SIGNAL(triggered()), this, SLOT(switchUTF8()));
+
+	
+
 }
 
 DiffUI::~DiffUI()
@@ -178,10 +185,10 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 cursor->setBlockFormat(bf);
 
 	 QTextCharFormat format;
-	 format.setFontPointSize(12);
+	 //format.setFontPointSize(12);
 	 if (type == TextColor_Modify)
 	 {
-		//format.setFontWeight(QFont::Bold);
+		format.setFontWeight(QFont::Bold);
 	 }
 	 QString the_text;
 	 /* some computations to get the text to insert and
@@ -342,6 +349,14 @@ void DiffUI::nextDiffLine()
 	{
 		MoveToBlock(*iter);
 	}
+	else
+	{
+		if (!ModifyBegTags.empty())
+		{
+			auto iter = ModifyBegTags.end();
+			MoveToBlock(*(--iter));
+		}
+	}
 }
 
 void DiffUI::ModifyMarkBegin()
@@ -371,6 +386,15 @@ void DiffUI::prevDiffLine()
 	{
 		int target = *(--iter);
 		MoveToBlock(target);
+	}
+	else
+	{
+		if (!ModifyBegTags.empty())
+		{
+			int target = *(ModifyBegTags.begin());
+			MoveToBlock(target);
+		}
+			
 	}
 }
 
@@ -416,7 +440,12 @@ bool DiffUI::Diff( std::string file1, std::string file2)
 
 	bool ret = diffInst->Diff(file1,file2);
 	if (ret)
+	{
 		diffInst->RenderText();
+
+		textEditL->moveCursor(QTextCursor::Start);
+		textEditR->moveCursor(QTextCursor::Start);
+	}
 	return ret;
 }
 
@@ -474,3 +503,4 @@ void UseBeyondCompare( QString fileL, QString fileR )
 	QString appPath = QCoreApplication::applicationDirPath() + QString("//BCompare.exe");
 	ShellExecuteA(NULL, "open", appPath.toLocal8Bit().constData(),params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
 }
+
