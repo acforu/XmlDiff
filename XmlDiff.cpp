@@ -322,8 +322,8 @@ std::list<DiffNodeResult> XmlDiff::DiffNodes( const std::vector<xml_node<>*>& no
 
 bool XmlDiff::CompareNode( xml_node<> *nodeL, xml_node<> *nodeR )
 {
-	static char buffL[XmlTextBuffSize];
-	static char buffR[XmlTextBuffSize];
+	//static char buffL[XmlTextBuffSize];
+	//static char buffR[XmlTextBuffSize];
 
 	//ZeroMemory(buffL,ARRAYSIZE(buffL));
 	//ZeroMemory(buffR,ARRAYSIZE(buffR));
@@ -333,12 +333,19 @@ bool XmlDiff::CompareNode( xml_node<> *nodeL, xml_node<> *nodeR )
 	//	return false;
 	//}
 
-	char *out = print(buffL,*nodeL);
-	*out = '\0';
-	out = print(buffR,*nodeR);
-	*out = '\0';
+	static StringBuff buffL;
+	static StringBuff buffR;
 
-	return strcmp(buffL,buffR)==0;
+	buffL.Clear();
+	print(buffL.Begin(),*nodeL);
+	buffL.AppendNull();
+	//*out = '\0';
+	
+	buffR.Clear();
+	print(buffR.Begin(),*nodeR);
+	buffR.AppendNull();
+
+	return strcmp(buffL.Data(),buffR.Data())==0;
 }
 
 
@@ -429,7 +436,6 @@ void XmlDiff::DumpResultLog( const std::list<DiffNodeResult>& diffNodeList)
 
 void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent )
 {
-	//static char buff[XmlTextBuffSize];
 	static StringBuff strBuff;
 	FOR_EACH(iter,diffNodeList)
 	{
@@ -474,10 +480,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		{
 			strBuff.Clear();
 			strBuff.FillChars('\t',indent);
-			//out = rapidxml::internal::fill_chars(out,indent,'\t');
 			strBuff.AppendChar('<');
-			//*out = char('<'), ++out;
-			//out = rapidxml::internal::copy_chars(iter->node->name(), iter->node->name() + iter->node->name_size(), out);
 			strBuff.AppendStr(iter->node->name(),iter->node->name() + iter->node->name_size());
 
 			bool attrChanged = false;
@@ -485,18 +488,8 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 			{
 				if (attrIt->type == DiffType_Unchanged)
 				{
-					/**out++ = char(' ');
-					out = CopyString(attrIt->name,out);
-					*out++ = char('=');
-					*out++ = char('"');
-					out = CopyString(attrIt->prev,out);
-					*out++ = char('"');*/
 					strBuff.AppendChar(' ');
-					strBuff.AppendStr(attrIt->name);
-					strBuff.AppendChar('=');
-					strBuff.AppendChar('\"');
-					strBuff.AppendStr(attrIt->prev);
-					strBuff.AppendChar('"');
+					FormatAttr(strBuff,attrIt->name,attrIt->prev);
 				}
 				else
 				{
@@ -505,56 +498,32 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 			}
 			if(!attrChanged)
 			{
-				//*out++ = '>';
 				strBuff.AppendChar('>');
 			}
 
-			//*out++ = '\n';
-			//*out++ = '\0';
 			strBuff.AppendChar('\n');
 			strBuff.AppendNull();
 
 			ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
 			ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
-			/*cout << "<" << iter->node->name();
-			rapidxml::internal::print_attributes(std::ostream_iterator<char>(cout), iter->node, 0);
-			cout << ">" << endl;*/
-
 
 			for (auto attrIt = iter->attr.begin(); attrIt!=iter->attr.end(); ++attrIt)
 			{
 				if (attrIt->type == DiffType_Add)
 				{
-					//cout<< attrIt->name << " ";
-					//cout << "add " << attrIt->prev << endl;
+
 					ui->ModifyMarkBegin();
 
 					ui->AddNewLine();
-					//char* out = buff;
-					//out = rapidxml::internal::fill_chars(out,indent,'\t');
-					//out = CopyString(attrIt->name,out);
-					//*out++ = char('=');
-					//*out++ = char('"');
-					//out = CopyString(attrIt->prev,out);
-					//*out++ = char('"');
-					//*out++ = '\n';
-					//*out++ = '\0';
+
 					strBuff.Clear();
 					strBuff.FillChars('\t',indent);
-					strBuff.AppendStr(attrIt->name);
-					strBuff.AppendChar('=');
-					strBuff.AppendChar('\"');
-					strBuff.AppendStr(attrIt->prev);
-					strBuff.AppendChar('\"');
+					FormatAttr(strBuff,attrIt->name,attrIt->prev);
 					strBuff.AppendChar('\n');
 					strBuff.AppendNull();
 
 					ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Modify);
 
-					//int enterCount = GetEnterCount(buff);
-					//out = buff;
-					//out = rapidxml::internal::fill_chars(out,enterCount,'\n');
-					//*out++ = '\0';
 
 					int enterCount = strBuff.Total('\n');
 					strBuff.Clear();
@@ -572,34 +541,15 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					ui->ModifyMarkBegin();
 					ui->AddNewLine();
 
-					//char* out = buff;
-					//
-					//out = rapidxml::internal::fill_chars(out,indent,'\t');
-					//out = CopyString(attrIt->name,out);
-					//*out++ = char('=');
-					//*out++ = char('"');
-					//out = CopyString(attrIt->prev,out);
-					//*out++ = char('"');
-					//*out++ = '\n';
-					//*out++ = '\0';
 					strBuff.Clear();
 					strBuff.FillChars('\t',indent);
-					strBuff.AppendStr(attrIt->name);
-					strBuff.AppendChar('=');
-					strBuff.AppendChar('\"');
-					strBuff.AppendStr(attrIt->prev);
-					strBuff.AppendChar('\"');
+					FormatAttr(strBuff,attrIt->name,attrIt->prev);
 					strBuff.AppendChar('\n');
 					strBuff.AppendNull();
 
 					ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Modify);
 
-					//int enterCount = GetEnterCount(buff);
-					//ZeroMemory(buff,ARRAYSIZE(buff));
 					int enterCount = strBuff.Total('\n');
-					//out = buff;
-					//out = rapidxml::internal::fill_chars(out,enterCount,'\n');
-					//*out++ = '\0';
 					strBuff.Clear();
 					strBuff.FillChars('\n',enterCount);
 					strBuff.AppendNull();
@@ -612,61 +562,27 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				{
 					ui->ModifyMarkBegin();
 					ui->AddNewLine();
-					/*out = buff;
-					
-					out = rapidxml::internal::fill_chars(out,indent,'\t');
-					out = CopyString(attrIt->name,out);
-					*out++ = char('=');
-					*out++ = char('"');
-					out = CopyString(attrIt->prev,out);
-					*out++ = char('"');
-					*out++ = '\n';
-					*out++ = '\0';*/
 
 					strBuff.Clear();
 					strBuff.FillChars('\t',indent);
-					strBuff.AppendStr(attrIt->name);
-					strBuff.AppendChar('=');
-					strBuff.AppendChar('"');
-					strBuff.AppendStr(attrIt->prev);
-					strBuff.AppendChar('\"');
+					FormatAttr(strBuff,attrIt->name,attrIt->prev);
 					strBuff.AppendChar('\n');
 					strBuff.AppendNull();
 
 					ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Modify);
-					//int leftEnterCount = GetEnterCount(buff);
 					int leftEnterCount = strBuff.Total('\n');
-
-
-					/*out = buff;
-					out = rapidxml::internal::fill_chars(out,indent,'\t');
-					out = CopyString(attrIt->name,out);
-					*out++ = char('=');
-					*out++ = char('"');
-					out = CopyString(attrIt->curr,out);
-					*out++ = char('"');
-					*out++ = '\n';
-					*out++ = '\0';*/
 
 					strBuff.Clear();
 					strBuff.FillChars('\t',indent);
-					strBuff.AppendStr(attrIt->name);
-					strBuff.AppendChar('=');
-					strBuff.AppendChar('"');
-					strBuff.AppendStr(attrIt->curr);
-					strBuff.AppendChar('\"');
+					FormatAttr(strBuff,attrIt->name,attrIt->curr);
 					strBuff.AppendChar('\n');
 					strBuff.AppendNull();
 
 					ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Modify);
 					int RightEnterCount = strBuff.Total('\n');
 
-					//ZeroMemory(buff,ARRAYSIZE(buff));
 					if (leftEnterCount < RightEnterCount)
 					{
-						//out = buff;
-						//out = rapidxml::internal::fill_chars(out,RightEnterCount-leftEnterCount,'\n');
-						//*out++ = '\0';
 						strBuff.Clear();
 						strBuff.FillChars('\n',RightEnterCount-leftEnterCount);
 						strBuff.AppendNull();
@@ -674,9 +590,6 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 					}
 					else if(leftEnterCount > RightEnterCount)
 					{
-						//out = buff;
-						//out = rapidxml::internal::fill_chars(out,leftEnterCount-RightEnterCount,'\n');
-						//*out++ = '\0';
 						strBuff.Clear();
 						strBuff.FillChars('\n',leftEnterCount-RightEnterCount);
 						strBuff.AppendNull();
@@ -690,12 +603,6 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 
 			if(attrChanged)
 			{
-				/*char* out = buff;
-				out = rapidxml::internal::fill_chars(out,indent,'\t');
-				*out++ = '>';
-				*out++ = '\n';
-				*out++ = '\0';*/
-
 				strBuff.Clear();
 				strBuff.FillChars('\t',indent);
 				strBuff.AppendChar('>');
@@ -708,15 +615,6 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 
 
 			DumpResult(iter->child,ui,indent+1);
-			//ZeroMemory(buff,ARRAYSIZE(buff));
-		/*	out = buff;
-			out = rapidxml::internal::fill_chars(out,indent,'\t');
-			*out = char('<'), ++out;
-			*out = char('\\'), ++out;
-			out = rapidxml::internal::copy_chars(iter->node->name(), iter->node->name() + iter->node->name_size(), out);
-			*out = char('>'), ++out;
-			*out++ = '\n';
-			*out++ = 0;*/
 
 			strBuff.Clear();
 			strBuff.FillChars('\t',indent);
@@ -730,7 +628,6 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 			ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
 			ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
 		}
-		//cout <<  *iter->node << endl;
 	}
 }
 
@@ -843,22 +740,27 @@ std::list<DiffNodeResult> XmlDiff::DiffNodesAcceptModify( const std::vector<xml_
 	//}
 	//return ret;
 
-	static char buff[XmlTextBuffSize];		
+	//static char buff[XmlTextBuffSize];		
+	static StringBuff buff;
 
 	vector<string> stringVecL,stringVecR;
 	FOR_EACH(iter,nodeLVector)
 	{
 		//ZeroMemory(buff,ARRAYSIZE(buff));
-		char * out = print(buff,**iter,print_attributes_separate_by_enter);
-		*out = '\0';
-		stringVecL.push_back(buff);
+		buff.Clear();
+		print(buff.Begin(),**iter,print_attributes_separate_by_enter);
+		buff.AppendNull();
+		//*out = '\0';
+		stringVecL.push_back(buff.Data());
 	}
 	FOR_EACH(iter,nodeRVector)
 	{
 		//ZeroMemory(buff,ARRAYSIZE(buff));
-		char* out = print(buff,**iter,print_attributes_separate_by_enter);
-		*out = '\0';
-		stringVecR.push_back(buff);
+		buff.Clear();
+		print(buff.Begin(),**iter,print_attributes_separate_by_enter);
+		buff.AppendNull();
+		//*out = '\0';
+		stringVecR.push_back(buff.Data());
 	}
 	
 	std::list<DiffNodeResult> ret;
@@ -1074,6 +976,15 @@ void XmlDiff::RenderText()
 	diffUIView->BeginEditBlock();
 	DumpResult(diffResult,diffUIView,0);
 	diffUIView->EndEditBlock();
+}
+
+void XmlDiff::FormatAttr( StringBuff& buff,const char* name, const char* value )
+{
+	buff.AppendStr(name);
+	buff.AppendChar('=');
+	buff.AppendChar('\"');
+	buff.AppendStr(value);
+	buff.AppendChar('"');
 }
 
 

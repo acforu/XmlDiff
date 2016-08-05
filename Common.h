@@ -6,7 +6,7 @@
 
 #define SIMPLIFY_STRING_DIST_CALC 0
 #define ENABLE_LOG 0
-#define ENABLE_CONSOLE 0
+#define ENABLE_CONSOLE 1
 
 #define FOR_EACH(iter,container) for (auto iter = container.begin(); iter!=container.end(); ++iter)
 

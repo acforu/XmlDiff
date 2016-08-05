@@ -12,6 +12,8 @@
 using namespace rapidxml;
 using namespace std;
 
+class StringBuff;
+
 class XmlFile
 {
 public:
@@ -78,6 +80,7 @@ private:
 	int MatchNode( DiffContext& context, int fromL, int fromR );
 	void GenMatchResult(DiffContext& context, int fromL, int fromR);
 
+	void FormatAttr(StringBuff& buff,const char* name, const char* value);
 private:
 	DiffUI* diffUIView;
 	std::list<DiffNodeResult> diffResult;

@@ -71,8 +71,8 @@ int main(int argc, char *argv[])
 	{
 		//w.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml");
 		w.showMaximized();
-		//w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
-		w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
+		w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
+		//w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
 	}
 	
 
