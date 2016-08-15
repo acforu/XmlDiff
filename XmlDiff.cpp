@@ -436,28 +436,27 @@ void XmlDiff::DumpResultLog( const std::list<DiffNodeResult>& diffNodeList)
 
 void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent )
 {
-	static StringBuff strBuff;
+	//static StringBuff strBuff;
 	FOR_EACH(iter,diffNodeList)
 	{
 		if (iter->type == DiffType_Unchanged)
 		{
+			StringBuff strBuff;
 			rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
-			strBuff.AppendNull();
-			ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
-			ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
+			ui->AppendText(strBuff,TextSide_Left,TextColor_Normal);
+			ui->AppendText(strBuff,TextSide_Right,TextColor_Normal);
 		}
 		else if (iter->type == DiffType_Add)
 		{
 			ui->ModifyMarkBegin();
 			{
+				StringBuff strBuff;
 				rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
-				strBuff.AppendNull();
-				ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Modify);
+				ui->AppendText(strBuff,TextSide_Right,TextColor_Modify);
 				int enterCount = strBuff.Total('\n');
 				strBuff.Clear();
 				strBuff.FillChars('\n',enterCount);
-				strBuff.AppendNull();
-				ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
+				ui->AppendText(strBuff,TextSide_Left,TextColor_Normal);
 			}
 			ui->ModifyMarkEnd();
 		}
@@ -465,72 +464,68 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		{
 			ui->ModifyMarkBegin();
 			{
+				StringBuff strBuff;
 				rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
-				strBuff.AppendNull();
-				ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Modify);
+				ui->AppendText(strBuff,TextSide_Left,TextColor_Modify);
 				int enterCount = strBuff.Total('\n');
 				strBuff.Clear();
 				strBuff.FillChars('\n',enterCount);
-				strBuff.AppendNull();
-				ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
+				ui->AppendText(strBuff,TextSide_Right,TextColor_Normal);
 			}
 			ui->ModifyMarkEnd();
 		}
 		else
 		{
-			strBuff.Clear();
-			strBuff.FillChars('\t',indent);
-			strBuff.AppendChar('<');
-			strBuff.AppendStr(iter->node->name(),iter->node->name() + iter->node->name_size());
+			{
+				StringBuff strBuff;
+				strBuff.FillChars('\t',indent);
+				strBuff.AppendChar('<');
+				strBuff.AppendStr(iter->node->name(),iter->node->name() + iter->node->name_size());
+				ui->AppendText(strBuff,TextSide_Left,TextColor_Normal);
+				ui->AppendText(strBuff,TextSide_Right,TextColor_Normal);
+			}
 
 			bool attrChanged = false;
-			FOR_EACH(attrIt,iter->attr)
+			DiffType prevDiffType = DiffType_Unchanged;
+			for (auto attrIt = iter->attr.begin(); attrIt!=iter->attr.end(); ++attrIt)
 			{
 				if (attrIt->type == DiffType_Unchanged)
 				{
+					StringBuff strBuff;
 					strBuff.AppendChar(' ');
 					FormatAttr(strBuff,attrIt->name,attrIt->prev);
+					ui->AppendText(strBuff,TextSide_Left,TextColor_Normal);
+					ui->AppendText(strBuff,TextSide_Right,TextColor_Normal);
+
 				}
 				else
 				{
 					attrChanged = true;
+					if (prevDiffType == DiffType_Unchanged)
+					{
+						ui->AppendNewLine();
+					}
 				}
-			}
-			if(!attrChanged)
-			{
-				strBuff.AppendChar('>');
-			}
 
-			strBuff.AppendChar('\n');
-			strBuff.AppendNull();
-
-			ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
-			ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
-
-			for (auto attrIt = iter->attr.begin(); attrIt!=iter->attr.end(); ++attrIt)
-			{
 				if (attrIt->type == DiffType_Add)
 				{
 
 					ui->ModifyMarkBegin();
 
-					ui->AddNewLine();
 
-					strBuff.Clear();
+					StringBuff strBuff;
 					strBuff.FillChars('\t',indent);
 					FormatAttr(strBuff,attrIt->name,attrIt->prev);
 					strBuff.AppendChar('\n');
-					strBuff.AppendNull();
 
-					ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Modify);
+					ui->AppendText(strBuff,TextSide_Right,TextColor_Modify);
 
 
 					int enterCount = strBuff.Total('\n');
 					strBuff.Clear();
 					strBuff.FillChars('\n',enterCount);
-					strBuff.AppendNull();
 
-					ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
+					ui->AppendText(strBuff,TextSide_Left,TextColor_Normal);
 
 					ui->ModifyMarkEnd();
 
@@ -539,21 +534,18 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				else if (attrIt->type == DiffType_Del)
 				{
 					ui->ModifyMarkBegin();
-					ui->AddNewLine();
 
-					strBuff.Clear();
+					StringBuff strBuff;
 					strBuff.FillChars('\t',indent);
 					FormatAttr(strBuff,attrIt->name,attrIt->prev);
 					strBuff.AppendChar('\n');
-					strBuff.AppendNull();
 
-					ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Modify);
+					ui->AppendText(strBuff,TextSide_Left,TextColor_Modify);
 
 					int enterCount = strBuff.Total('\n');
 					strBuff.Clear();
 					strBuff.FillChars('\n',enterCount);
-					strBuff.AppendNull();
-					ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
+					ui->AppendText(strBuff,TextSide_Right,TextColor_Normal);
 
 					ui->ModifyMarkEnd();
 
@@ -561,57 +553,67 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				else if (attrIt->type == DiffType_Modify)
 				{
 					ui->ModifyMarkBegin();
-					ui->AddNewLine();
 
-					strBuff.Clear();
+					StringBuff strBuff;
 					strBuff.FillChars('\t',indent);
 					FormatAttr(strBuff,attrIt->name,attrIt->prev);
 					strBuff.AppendChar('\n');
-					strBuff.AppendNull();
 
-					ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Modify);
+					ui->AppendText(strBuff,TextSide_Left,TextColor_Modify);
 					int leftEnterCount = strBuff.Total('\n');
 
 					strBuff.Clear();
 					strBuff.FillChars('\t',indent);
 					FormatAttr(strBuff,attrIt->name,attrIt->curr);
 					strBuff.AppendChar('\n');
-					strBuff.AppendNull();
 
-					ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Modify);
+					ui->AppendText(strBuff,TextSide_Right,TextColor_Modify);
 					int RightEnterCount = strBuff.Total('\n');
 
 					if (leftEnterCount < RightEnterCount)
 					{
 						strBuff.Clear();
 						strBuff.FillChars('\n',RightEnterCount-leftEnterCount);
-						strBuff.AppendNull();
-						ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Modify);
+						ui->AppendText(strBuff,TextSide_Left,TextColor_Modify);
 					}
 					else if(leftEnterCount > RightEnterCount)
 					{
 						strBuff.Clear();
 						strBuff.FillChars('\n',leftEnterCount-RightEnterCount);
-						strBuff.AppendNull();
-						ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Modify);
+						ui->AppendText(strBuff,TextSide_Right,TextColor_Modify);
 					}
 
 					ui->ModifyMarkEnd();
 
 				}
+
+				prevDiffType = attrIt->type;
+
 			}
+
 
 			if(attrChanged)
 			{
-				strBuff.Clear();
-				strBuff.FillChars('\t',indent);
-				strBuff.AppendChar('>');
-				strBuff.AppendChar('\n');
-				strBuff.AppendNull();
+				//StringBuff strBuff;
+				//strBuff.AppendChar('\n');
+				//strBuff.AppendNull();
 
-				ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
-				ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
+				//ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
+				//ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
+
+				ui->AppendNewLine();
 			}
+
+			StringBuff strBuff;
+			if(attrChanged)
+			{
+				strBuff.FillChars('\t',indent);
+			}
+			strBuff.AppendChar('>');
+			strBuff.AppendChar('\n');
+
+			ui->AppendText(strBuff,TextSide_Left,TextColor_Normal);
+			ui->AppendText(strBuff,TextSide_Right,TextColor_Normal);
 
 
 			DumpResult(iter->child,ui,indent+1);
@@ -623,10 +625,10 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 			strBuff.AppendStr(iter->node->name(), iter->node->name() + iter->node->name_size());
 			strBuff.AppendChar('>');
 			strBuff.AppendChar('\n');
-			strBuff.AppendNull();
 
-			ui->AppendText(strBuff.Data(),TextSide_Left,TextColor_Normal);
-			ui->AppendText(strBuff.Data(),TextSide_Right,TextColor_Normal);
+			ui->AppendText(strBuff,TextSide_Left,TextColor_Normal);
+			ui->AppendText(strBuff,TextSide_Right,TextColor_Normal);
+		
 		}
 	}
 }

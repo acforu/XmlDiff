@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "diffui.h"
 #include "XmlDiff.h"
+#include "StringBuff.h"
 //#pragma optimize("",off)
 
 DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
@@ -221,6 +222,12 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 //cursor.movePosition(QTextCursor::Down);
 }
 
+void DiffUI::AppendText( StringBuff& buff,TexTSide side, TextFormatType type )
+{
+	buff.AppendNull();
+	AppendText(buff.Data(),side,type);
+}
+
 void DiffUI::BeginEditBlock()
 {
 	 cursorL->beginEditBlock();
@@ -398,10 +405,10 @@ void DiffUI::prevDiffLine()
 	}
 }
 
-void DiffUI::AddNewLine()
+void DiffUI::AppendNewLine()
 {
-	//AppendText("\n",TextSide_Left,TextColor_Normal);
-	//AppendText("\n",TextSide_Right,TextColor_Normal);
+	AppendText("\n",TextSide_Left,TextColor_Normal);
+	AppendText("\n",TextSide_Right,TextColor_Normal);
 }
 
 //void DiffUI::HighLightBlocks( int beg,int end )

@@ -3,6 +3,7 @@
 class StringBuff
 {
 public:
+	StringBuff();
 	void AppendChar(char c);
 	void AppendStr(const char* str);
 	void AppendStr(const char* beg, const char* end);

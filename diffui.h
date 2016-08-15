@@ -29,6 +29,7 @@ void UseBeyondCompare( QString fileL, QString fileR );
 
 
 class XmlDiff;
+class StringBuff;
 
 class DiffUI : public QMainWindow
 {
@@ -44,11 +45,12 @@ public:
 	void BeginEditBlock();
 	void EndEditBlock();
 	void AppendText(const char* text,TexTSide side, TextFormatType type);
+	void AppendText(StringBuff& buff,TexTSide side, TextFormatType type);
 	int GetTotalBlocks();
 	void MoveToBlock(int block);
 	void ModifyMarkBegin();
 	void ModifyMarkEnd();
-	void AddNewLine();
+	void AppendNewLine();
 	void HighLightDiffBlocks(int startblockNum);
 
 

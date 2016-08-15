@@ -45,3 +45,8 @@ int StringBuff::Total( char c )
 	return count(buff.begin(),buff.end(),c);
 }
 
+StringBuff::StringBuff()
+{
+	Clear();
+}
+
