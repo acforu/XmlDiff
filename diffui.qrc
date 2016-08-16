@@ -4,5 +4,6 @@
       <file alias="close.png">resource/close-96.png</file>
       <file alias="left.png">resource/Left-96.png</file>
       <file alias="right.png">resource/Right-96.png</file>
+      <file alias="hide.png">resource/boss-key-icon.png</file>     
     </qresource>
 </RCC>

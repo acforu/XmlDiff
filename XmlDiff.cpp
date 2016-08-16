@@ -434,16 +434,19 @@ void XmlDiff::DumpResultLog( const std::list<DiffNodeResult>& diffNodeList)
 
 
 
-void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent )
+void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent ,bool parentChanged )
 {
 	//static StringBuff strBuff;
 	FOR_EACH(iter,diffNodeList)
 	{
 		if (iter->type == DiffType_Unchanged)
 		{
-			StringBuff strBuff;
-			rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
-			ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
+			if (parentChanged || !HideUnchangedNode())
+			{
+				StringBuff strBuff;
+				rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
+				ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
+			}
 		}
 		else if (iter->type == DiffType_Add)
 		{
@@ -475,7 +478,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		}
 		else
 		{
-			DumpNodeAttr(iter,ui,indent);
+			DumpNodeAttr(iter,ui,indent,parentChanged);
 		}
 	}
 }
@@ -836,7 +839,7 @@ void XmlDiff::FormatAttr( StringBuff& buff,const char* name, const char* value )
 	buff.AppendChar('"');
 }
 
-void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter,DiffUI* ui,int indent )
+void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter,DiffUI* ui,int indent,bool parentChanged)
 {
 	{
 		StringBuff strBuff;
@@ -866,6 +869,7 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 		}
 		else
 		{
+			parentChanged = true;
 			if (prevDiffType == DiffType_Unchanged)
 			{
 				ui->AppendNewLine();
@@ -899,7 +903,7 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 	ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
 
 
-	DumpResult(iter->child,ui,indent+2);
+	DumpResult(iter->child,ui,indent+2,parentChanged);
 
 	strBuff.Clear();
 	strBuff.Indent(indent);

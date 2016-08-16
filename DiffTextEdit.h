@@ -23,6 +23,8 @@ public:
 
 	int DiffEndBlockNum() const { return diffEndBlockNum; }
 	void DiffEndBlockNum(int val) { diffEndBlockNum = val; }
+
+	void Reset();
 protected:
 	void paintEvent(QPaintEvent *event);
 	//void changeEvent(QEvent *e);

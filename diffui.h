@@ -49,8 +49,11 @@ public:
 	void AppendText(StringBuff& buff,TexTSide side, TextFormatType type);
 	int GetTotalBlocks();
 	void MoveToBlock(int block);
+
 	void ModifyMarkBegin();
 	void ModifyMarkEnd();
+	void ClearModifyMark();
+
 	void AppendNewLine();
 	void HighLightDiffBlocks(int startblockNum);
 
@@ -71,6 +74,7 @@ private slots:
 	void exitApp();
 	void switchUTF8();
 	void switchANSI();
+	void hideUnchanged();
 
 	
 private:

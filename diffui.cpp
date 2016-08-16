@@ -97,9 +97,15 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	QAction* switchAppAction = new QAction(QIcon(":/bc.png"),"beyond compare",this); 
 	connect(switchAppAction, SIGNAL(triggered()), this, SLOT(switchApp()));
 
+
+	QAction* switchHideUnchanged = new QAction(QIcon(":/hide.png"),"Hide Unchanged",this); 
+	connect(switchHideUnchanged, SIGNAL(triggered()), this, SLOT(hideUnchanged()));
+	switchHideUnchanged->setCheckable(true);
+
 	ui.mainToolBar->addAction(prevModifyAction);
 	ui.mainToolBar->addAction(nextModifyAction);
 	ui.mainToolBar->addAction(switchAppAction);
+	ui.mainToolBar->addAction(switchHideUnchanged);
 	ui.mainToolBar->addAction(exitAction);
 
 	ui.mainToolBar->setFixedHeight(48);
@@ -501,13 +507,33 @@ void DiffUI::switchANSI()
 
 void DiffUI::ClearText()
 {
+	ClearModifyMark();
+
 	textEditL->clear();
 	textEditR->clear();
+
+	textEditL->Reset();
+	textEditR->Reset();
+
+	curHighLightBeginBlockNum = -1;
 }
 
 void DiffUI::UseBeyondCompare()
 {
 	::UseBeyondCompare(file1,file2);
+}
+
+void DiffUI::hideUnchanged()
+{
+	diffInst->HideUnchangedNode(!diffInst->HideUnchangedNode());
+	ClearText();
+	diffInst->RenderText();
+}
+
+void DiffUI::ClearModifyMark()
+{
+	ModifyBegTags.clear();
+	ModifyEndTags.clear();
 }
 
 void UseBeyondCompare( QString fileL, QString fileR )

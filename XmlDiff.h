@@ -47,10 +47,15 @@ public:
 	XmlDiff(DiffUI* ui)
 	{
 		diffUIView = ui;
+		hideUnchangedNode = false;
 	}
 	bool Diff( std::string file1, std::string file2);
 	void RenderText();
 	void test();
+
+	bool HideUnchangedNode() const { return hideUnchangedNode; }
+	void HideUnchangedNode(bool val) { hideUnchangedNode = val; }
+
 private:
 	//bool DiffLevel( xml_node<> *nodeL, xml_node<> *nodeR, DiffNodeResult& result);
 	//bool MatchNode( xml_node<> *nodeL, xml_node<> *nodeR);
@@ -69,8 +74,8 @@ private:
 	std::list<DiffNodeResult> DiffNodesAcceptModify( const std::vector<xml_node<>*>& nodeLVector, const std::vector<xml_node<>*>& nodeRVector);
 
 	const char* GetDiffTypeString(DiffType type);
-	void DumpResult(const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent);
-	void DumpNodeAttr(const std::list<DiffNodeResult>::const_iterator iter,DiffUI* ui,int indent);
+	void DumpResult(const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent,bool parentChanged = false);
+	void DumpNodeAttr(const std::list<DiffNodeResult>::const_iterator iter,DiffUI* ui,int indent,bool parentChanged);
 	void DumpResultLog(const std::list<DiffNodeResult>& diffNodeList);
 	size_t NodeStringDistance(xml_node<> *nodeL, xml_node<> *nodeR);
 
@@ -90,6 +95,8 @@ private:
 	DiffUI* diffUIView;
 	std::list<DiffNodeResult> diffResult;
 	XmlFile xmlFileL,xmlFileR;
+
+	bool hideUnchangedNode;
 };
 
 

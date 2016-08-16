@@ -10,7 +10,7 @@ DiffTextEdit::DiffTextEdit(QWidget *parent)
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 	timer->start(1000);
 
-	diffBeginBlockNum = diffEndBlockNum = -1;
+	Reset();
 }
 
 DiffTextEdit::~DiffTextEdit()
@@ -98,6 +98,11 @@ QTextBlock DiffTextEdit::lastBlockInViewport()
 	}
 
 	return document()->findBlockByNumber(ret);
+}
+
+void DiffTextEdit::Reset()
+{
+	diffBeginBlockNum = diffEndBlockNum = -1;
 }
 
 //void DiffTextEdit::changeEvent( QEvent *e )
