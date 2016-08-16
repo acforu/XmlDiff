@@ -135,6 +135,12 @@ void DiffUI::resizeEvent( QResizeEvent *event )
 
 void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 {
+	if (side == TextSide_Both)
+	{
+		AppendText(text,TextSide_Left,type);
+		AppendText(text,TextSide_Right,type);
+		return;
+	}
 	//if (side == TextSide_Left)
 	//{
 	//	qDebug() << "block prev " << GetTotalBlocks() << endl;

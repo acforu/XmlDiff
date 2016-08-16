@@ -70,6 +70,7 @@ private:
 
 	const char* GetDiffTypeString(DiffType type);
 	void DumpResult(const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent);
+	void DumpNodeAttr(const std::list<DiffNodeResult>::const_iterator iter,DiffUI* ui,int indent);
 	void DumpResultLog(const std::list<DiffNodeResult>& diffNodeList);
 	size_t NodeStringDistance(xml_node<> *nodeL, xml_node<> *nodeR);
 
@@ -81,6 +82,10 @@ private:
 	void GenMatchResult(DiffContext& context, int fromL, int fromR);
 
 	void FormatAttr(StringBuff& buff,const char* name, const char* value);
+
+	void HandleAddAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent);
+	void HandleDelAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent);
+	void HandleModifyAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent);
 private:
 	DiffUI* diffUIView;
 	std::list<DiffNodeResult> diffResult;

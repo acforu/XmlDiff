@@ -50,3 +50,13 @@ StringBuff::StringBuff()
 	Clear();
 }
 
+void StringBuff::Indent( int indent )
+{
+	FillChars('\t',indent);
+}
+
+void StringBuff::Enter()
+{
+	AppendChar('\n');
+}
+

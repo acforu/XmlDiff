@@ -10,6 +10,8 @@ public:
 	void FillChars(char c, int count);
 	void Clear();
 	void AppendNull();
+	void Indent(int indent);
+	void Enter();
 	int Total(char c);
 
 	const char* Data()

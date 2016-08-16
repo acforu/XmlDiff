@@ -16,6 +16,7 @@ enum TexTSide
 {
 	TextSide_Left,
 	TextSide_Right,
+	TextSide_Both,
 };
 
 enum EncodeType
