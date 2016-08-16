@@ -60,3 +60,13 @@ void StringBuff::Enter()
 	AppendChar('\n');
 }
 
+int StringBuff::ContentLength()
+{
+	size_t i = 0;
+	for ( ;i < buff.size() && buff[i]!=0; ++i)
+	{
+		;
+	}
+	return i;
+}
+

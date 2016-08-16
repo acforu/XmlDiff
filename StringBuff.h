@@ -13,6 +13,7 @@ public:
 	void Indent(int indent);
 	void Enter();
 	int Total(char c);
+	int ContentLength();
 
 	const char* Data()
 	{

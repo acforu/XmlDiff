@@ -18,7 +18,14 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	textEditR->setLineWrapMode(QPlainTextEdit::NoWrap);
 	textEditR ->setObjectName(QString::fromUtf8("textEditR"));
 
-	QFont font = QFont("Microsoft YaHei UI", 11, QFont::Normal, false);
+	//QFont font = QFont("Microsoft YaHei UI", 11, QFont::Normal, false);
+	//QFont font = QFont("Courier New", 11, QFont::Normal, false);
+	//textEditL->setFont(font);
+	//textEditR->setFont(font);
+
+	//QFont font = QFont("WenQuanYi Zen Hei Mono", 11, QFont::Normal, false);
+	QFont font = textEditL->font();
+	font.setPointSize(11);
 	textEditL->setFont(font);
 	textEditR->setFont(font);
 

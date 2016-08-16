@@ -11,7 +11,9 @@ typedef  size_t AddressType;
 
 
 const int XmlTextBuffSize = 10000000;
-
+const int IndentInc = 1;
+const int ColAlignCount = 20;
+const int MaxAttrLineCol = 80;
 
 bool XmlDiff::Diff( std::string file1, std::string file2)
 {
@@ -862,7 +864,20 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 		ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
 	}
 
+
+	bool attrChanged = false;
+	for (auto attrIt = iter->attr.begin(); attrIt!=iter->attr.end(); ++attrIt)
+	{
+		if (attrIt->type != DiffType_Unchanged)
+		{
+			attrChanged = true;
+			parentChanged = true;
+			break;
+		}
+	}
+
 	DiffType prevDiffType = DiffType_Unchanged;
+	int attrLineCol = 0;
 	for (auto attrIt = iter->attr.begin(); attrIt!=iter->attr.end(); ++attrIt)
 	{
 		if (attrIt->type == DiffType_Unchanged)
@@ -870,7 +885,24 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 			StringBuff strBuff;
 			if (prevDiffType == DiffType_Unchanged)
 			{
-				strBuff.AppendChar(' ');
+				if (attrChanged)
+				{
+					if (attrLineCol > MaxAttrLineCol)
+					{
+						ui->AppendNewLine();
+						strBuff.Indent(indent);
+						attrLineCol = 0;
+					}
+					else
+					{
+						int pad =  (ColAlignCount - attrLineCol % ColAlignCount );
+						strBuff.FillChars(' ',pad);
+					}
+				}
+				else
+				{
+					strBuff.AppendChar(' ');
+				}
 			}
 			else
 			{
@@ -879,14 +911,17 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 			FormatAttr(strBuff,attrIt->name,attrIt->prev);
 			ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
 
+			attrLineCol += strBuff.ContentLength();
+
 		}
 		else
 		{
-			parentChanged = true;
 			if (prevDiffType == DiffType_Unchanged)
 			{
 				ui->AppendNewLine();
 			}
+
+			attrLineCol = 0;
 		}
 
 		if (attrIt->type == DiffType_Add)
@@ -916,7 +951,7 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 	ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
 
 
-	DumpResult(iter->child,ui,indent+2,parentChanged);
+	DumpResult(iter->child,ui,indent+IndentInc ,parentChanged);
 
 	strBuff.Clear();
 	strBuff.Indent(indent);
