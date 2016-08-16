@@ -18,14 +18,13 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	textEditR->setLineWrapMode(QPlainTextEdit::NoWrap);
 	textEditR ->setObjectName(QString::fromUtf8("textEditR"));
 
-	//QFont font = QFont("Microsoft YaHei UI", 11, QFont::Normal, false);
+	QFont font = QFont("Microsoft YaHei UI", 11, QFont::Normal, false);
 	//QFont font = QFont("Courier New", 11, QFont::Normal, false);
 	//textEditL->setFont(font);
 	//textEditR->setFont(font);
 
-	//QFont font = QFont("WenQuanYi Zen Hei Mono", 11, QFont::Normal, false);
-	QFont font = textEditL->font();
-	font.setPointSize(11);
+	//QFont font = textEditL->font();
+	//font.setPointSize(11);
 	textEditL->setFont(font);
 	textEditR->setFont(font);
 
@@ -345,7 +344,7 @@ void DiffUI::MoveToBlock( int block )
 	{
 		textEditL->moveCursor(QTextCursor::End);
 		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
-		cursorL.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount/2);
+		cursorL.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.777);
 
 		textEditL->setTextCursor(cursorL);
 	}
@@ -354,7 +353,7 @@ void DiffUI::MoveToBlock( int block )
 	{
 		textEditR->moveCursor(QTextCursor::End);
 		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
-		cursorR.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount/2);
+		cursorR.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.777);
 
 		textEditR->setTextCursor(cursorR);
 	}

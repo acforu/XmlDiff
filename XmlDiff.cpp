@@ -14,6 +14,7 @@ const int XmlTextBuffSize = 10000000;
 const int IndentInc = 1;
 const int ColAlignCount = 20;
 const int MaxAttrLineCol = 80;
+const int AttrMargin = 4;
 
 bool XmlDiff::Diff( std::string file1, std::string file2)
 {
@@ -895,8 +896,8 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 					}
 					else
 					{
-						int pad =  (ColAlignCount - attrLineCol % ColAlignCount );
-						strBuff.FillChars(' ',pad);
+						//int pad =  (ColAlignCount - attrLineCol % ColAlignCount );
+						strBuff.FillChars(' ',AttrMargin);
 					}
 				}
 				else
