@@ -212,6 +212,19 @@ bool XmlFile::Parse( std::string filename )
 	char* memblock = new char [size+1];
 	memset(memblock,0,size+1);
 	file.read (memblock, size);
+
+	char* dest = memblock;
+	char* src = memblock;
+	while(*src)
+	{
+		if (*src == '\r')
+			++src;
+		else
+			*dest++ = *src++;
+	}
+
+	*dest = 0;
+
 	char * filecontent = doc.allocate_string(memblock,size+1);
 	delete[] memblock;
 
