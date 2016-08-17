@@ -33,8 +33,10 @@ int main(int argc, char *argv[])
 
 	//qDebug() << "StringDistSift4" << StringDistSift4("ABCDEFG","ABCD1E1F1") <<endl;
 
-
+#ifndef RETAIL
 	Profiler profile;
+#endif // RETAIL
+
 
 	DiffUI w;
 
@@ -69,17 +71,20 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
+#ifndef RETAIL
 		w.showMaximized();
 		//w.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml");
 		//w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
 		//w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
 		w.Diff(".\\test_case\\quest1\\a.xml",".\\test_case\\quest1\\b.xml");
+#endif
 	}
 	
 
 
-
+#ifndef RETAIL
 	profile.Stop();
+#endif
 
 	return a.exec();
 	//FreeConsole();
