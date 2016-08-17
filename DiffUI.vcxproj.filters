@@ -36,6 +36,9 @@
     <Filter Include="XmlDiff">
       <UniqueIdentifier>{f53dfcb9-749f-457b-818e-0c5041c50ab3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated Files\Retail">
+      <UniqueIdentifier>{b8e1fbf0-e58a-4507-b16a-c6782a8d074f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -73,6 +76,12 @@
     </ClCompile>
     <ClCompile Include="StringBuff.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Retail\moc_DiffTextEdit.cpp">
+      <Filter>Generated Files\Retail</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Retail\moc_diffui.cpp">
+      <Filter>Generated Files\Retail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

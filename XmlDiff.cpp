@@ -883,37 +883,7 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 	{
 		if (attrIt->type == DiffType_Unchanged)
 		{
-			StringBuff strBuff;
-			if (prevDiffType == DiffType_Unchanged)
-			{
-				if (attrChanged)
-				{
-					if (attrLineCol > MaxAttrLineCol)
-					{
-						ui->AppendNewLine();
-						strBuff.Indent(indent);
-						attrLineCol = 0;
-					}
-					else
-					{
-						//int pad =  (ColAlignCount - attrLineCol % ColAlignCount );
-						strBuff.FillChars(' ',AttrMargin);
-					}
-				}
-				else
-				{
-					strBuff.AppendChar(' ');
-				}
-			}
-			else
-			{
-				strBuff.Indent(indent);
-			}
-			FormatAttr(strBuff,attrIt->name,attrIt->prev);
-			ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
-
-			attrLineCol += strBuff.ContentLength();
-
+			HandleUnchangeAttr(attrIt,ui,indent+1,attrChanged,prevDiffType,attrLineCol);
 		}
 		else
 		{
@@ -921,21 +891,20 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 			{
 				ui->AppendNewLine();
 			}
-
 			attrLineCol = 0;
 		}
 
 		if (attrIt->type == DiffType_Add)
 		{
-			HandleAddAttr(attrIt,ui,indent);
+			HandleAddAttr(attrIt,ui,indent+1);
 		}
 		else if (attrIt->type == DiffType_Del)
 		{
-			HandleDelAttr(attrIt,ui,indent);
+			HandleDelAttr(attrIt,ui,indent+1);
 		}
 		else if (attrIt->type == DiffType_Modify)
 		{
-			HandleModifyAttr(attrIt,ui,indent);
+			HandleModifyAttr(attrIt,ui,indent+1);
 		}
 
 		prevDiffType = attrIt->type;
@@ -1036,6 +1005,41 @@ void XmlDiff::HandleModifyAttr( const std::list<DiffAttrResult>::const_iterator 
 	}
 
 	ui->ModifyMarkEnd();
+}
+
+void XmlDiff::HandleUnchangeAttr( const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent,bool attrChanged,DiffType prevDiffType,int& attrLineCol )
+{
+	StringBuff strBuff;
+	if (prevDiffType == DiffType_Unchanged)
+	{
+		if (attrChanged)
+		{
+			if (attrLineCol > MaxAttrLineCol)
+			{
+				ui->AppendNewLine();
+				strBuff.Indent(indent);
+				attrLineCol = 0;
+			}
+			else
+			{
+				int pad =  (ColAlignCount - attrLineCol % ColAlignCount );
+				pad = AttrMargin;
+				strBuff.FillChars(' ',pad);
+			}
+		}
+		else
+		{
+			strBuff.AppendChar(' ');
+		}
+	}
+	else
+	{
+		strBuff.Indent(indent);
+	}
+	FormatAttr(strBuff,iter->name,iter->prev);
+	ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
+
+	attrLineCol += strBuff.ContentLength();
 }
 
 

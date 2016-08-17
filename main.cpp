@@ -71,7 +71,9 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-#ifndef RETAIL
+#ifdef RETAIL
+		return 0;
+#else
 		w.showMaximized();
 		//w.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml");
 		//w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");

@@ -19,6 +19,8 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	textEditR ->setObjectName(QString::fromUtf8("textEditR"));
 
 	QFont font = QFont("Microsoft YaHei UI", 11, QFont::Normal, false);
+	//QFont font = QFont("SimSun", 12, QFont::Normal, false);
+	
 	//QFont font = QFont("Courier New", 11, QFont::Normal, false);
 	//textEditL->setFont(font);
 	//textEditR->setFont(font);
@@ -28,7 +30,7 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	textEditL->setFont(font);
 	textEditR->setFont(font);
 
-	const int tabStop = 4;  // 4 characters
+	const int tabStop = 10;  
 	QFontMetrics metrics(textEditL->font());
 	textEditL->setTabStopWidth(tabStop * metrics.width(' '));
 	textEditR->setTabStopWidth(tabStop * metrics.width(' '));
