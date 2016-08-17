@@ -8,7 +8,6 @@ HotPointBar::HotPointBar(QWidget *parent)
 {
 	ui.setupUi(this);
 	curBlock = 0;
-
 	maxBlock = 0;
 }
 
@@ -41,21 +40,22 @@ void HotPointBar::paintEvent( QPaintEvent *event )
 
 		painter.setBrush(Qt::red); 
 		painter.drawRect(x,y,w,h);
-		qDebug() << x << y << w << h << endl;
+		//qDebug() << x << y << w << h << endl;
 	}
 
 	{
-		painter.setPen(QPen(Qt::blue));
-		painter.setBrush(Qt::blue); 
+		painter.setPen(QPen(Qt::blue,1.5));
+		//painter.setBrush(Qt::blue); 
+		painter.setBrush(Qt::NoBrush);
 
 		int y = BlockToPiexl(curBlock);
-		painter.drawRect(0,y,width(),2);
+		painter.drawRect(2,y,width()-2,4);
 	}
 }
 
 void HotPointBar::SetHotSegments( std::vector<std::pair<int,int>>& segments, int totalBlock )
 {
-	qDebug() << "SetHotSegments" << totalBlock << segments.size() << endl;
+	//qDebug() << "SetHotSegments" << totalBlock << segments.size() << endl;
 	this->segments = segments;
 	this->maxBlock = max(totalBlock-1,1);
 }
@@ -73,7 +73,6 @@ void HotPointBar::mousePressEvent( QMouseEvent *event )
 
 	int targetblock = PixelToBlock(y);
 	int pixel = BlockToPiexl(targetblock);
-	//targetblock = min(targetblock,maxBlock);
 	emit selectBlock(targetblock);
 }
 
@@ -94,6 +93,18 @@ int HotPointBar::PixelToBlock( int y )
 	int maxPixel = BlockToPiexl(maxBlock);
 	y = min(y,maxPixel);
 	return float(y) / maxPixel* (maxBlock);
+}
+
+void HotPointBar::mouseMoveEvent( QMouseEvent *event )
+{
+	QWidget::mouseMoveEvent(event);
+	if(event->buttons() == Qt::LeftButton)
+	{
+		int y = event->y();
+		int targetblock = PixelToBlock(y);
+		int pixel = BlockToPiexl(targetblock);
+		emit selectBlock(targetblock);
+	}
 }
 
 

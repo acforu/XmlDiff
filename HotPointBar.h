@@ -14,6 +14,7 @@ public:
 
 	void paintEvent(QPaintEvent *event);
     void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 	void SetHotSegments(std::vector<std::pair<int,int>>& segments, int totalBlock);
 	void NotifyCurBlock(int cur);

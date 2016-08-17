@@ -306,6 +306,8 @@ void DiffUI::onLTextUpdateRequest( const QRect & rect, int dy )
 
 	textEditL->viewport()->update();
 	textEditR->viewport()->update();
+
+	hotPointBar->NotifyCurBlock(textEditL->firstBlockInViewport().blockNumber());
 	
 }
 
