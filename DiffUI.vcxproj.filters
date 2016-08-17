@@ -83,6 +83,18 @@
     <ClCompile Include="GeneratedFiles\Retail\moc_diffui.cpp">
       <Filter>Generated Files\Retail</Filter>
     </ClCompile>
+    <ClCompile Include="HotPointBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_HotPointBar.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_HotPointBar.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Retail\moc_HotPointBar.cpp">
+      <Filter>Generated Files\Retail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -106,6 +118,9 @@
     <ClInclude Include="StringBuff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_HotPointBar.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="diffui.h">
@@ -121,6 +136,12 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="DiffTextEdit.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="HotPointBar.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="HotPointBar.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
 		QString fileR = QString::fromLocal8Bit(argv[2]);
 
 		bool isXml = true;
-		if(QFileInfo(fileL).suffix() != QString("xml") ||
-			QFileInfo(fileR).suffix() != QString("xml") )
+		if(QFileInfo(fileL).suffix().toLower() != QString("xml") ||
+			QFileInfo(fileR).suffix().toLower() != QString("xml") )
 		{
 			isXml = false;
 		}

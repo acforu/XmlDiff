@@ -131,7 +131,10 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	connect(ui.actionUtf_8, SIGNAL(triggered()), this, SLOT(switchUTF8()));
 
 	
+	hotPointBar = new HotPointBar(ui.centralWidget);
+	hotPointBar->setObjectName(QString::fromUtf8("hotPointBar"));
 
+	QObject::connect(hotPointBar,SIGNAL(selectBlock(int)),this,SLOT(showSelectBlock(int)));
 }
 
 DiffUI::~DiffUI()
@@ -141,8 +144,13 @@ DiffUI::~DiffUI()
 void DiffUI::resizeEvent( QResizeEvent *event )
 {
 //	qDebug() << "resizeEvent" <<ui.centralWidget->width() << endl;
-	textEditL->setGeometry(QRect(0, 0, ui.centralWidget->width()*0.5, ui.centralWidget->height()));
-	textEditR->setGeometry(QRect(ui.centralWidget->width()*0.5, 0, ui.centralWidget->width()*0.5, ui.centralWidget->height()));
+
+	const int barWidth = 50;
+	int textWidth = (ui.centralWidget->width() - barWidth) *0.5;
+	int textHeight = ui.centralWidget->height();
+	hotPointBar->setGeometry(QRect(0, 0, barWidth, textHeight));
+	textEditL->setGeometry(QRect(barWidth, 0, textWidth, textHeight));
+	textEditR->setGeometry(QRect(barWidth+ textWidth, 0, textWidth, textHeight));
 
 	//textEditPlain->setGeometry(QRect(0, 0, ui.centralWidget->width()*0.5, ui.centralWidget->height()));
 }
@@ -336,7 +344,7 @@ void DiffUI::MoveToBlock( int block )
 	//int curBlockNum  = textEditL->firstBlockInViewport().blockNumber();
 
 
-	//qDebug() << "MoveToBlock " << block << endl;
+	qDebug() << "MoveToBlock " << block << endl;
 
 	int lineCount = textEditL->height() /(textEditL->fontMetrics().height() + textEditL->fontMetrics().lineSpacing());
 
@@ -361,6 +369,7 @@ void DiffUI::MoveToBlock( int block )
 	}
 
 	HighLightDiffBlocks(block);
+	hotPointBar->NotifyCurBlock(block);
 	/*qDebug() << "firstBlockVisable " << curBlockNum << endl;
 	qDebug() << "block top line " << textEditL->BlockTopLinePos(block) << endl;*/
 
@@ -542,6 +551,47 @@ void DiffUI::ClearModifyMark()
 {
 	ModifyBegTags.clear();
 	ModifyEndTags.clear();
+}
+
+void DiffUI::UpdateHotSegments()
+{
+	assert(ModifyBegTags.size() == ModifyEndTags.size());
+	auto beg = ModifyBegTags.begin();
+	auto end = ModifyEndTags.begin();
+
+	std::vector<std::pair<int,int>> segments;
+
+	while (beg != ModifyBegTags.end())
+	{
+		segments.push_back(make_pair(*beg++,*end++));
+	}
+
+	hotPointBar->SetHotSegments(segments,GetTotalBlocks());
+	hotPointBar->repaint();
+}
+
+void DiffUI::showSelectBlock( int block )
+{
+	int lineCount = textEditL->height() /(textEditL->fontMetrics().height() + textEditL->fontMetrics().lineSpacing());
+
+	if (block < textEditL->document()->blockCount())
+	{
+		textEditL->moveCursor(QTextCursor::End);
+		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
+		cursorL.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.5);
+
+		textEditL->setTextCursor(cursorL);
+	}
+
+	if (block < textEditR->document()->blockCount())
+	{
+		textEditR->moveCursor(QTextCursor::End);
+		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
+		cursorR.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.5);
+
+		textEditR->setTextCursor(cursorR);
+	}
+	hotPointBar->NotifyCurBlock(block);
 }
 
 void UseBeyondCompare( QString fileL, QString fileR )

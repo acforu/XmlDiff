@@ -4,6 +4,7 @@
 #include <QtGui/QMainWindow>
 #include "ui_diffui.h"
 #include "DiffTextEdit.h"
+#include "HotPointBar.h"
 
 enum TextFormatType
 {
@@ -48,7 +49,6 @@ public:
 	void AppendText(const char* text,TexTSide side, TextFormatType type);
 	void AppendText(StringBuff& buff,TexTSide side, TextFormatType type);
 	int GetTotalBlocks();
-	void MoveToBlock(int block);
 
 	void ModifyMarkBegin();
 	void ModifyMarkEnd();
@@ -61,6 +61,8 @@ public:
 	bool Diff( std::string file1, std::string file2);
 	void ClearText();
 	void UseBeyondCompare();
+	void UpdateHotSegments();
+	void MoveToBlock(int block);
 
 private slots: 
 	void onLScrollContentChanged();
@@ -75,6 +77,7 @@ private slots:
 	void switchUTF8();
 	void switchANSI();
 	void hideUnchanged();
+	void showSelectBlock(int block);
 
 	
 private:
@@ -88,6 +91,8 @@ private:
 	QWidget* drawLineCanvas;
 
 	int curHighLightBeginBlockNum;
+
+	HotPointBar* hotPointBar;
 private:
 	QTextCursor* cursorL;
 	QTextCursor* cursorR;

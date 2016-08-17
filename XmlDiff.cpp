@@ -843,6 +843,7 @@ void XmlDiff::RenderText()
 {
 	diffUIView->BeginEditBlock();
 	DumpResult(diffResult,diffUIView,0);
+	diffUIView->UpdateHotSegments();
 	diffUIView->EndEditBlock();
 }
 
