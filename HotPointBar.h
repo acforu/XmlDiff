@@ -16,7 +16,7 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 
-	void SetHotSegments(std::vector<std::pair<int,int>>& segments, int totalBlock);
+	void SetHotSegments(std::vector<std::pair<int,int>>& segments, int totalBlockCount,int pageBlockCount);
 	void NotifyCurBlock(int cur);
 
 private:
@@ -25,12 +25,19 @@ private:
 Q_SIGNALS:
     void selectBlock(int block);
 
+private slots:
+	void updateHotPointBar();
+
 private:
 	Ui::HotPointBar ui;
 
 	std::vector<std::pair<int,int>> segments;
 	int maxBlock;
 	int curBlock;
+	int pageBlockCount;
+	int pagePixel;
+	int maxWinUpperPixel;
+	bool curBlockChanged;
 };
 
 #endif // HOTPOINTBAR_H

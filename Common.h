@@ -16,6 +16,8 @@
 #define HOT_SEGMENT_PIXEL_PER_BLOCK 1
 #define HOT_SEGMENT_MARGIN 8
 
+
+
 #define FOR_EACH(iter,container) for (auto iter = container.begin(); iter!=container.end(); ++iter)
 
 enum DiffType

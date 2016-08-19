@@ -64,6 +64,8 @@ public:
 	void UpdateHotSegments();
 	void MoveToBlock(int block);
 
+	int PageLineCount();
+	int VisualContentHeight();
 private slots: 
 	void onLScrollContentChanged();
 	void onRScrollContentChanged();
@@ -78,6 +80,7 @@ private slots:
 	void switchANSI();
 	void hideUnchanged();
 	void showSelectBlock(int block);
+	void verticalScrollbarValueChanged(int value);
 
 	
 private:

@@ -135,6 +135,8 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 	hotPointBar->setObjectName(QString::fromUtf8("hotPointBar"));
 
 	QObject::connect(hotPointBar,SIGNAL(selectBlock(int)),this,SLOT(showSelectBlock(int)));
+
+	connect(textEditL->verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScrollbarValueChanged(int)));
 }
 
 DiffUI::~DiffUI()
@@ -148,9 +150,10 @@ void DiffUI::resizeEvent( QResizeEvent *event )
 	const int barWidth = 50;
 	int textWidth = (ui.centralWidget->width() - barWidth) *0.5;
 	int textHeight = ui.centralWidget->height();
-	hotPointBar->setGeometry(QRect(0, 0, barWidth, textHeight));
 	textEditL->setGeometry(QRect(barWidth, 0, textWidth, textHeight));
 	textEditR->setGeometry(QRect(barWidth+ textWidth, 0, textWidth, textHeight));
+	hotPointBar->setGeometry(QRect(0, 0, barWidth, textHeight));
+
 
 	//textEditPlain->setGeometry(QRect(0, 0, ui.centralWidget->width()*0.5, ui.centralWidget->height()));
 }
@@ -248,6 +251,7 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 //}
 	 
 	 //cursor.movePosition(QTextCursor::Down);
+
 }
 
 void DiffUI::AppendText( StringBuff& buff,TexTSide side, TextFormatType type )
@@ -307,7 +311,6 @@ void DiffUI::onLTextUpdateRequest( const QRect & rect, int dy )
 	textEditL->viewport()->update();
 	textEditR->viewport()->update();
 
-	hotPointBar->NotifyCurBlock(textEditL->firstBlockInViewport().blockNumber());
 	
 }
 
@@ -348,7 +351,7 @@ void DiffUI::MoveToBlock( int block )
 
 	qDebug() << "MoveToBlock " << block << endl;
 
-	int lineCount = textEditL->height() /(textEditL->fontMetrics().height() + textEditL->fontMetrics().lineSpacing());
+	int lineCount = PageLineCount();
 
 	//qDebug() << "lineCount " << lineCount << endl;
 
@@ -371,7 +374,7 @@ void DiffUI::MoveToBlock( int block )
 	}
 
 	HighLightDiffBlocks(block);
-	hotPointBar->NotifyCurBlock(block);
+	//hotPointBar->NotifyCurBlock(block);
 	/*qDebug() << "firstBlockVisable " << curBlockNum << endl;
 	qDebug() << "block top line " << textEditL->BlockTopLinePos(block) << endl;*/
 
@@ -568,20 +571,18 @@ void DiffUI::UpdateHotSegments()
 		segments.push_back(make_pair(*beg++,*end++));
 	}
 
-	hotPointBar->SetHotSegments(segments,GetTotalBlocks());
+	hotPointBar->SetHotSegments(segments,GetTotalBlocks(),PageLineCount());
 	hotPointBar->repaint();
 }
 
 void DiffUI::showSelectBlock( int block )
 {
-	int lineCount = textEditL->height() /(textEditL->fontMetrics().height() + textEditL->fontMetrics().lineSpacing());
+	int lineCount = PageLineCount();
 
 	if (block < textEditL->document()->blockCount())
 	{
 		textEditL->moveCursor(QTextCursor::End);
 		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
-		cursorL.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.5);
-
 		textEditL->setTextCursor(cursorL);
 	}
 
@@ -589,11 +590,31 @@ void DiffUI::showSelectBlock( int block )
 	{
 		textEditR->moveCursor(QTextCursor::End);
 		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
-		cursorR.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.5);
-
 		textEditR->setTextCursor(cursorR);
 	}
-	hotPointBar->NotifyCurBlock(block);
+	//hotPointBar->NotifyCurBlock(block);
+}
+
+void DiffUI::verticalScrollbarValueChanged( int value )
+{
+	hotPointBar->NotifyCurBlock(textEditL->firstBlockInViewport().blockNumber());
+}
+
+int DiffUI::PageLineCount()
+{
+	float lineCount = float(VisualContentHeight()) /textEditL->fontMetrics().lineSpacing() - 1;
+	qDebug() << "PageLineCount" << VisualContentHeight() << textEditL->fontMetrics().lineSpacing()  << lineCount << endl;
+	return lineCount;
+}
+
+int DiffUI::VisualContentHeight()
+{
+	int textHeight = textEditL->height();
+	if (textEditL->horizontalScrollBar()->isVisible())
+	{
+		textHeight -= textEditR->horizontalScrollBar()->sizeHint().height() ;
+	}
+	return textHeight;
 }
 
 void UseBeyondCompare( QString fileL, QString fileR )

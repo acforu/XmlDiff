@@ -10,6 +10,7 @@
 void myMessageOutput(QtMsgType, const char * msg)
 {
 	cout << msg << endl;
+	OutputDebugStringA(msg);
 }
 
 int main(int argc, char *argv[])
@@ -58,15 +59,12 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 
+		w.showMaximized();
 		bool ret = w.Diff(argv[1],argv[2]);
 		if(!ret)
 		{
 			UseBeyondCompare(fileL,fileR);
 			return 0;
-		}
-		else
-		{
-			w.showMaximized();
 		}
 	}
 	else
@@ -78,7 +76,8 @@ int main(int argc, char *argv[])
 		//w.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml");
 		//w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
 		//w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
-		w.Diff(".\\test_case\\quest1\\a.xml",".\\test_case\\quest1\\b.xml");
+		//w.Diff(".\\test_case\\quest1\\a.xml",".\\test_case\\quest1\\b.xml");
+		w.Diff(".\\test_case\\meili\\a.xml",".\\test_case\\meili\\b.xml");
 #endif
 	}
 	

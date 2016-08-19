@@ -105,6 +105,7 @@ void DiffTextEdit::Reset()
 	diffBeginBlockNum = diffEndBlockNum = -1;
 }
 
+
 //void DiffTextEdit::changeEvent( QEvent *e )
 //{
 //		qDebug() << "changeEvent" <<endl;
