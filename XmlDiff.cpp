@@ -198,13 +198,13 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 		}
 	}
 
-	if (nodeL->first_node() || nodeR->first_node())
-	{
-		cout << "first_node1: ---------------------" <<endl;
-		cout<< *nodeL->first_node() << endl;
-		cout << "first_node2: ---------------------" <<endl;
-		cout<< *nodeR->first_node() <<endl;
-	}
+	//if (nodeL->first_node() || nodeR->first_node())
+	//{
+	//	cout << "first_node1: ---------------------" <<endl;
+	//	cout<< *nodeL->first_node() << endl;
+	//	cout << "first_node2: ---------------------" <<endl;
+	//	cout<< *nodeR->first_node() <<endl;
+	//}
 
 	result.child = DiffSibling(nodeL->first_node(),nodeR->first_node());
 
@@ -906,48 +906,49 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 		}
 	}
 
-	DiffType prevDiffType = DiffType_Unchanged;
-	int attrLineCol = 0;
+//	DiffType prevDiffType = DiffType_Unchanged;
+
+	DumpContext context;
+	context.ui = ui;
+	context.singleAttr = (iter->attr.size() == 1);
+	context.attrLineCol = 0;
+	context.prevDiffType = DiffType_Unchanged;
+
 	for (auto attrIt = iter->attr.begin(); attrIt!=iter->attr.end(); ++attrIt)
 	{
+		context.iter = attrIt;
+
 		if (attrIt->type == DiffType_Unchanged)
 		{
-			HandleUnchangeAttr(attrIt,ui,indent+1,attrChanged,prevDiffType,attrLineCol);
+			HandleUnchangeAttr(attrIt,ui,indent+1,attrChanged,context.prevDiffType,context.attrLineCol);
 		}
 		else
 		{
-			if (prevDiffType == DiffType_Unchanged)
+			if (context.prevDiffType == DiffType_Unchanged && iter->attr.size() > 1)
 			{
 				ui->AppendNewLine();
 			}
-			attrLineCol = 0;
+			context.attrLineCol = 0;
 		}
 
 		if (attrIt->type == DiffType_Add)
 		{
-			HandleAddAttr(attrIt,ui,indent+1);
+			HandleAddAttr(context,indent+1);
 		}
 		else if (attrIt->type == DiffType_Del)
 		{
-			HandleDelAttr(attrIt,ui,indent+1);
+			HandleDelAttr(context,indent+1);
 		}
 		else if (attrIt->type == DiffType_Modify)
 		{
-			if (attrIt->name == nullptr)
-			{
-				//HandleNameValue(attrIt,ui,indent+1);
-			}
-			else
-			{
-				HandleModifyAttr(attrIt,ui,indent+1);
-			}
+			HandleModifyAttr(context,indent+1);
 		}
 
-		prevDiffType = attrIt->type;
+		context.prevDiffType = attrIt->type;
 	}
 
 	StringBuff strBuff;
-	if(prevDiffType != DiffType_Unchanged)
+	if(context.prevDiffType != DiffType_Unchanged && !context.singleAttr)
 	{
 		strBuff.Indent(indent);
 	}
@@ -970,8 +971,11 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 	ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
 }
 
-void XmlDiff::HandleAddAttr( const std::list<DiffAttrResult>::const_iterator attrIt,DiffUI* ui,int indent )
+void XmlDiff::HandleAddAttr( DumpContext& context,int indent )
 {
+	DiffUI* ui = context.ui;
+	auto attrIt = context.iter;
+
 	ui->ModifyMarkBegin();
 
 	StringBuff strBuff;
@@ -988,8 +992,11 @@ void XmlDiff::HandleAddAttr( const std::list<DiffAttrResult>::const_iterator att
 	ui->ModifyMarkEnd();
 }
 
-void XmlDiff::HandleDelAttr( const std::list<DiffAttrResult>::const_iterator attrIt,DiffUI* ui,int indent )
+void XmlDiff::HandleDelAttr( DumpContext& context,int indent )
 {
+	DiffUI* ui = context.ui;
+	auto attrIt = context.iter;
+
 	ui->ModifyMarkBegin();
 
 	StringBuff strBuff;
@@ -1007,22 +1014,45 @@ void XmlDiff::HandleDelAttr( const std::list<DiffAttrResult>::const_iterator att
 	ui->ModifyMarkEnd();
 }
 
-void XmlDiff::HandleModifyAttr( const std::list<DiffAttrResult>::const_iterator attrIt,DiffUI* ui,int indent )
+void XmlDiff::HandleModifyAttr( DumpContext& context,int indent)
 {
+	DiffUI* ui = context.ui;
+	auto attrIt = context.iter;
+
 	ui->ModifyMarkBegin();
 
 	StringBuff strBuff;
-	strBuff.Indent(indent);
-	FormatAttr(strBuff,attrIt->name,attrIt->prev);
-	strBuff.Enter();
+
+	if (!context.singleAttr)
+	{
+		strBuff.Indent(indent);
+		FormatAttr(strBuff,attrIt->name,attrIt->prev);
+		strBuff.Enter();
+	}
+	else
+	{
+		strBuff.AppendChar(' ');
+		FormatAttr(strBuff,attrIt->name,attrIt->prev);
+	}
+
+	//FormatAttr(strBuff,attrIt->name,attrIt->prev);
+	//strBuff.Enter();
 
 	ui->AppendText(strBuff,TextSide_Left,TextColor_Modify);
 	int leftEnterCount = strBuff.Total('\n');
 
 	strBuff.Clear();
-	strBuff.Indent(indent);
-	FormatAttr(strBuff,attrIt->name,attrIt->curr);
-	strBuff.Enter();
+	if (!context.singleAttr)
+	{
+		strBuff.Indent(indent);
+		FormatAttr(strBuff,attrIt->name,attrIt->curr);
+		strBuff.Enter();
+	}
+	else
+	{
+		strBuff.AppendChar(' ');
+		FormatAttr(strBuff,attrIt->name,attrIt->curr);
+	}
 
 	ui->AppendText(strBuff,TextSide_Right,TextColor_Modify);
 	int RightEnterCount = strBuff.Total('\n');

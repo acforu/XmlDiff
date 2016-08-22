@@ -88,9 +88,17 @@ private:
 
 	void FormatAttr(StringBuff& buff,const char* name, const char* value);
 
-	void HandleAddAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent);
-	void HandleDelAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent);
-	void HandleModifyAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent);
+	struct DumpContext
+	{
+		std::list<DiffAttrResult>::const_iterator iter;
+		DiffUI* ui;
+		bool singleAttr;
+		DiffType prevDiffType;
+		int attrLineCol;
+	};
+	void HandleAddAttr(DumpContext& context,int indent);
+	void HandleDelAttr(DumpContext& context,int indent);
+	void HandleModifyAttr(DumpContext& context,int indent);
 	void HandleUnchangeAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent,bool attrChanged,DiffType prevDiffType,int& attrLineCol);
 	void HandleSingleValue(const DiffSingleValueResult& diffSingleValue,DiffUI* ui,int indent);
 private:

@@ -78,7 +78,8 @@ int main(int argc, char *argv[])
 		w.showMaximized();
 
 		//QString casename = "food";
-		QString casename = "single_value_node";
+		//QString casename = "single_value_node";
+		QString casename = "commodity";
 		
 
 		QString paramL = QString(".\\test_case\\%1\\a.xml").arg(casename);

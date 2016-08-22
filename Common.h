@@ -5,7 +5,7 @@
 #include "RapidXml/rapidxml.hpp"
 
 #define SIMPLIFY_STRING_DIST_CALC 0
-#define ENABLE_LOG 1
+#define ENABLE_LOG 0
 
 #ifdef RETAIL
 	#define ENABLE_CONSOLE 0
