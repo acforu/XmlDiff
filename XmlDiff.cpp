@@ -10,7 +10,6 @@ using namespace std;
 typedef  size_t AddressType;
 
 
-const int XmlTextBuffSize = 10000000;
 const int IndentInc = 1;
 const int ColAlignCount = 20;
 const int MaxAttrLineCol = 80;

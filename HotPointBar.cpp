@@ -58,7 +58,7 @@ void HotPointBar::paintEvent( QPaintEvent *event )
 		painter.setBrush(Qt::NoBrush);
 
 		int y = BlockToPiexl(curBlock);
-		qDebug() << "drawRect" << y << endl;
+		//qDebug() << "drawRect" << y << endl;
 		painter.drawRect(2,y,width()-2,pagePixel);
 	}
 
@@ -79,7 +79,7 @@ void HotPointBar::NotifyCurBlock( int cur )
 {
 	if (cur != curBlock)
 	{
-		qDebug() << "NotifyCurBlock" << cur << endl;
+		//qDebug() << "NotifyCurBlock" << cur << endl;
 		curBlock = cur;
 		//curBlockChanged = true;
 		repaint();
@@ -107,9 +107,9 @@ int HotPointBar::BlockToPiexl( int block )
 		ret = block*HOT_SEGMENT_PIXEL_PER_BLOCK;
 	}
 
-	QString status = QString("BlockToPiexl block:%1, ret:%2: maxBlock:%3 height:%4 pagePixel:%5 pageBlockCount:%6")  
-		.arg(block).arg(ret).arg(maxBlock).arg(height()).arg(pagePixel).arg(pageBlockCount);  
-	qDebug() << status << endl;
+	//QString status = QString("BlockToPiexl block:%1, ret:%2: maxBlock:%3 height:%4 pagePixel:%5 pageBlockCount:%6")  
+	//	.arg(block).arg(ret).arg(maxBlock).arg(height()).arg(pagePixel).arg(pageBlockCount);  
+	//qDebug() << status << endl;
 	return ret;
 }
 
@@ -119,7 +119,7 @@ int HotPointBar::PixelToBlock( int y )
 	y = min(y,maxWinUpperPixel);
 	if (y == maxWinUpperPixel)
 	{
-		qDebug() << "y == maxWinUpperPixel" << endl;
+		//qDebug() << "y == maxWinUpperPixel" << endl;
 		block =  maxBlock /*- pageBlockCount*/;
 	}
 	else
@@ -134,7 +134,7 @@ int HotPointBar::PixelToBlock( int y )
 		}
 
 	}
-	qDebug() << "PixelToBlock" << y << block << maxWinUpperPixel << maxBlock << pageBlockCount <<  endl;
+	//qDebug() << "PixelToBlock" << y << block << maxWinUpperPixel << maxBlock << pageBlockCount <<  endl;
 	//assert(y == BlockToPiexl(block));
 	return block;
 }
@@ -146,7 +146,7 @@ void HotPointBar::mouseMoveEvent( QMouseEvent *event )
 	{
 		int y = event->y();
 		int targetblock = PixelToBlock(y);
-		qDebug() << "mouseMoveEvent" << y << targetblock << endl;
+		//qDebug() << "mouseMoveEvent" << y << targetblock << endl;
 		//targetblock = min(targetblock,maxBlock-pageBlockCount);
 		//int pixel = BlockToPiexl(targetblock);
 		emit selectBlock(targetblock);

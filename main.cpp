@@ -10,7 +10,7 @@
 void myMessageOutput(QtMsgType, const char * msg)
 {
 	cout << msg << endl;
-	OutputDebugStringA(msg);
+	//OutputDebugStringA(msg);
 }
 
 int main(int argc, char *argv[])
@@ -24,7 +24,10 @@ int main(int argc, char *argv[])
 #endif
 
 	QApplication a(argc, argv);
+
+#if ENABLE_CONSOLE 
 	qInstallMsgHandler(myMessageOutput);
+#endif
 
 	//if (argc < 3)
 	//{
@@ -74,10 +77,10 @@ int main(int argc, char *argv[])
 #else
 		w.showMaximized();
 		//w.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml");
-		//w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
+		w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
 		//w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
 		//w.Diff(".\\test_case\\quest1\\a.xml",".\\test_case\\quest1\\b.xml");
-		w.Diff(".\\test_case\\meili\\a.xml",".\\test_case\\meili\\b.xml");
+		//w.Diff(".\\test_case\\meili\\a.xml",".\\test_case\\meili\\b.xml");
 #endif
 	}
 	

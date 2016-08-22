@@ -157,7 +157,8 @@ void DiffUI::resizeEvent( QResizeEvent *event )
 	int textHeight = ui.centralWidget->height();
 	textEditL->setGeometry(QRect(barWidth, 0, textWidth, textHeight));
 	textEditR->setGeometry(QRect(barWidth+ textWidth, 0, textWidth, textHeight));
-	hotPointBar->setGeometry(QRect(0, 0, barWidth, textHeight));
+
+	hotPointBar->setGeometry(QRect(0, 0, barWidth, textHeight - 20));
 
 
 	//textEditPlain->setGeometry(QRect(0, 0, ui.centralWidget->width()*0.5, ui.centralWidget->height()));
@@ -354,7 +355,7 @@ void DiffUI::MoveToBlock( int block )
 	//int curBlockNum  = textEditL->firstBlockInViewport().blockNumber();
 
 
-	qDebug() << "MoveToBlock " << block << endl;
+	//qDebug() << "MoveToBlock " << block << endl;
 
 	int lineCount = PageLineCount();
 
@@ -610,7 +611,7 @@ void DiffUI::showSelectBlock( int block )
 int DiffUI::PageLineCount()
 {
 	float lineCount = float(VisualContentHeight()) /textEditL->fontMetrics().lineSpacing() - 1;
-	qDebug() << "PageLineCount" << VisualContentHeight() << textEditL->fontMetrics().lineSpacing()  << lineCount << endl;
+	//qDebug() << "PageLineCount" << VisualContentHeight() << textEditL->fontMetrics().lineSpacing()  << lineCount << endl;
 	return lineCount;
 }
 
