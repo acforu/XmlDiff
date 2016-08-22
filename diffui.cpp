@@ -136,7 +136,12 @@ DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
 
 	QObject::connect(hotPointBar,SIGNAL(selectBlock(int)),this,SLOT(showSelectBlock(int)));
 
-	connect(textEditL->verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScrollbarValueChanged(int)));
+	//connect(textEditL->verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScrollbarValueChanged(int)));
+
+
+	QTimer *timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(updateHotPointBar()));
+	timer->start(20);
 }
 
 DiffUI::~DiffUI()
@@ -582,6 +587,7 @@ void DiffUI::showSelectBlock( int block )
 	if (block < textEditL->document()->blockCount())
 	{
 		textEditL->moveCursor(QTextCursor::End);
+
 		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
 		textEditL->setTextCursor(cursorL);
 	}
@@ -592,13 +598,14 @@ void DiffUI::showSelectBlock( int block )
 		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
 		textEditR->setTextCursor(cursorR);
 	}
+
 	//hotPointBar->NotifyCurBlock(block);
 }
 
-void DiffUI::verticalScrollbarValueChanged( int value )
-{
-	hotPointBar->NotifyCurBlock(textEditL->firstBlockInViewport().blockNumber());
-}
+//void DiffUI::verticalScrollbarValueChanged( int value )
+//{
+//	//hotPointBar->NotifyCurBlock(textEditL->firstBlockInViewport().blockNumber());
+//}
 
 int DiffUI::PageLineCount()
 {
@@ -615,6 +622,11 @@ int DiffUI::VisualContentHeight()
 		textHeight -= textEditR->horizontalScrollBar()->sizeHint().height() ;
 	}
 	return textHeight;
+}
+
+void DiffUI::updateHotPointBar()
+{
+	hotPointBar->NotifyCurBlock(textEditL->firstBlockInViewport().blockNumber());
 }
 
 void UseBeyondCompare( QString fileL, QString fileR )

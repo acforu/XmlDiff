@@ -13,9 +13,9 @@ HotPointBar::HotPointBar(QWidget *parent)
 
 	//QTimer::singleShot(200, this, SLOT(updateHotPointBar()));
 
-	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(updateHotPointBar()));
-	timer->start(20);
+	//QTimer *timer = new QTimer(this);
+	//connect(timer, SIGNAL(timeout()), this, SLOT(updateHotPointBar()));
+	//timer->start(20);
 
 	curBlockChanged = false;
 }
@@ -124,7 +124,15 @@ int HotPointBar::PixelToBlock( int y )
 	}
 	else
 	{
-		block = float(y) / height()* (maxBlock);
+		if (maxBlock*HOT_SEGMENT_PIXEL_PER_BLOCK >= height())
+		{
+			block = float(y) / height()* (maxBlock);
+		}
+		else
+		{
+			block = float(y)/HOT_SEGMENT_PIXEL_PER_BLOCK;
+		}
+
 	}
 	qDebug() << "PixelToBlock" << y << block << maxWinUpperPixel << maxBlock << pageBlockCount <<  endl;
 	//assert(y == BlockToPiexl(block));
@@ -148,11 +156,11 @@ void HotPointBar::mouseMoveEvent( QMouseEvent *event )
 void HotPointBar::updateHotPointBar()
 {
 //	qDebug() << "updateHotPointBar" <<endl;
-//	if (curBlockChanged)
-//	{
-//		repaint();
-//		curBlockChanged = false;
-//	}
+	if (curBlockChanged)
+	{
+		//repaint();
+		curBlockChanged = false;
+	}
 }
 
 

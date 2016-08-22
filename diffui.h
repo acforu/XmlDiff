@@ -80,7 +80,8 @@ private slots:
 	void switchANSI();
 	void hideUnchanged();
 	void showSelectBlock(int block);
-	void verticalScrollbarValueChanged(int value);
+	//void verticalScrollbarValueChanged(int value);
+	void updateHotPointBar();
 
 	
 private:
