@@ -146,12 +146,17 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 	cout << "node2: ---------------------" <<endl;
 	cout<< *nodeR <<endl;
 	cout << "-------------------------------" <<endl;
+
+	cout << "name value " <<endl;
+	cout << nodeL->name() << "=" << nodeL->value() << endl;
+	//cout >> nodeR->name() >> nodeR->value() << endl;
 #endif
 
 	DiffNodeResult result;
 
 	result.node = nodeL;
 	result.type = DiffType_Modify;
+
 	std::hash_map<int,bool> visited;
 	for (xml_attribute<> * attrL = nodeL->first_attribute(); attrL; attrL = attrL->next_attribute())
 	{
@@ -193,7 +198,24 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 		}
 	}
 
+	if (nodeL->first_node() || nodeR->first_node())
+	{
+		cout << "first_node1: ---------------------" <<endl;
+		cout<< *nodeL->first_node() << endl;
+		cout << "first_node2: ---------------------" <<endl;
+		cout<< *nodeR->first_node() <<endl;
+	}
+
 	result.child = DiffSibling(nodeL->first_node(),nodeR->first_node());
+
+	if (nodeL->value_size() > 0 || nodeR->value_size() > 0)
+	{
+		if (!Compare(nodeL->value(),nodeR->value()))
+		{
+			result.singleValue.prev = nodeL->value();
+			result.singleValue.curr = nodeR->value();
+		}
+	}
 
 	return result;
 }
@@ -493,7 +515,14 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		}
 		else
 		{
-			DumpNodeAttr(iter,ui,indent,parentChanged);
+			if (iter->node->name_size() == 0)
+			{
+				HandleSingleValue(iter->singleValue,ui,indent);
+			}
+			else
+			{
+				DumpNodeAttr(iter,ui,indent,parentChanged);
+			}
 		}
 	}
 }
@@ -904,7 +933,14 @@ void XmlDiff::DumpNodeAttr( const std::list<DiffNodeResult>::const_iterator iter
 		}
 		else if (attrIt->type == DiffType_Modify)
 		{
-			HandleModifyAttr(attrIt,ui,indent+1);
+			if (attrIt->name == nullptr)
+			{
+				//HandleNameValue(attrIt,ui,indent+1);
+			}
+			else
+			{
+				HandleModifyAttr(attrIt,ui,indent+1);
+			}
 		}
 
 		prevDiffType = attrIt->type;
@@ -1040,6 +1076,26 @@ void XmlDiff::HandleUnchangeAttr( const std::list<DiffAttrResult>::const_iterato
 	ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
 
 	attrLineCol += strBuff.ContentLength();
+}
+
+void XmlDiff::HandleSingleValue( const DiffSingleValueResult& diffSingleValue,DiffUI* ui,int indent )
+{
+	ui->ModifyMarkBegin();
+	{
+		StringBuff strBuff;
+		strBuff.Indent(indent);
+		strBuff.AppendStr(diffSingleValue.prev);
+		strBuff.Enter();
+		ui->AppendText(strBuff,TextSide_Left,TextColor_Modify);
+	}
+	{
+		StringBuff strBuff;
+		strBuff.Indent(indent);
+		strBuff.AppendStr(diffSingleValue.curr);
+		strBuff.Enter();
+		ui->AppendText(strBuff,TextSide_Right,TextColor_Modify);
+	}
+	ui->ModifyMarkEnd();
 }
 
 

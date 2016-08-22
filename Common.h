@@ -5,7 +5,7 @@
 #include "RapidXml/rapidxml.hpp"
 
 #define SIMPLIFY_STRING_DIST_CALC 0
-#define ENABLE_LOG 0
+#define ENABLE_LOG 1
 
 #ifdef RETAIL
 	#define ENABLE_CONSOLE 0
@@ -30,8 +30,22 @@ enum DiffType
 
 struct DiffAttrResult
 {
+	DiffAttrResult()
+	{
+		name = prev = curr = nullptr;
+	}
 	DiffType type;
 	const char* name;
+	const char* prev;
+	const char* curr;
+};
+
+struct DiffSingleValueResult
+{
+	DiffSingleValueResult()
+	{
+		prev = curr = nullptr;
+	}
 	const char* prev;
 	const char* curr;
 };
@@ -86,6 +100,7 @@ struct DiffNodeResult
 	rapidxml::xml_node<>* node;
 //	rapidxml::xml_node<>* targetNode;
 	DiffType type;
+	DiffSingleValueResult singleValue;
 	std::list<DiffAttrResult> attr;
 	std::list<DiffNodeResult> child;	
 };

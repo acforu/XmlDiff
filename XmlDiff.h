@@ -92,6 +92,7 @@ private:
 	void HandleDelAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent);
 	void HandleModifyAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent);
 	void HandleUnchangeAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent,bool attrChanged,DiffType prevDiffType,int& attrLineCol);
+	void HandleSingleValue(const DiffSingleValueResult& diffSingleValue,DiffUI* ui,int indent);
 private:
 	DiffUI* diffUIView;
 	std::list<DiffNodeResult> diffResult;

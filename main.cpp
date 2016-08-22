@@ -76,8 +76,17 @@ int main(int argc, char *argv[])
 		return 0;
 #else
 		w.showMaximized();
+
+		//QString casename = "food";
+		QString casename = "single_value_node";
+		
+
+		QString paramL = QString(".\\test_case\\%1\\a.xml").arg(casename);
+		QString paramR = QString(".\\test_case\\%1\\b.xml").arg(casename);
+
+		w.Diff(paramL.toLocal8Bit().constData(),paramR.toLocal8Bit().constData());
 		//w.Diff(".\\test_case\\commodity1\\a.xml",".\\test_case\\commodity1\\b.xml");
-		w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
+		//w.Diff(".\\test_case\\commodity\\a.xml",".\\test_case\\commodity\\b.xml");
 		//w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
 		//w.Diff(".\\test_case\\quest1\\a.xml",".\\test_case\\quest1\\b.xml");
 		//w.Diff(".\\test_case\\meili\\a.xml",".\\test_case\\meili\\b.xml");
