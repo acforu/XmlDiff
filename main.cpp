@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 
 		//QString casename = "food";
 		//QString casename = "single_value_node";
-		QString casename = "commodity";
-		
+//		QString casename = "commodity";
+		QString casename = "homepage";
 
 		QString paramL = QString(".\\test_case\\%1\\a.xml").arg(casename);
 		QString paramR = QString(".\\test_case\\%1\\b.xml").arg(casename);
