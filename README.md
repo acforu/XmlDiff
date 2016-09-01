@@ -1,8 +1,10 @@
 # XmlDiff
 
 beyond compare:
-![image](https://github.com/acforu/XmlDiff/blob/master/screenshot/bc_main.jpg)
-![image](https://github.com/acforu/XmlDiff/blob/master/screenshot/bc_detail.jpg)
+
+![](https://github.com/acforu/XmlDiff/blob/master/screenshot/bc_main.png)
+![](https://github.com/acforu/XmlDiff/blob/master/screenshot/bc_detail.png)
 
 XmlDiff:
-![image](https://github.com/acforu/XmlDiff/blob/master/screenshot/xmldiff.jpg)
+
+![](https://github.com/acforu/XmlDiff/blob/master/screenshot/xmldiff.png)
