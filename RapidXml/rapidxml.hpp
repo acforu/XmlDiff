@@ -904,6 +904,8 @@ namespace rapidxml
             : m_type(type)
             , m_first_node(0)
             , m_first_attribute(0)
+			, m_text_beg(nullptr)
+			, m_text_end(nullptr)
         {
         }
 
@@ -1315,6 +1317,12 @@ namespace rapidxml
             m_first_attribute = 0;
         }
         
+		Ch* get_text_beg() const { return m_text_beg; }
+		void set_text_beg(Ch* val) { m_text_beg = val; }
+		Ch* get_text_end() const { return m_text_end; }
+		void set_text_end(Ch* val) { m_text_end = val; }
+
+		bool can_quick_print() {return get_text_beg() && get_text_end();}
     private:
 
         ///////////////////////////////////////////////////////////////////////////
@@ -1343,8 +1351,9 @@ namespace rapidxml
         xml_attribute<Ch> *m_last_attribute;    // Pointer to last attribute of node, or 0 if none; this value is only valid if m_first_attribute is non-zero
         xml_node<Ch> *m_prev_sibling;           // Pointer to previous sibling of node, or 0 if none; this value is only valid if m_parent is non-zero
         xml_node<Ch> *m_next_sibling;           // Pointer to next sibling of node, or 0 if none; this value is only valid if m_parent is non-zero
-
-    };
+		Ch*	m_text_beg;
+		Ch* m_text_end;//[beg,end)
+	};
 
     ///////////////////////////////////////////////////////////////////////////
     // XML document
@@ -2042,6 +2051,7 @@ namespace rapidxml
             xml_node<Ch> *element = this->allocate_node(node_element);
 
             // Extract element name
+			element->set_text_beg(text);
             Ch *name = text;
             skip<node_name_pred, Flags>(text);
             if (text == name)
@@ -2075,6 +2085,7 @@ namespace rapidxml
                 element->name()[element->name_size()] = Ch('\0');
 
             // Return parsed element
+			element->set_text_end(text);
             return element;
         }
 

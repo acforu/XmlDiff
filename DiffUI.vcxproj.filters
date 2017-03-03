@@ -39,6 +39,9 @@
     <Filter Include="Generated Files\Retail">
       <UniqueIdentifier>{b8e1fbf0-e58a-4507-b16a-c6782a8d074f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="rapidxml">
+      <UniqueIdentifier>{9d1e5d86-753c-4fa0-8f6f-68644b90362e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -120,6 +123,18 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_HotPointBar.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RapidXml\rapidxml.hpp">
+      <Filter>rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="RapidXml\rapidxml_iterators.hpp">
+      <Filter>rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="RapidXml\rapidxml_print.hpp">
+      <Filter>rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="RapidXml\rapidxml_utils.hpp">
+      <Filter>rapidxml</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

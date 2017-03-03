@@ -3,6 +3,7 @@
 #include "windows.h"
 #include "XmlHelper.h"
 #include "StringBuff.h"
+#include <xutility>
 
 using namespace rapidxml;
 using namespace std;
@@ -252,6 +253,8 @@ bool XmlFile::Parse( std::string filename )
 	char * filecontent = doc.allocate_string(memblock,size+1);
 	delete[] memblock;
 
+	fileSize = size + 1;
+
 	file.close();
 
 	//cout << "the entire file content is in memory" << endl;
@@ -370,19 +373,29 @@ bool XmlDiff::CompareNode( xml_node<> *nodeL, xml_node<> *nodeR )
 	//	return false;
 	//}
 
+	if (nodeL->can_quick_print() && nodeR->can_quick_print())
+	{
+		return CompareData(
+			nodeL->get_text_beg(),nodeL->get_text_end(),
+			nodeR->get_text_beg(),nodeR->get_text_end());
+	}
+
 	static StringBuff buffL;
 	static StringBuff buffR;
 
 	buffL.Clear();
-	print(buffL.Begin(),*nodeL);
+	Print2Buff(nodeL,buffL);
 	buffL.AppendNull();
 	//*out = '\0';
 	
 	buffR.Clear();
-	print(buffR.Begin(),*nodeR);
+	Print2Buff(nodeR,buffR);
 	buffR.AppendNull();
 
-	return strcmp(buffL.Data(),buffR.Data())==0;
+	//return strcmp(buffL.Data(),buffR.Data())==0;
+	return CompareData(
+		buffL.Data(),buffL.Data()+buffL.Length(),
+		buffR.Data(),buffR.Data()+buffR.Length());
 }
 
 
@@ -473,14 +486,15 @@ void XmlDiff::DumpResultLog( const std::list<DiffNodeResult>& diffNodeList)
 
 void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent ,bool parentChanged )
 {
-	//static StringBuff strBuff;
+	static StringBuff strBuff;
+	strBuff.Reserve(CalcStringBuffMaxSize());
 	FOR_EACH(iter,diffNodeList)
 	{
 		if (iter->type == DiffType_Unchanged)
 		{
 			if (parentChanged || !HideUnchangedNode())
 			{
-				StringBuff strBuff;
+				//StringBuff strBuff;
 				rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
 				ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
 			}
@@ -489,7 +503,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		{
 			ui->ModifyMarkBegin();
 			{
-				StringBuff strBuff;
+				//StringBuff strBuff;
 				rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
 				ui->AppendText(strBuff,TextSide_Right,TextColor_Modify);
 				int enterCount = strBuff.Total('\n');
@@ -503,7 +517,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 		{
 			ui->ModifyMarkBegin();
 			{
-				StringBuff strBuff;
+				//StringBuff strBuff;
 				rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
 				ui->AppendText(strBuff,TextSide_Left,TextColor_Modify);
 				int enterCount = strBuff.Total('\n');
@@ -638,13 +652,15 @@ std::list<DiffNodeResult> XmlDiff::DiffNodesAcceptModify( const std::vector<xml_
 
 	//static char buff[XmlTextBuffSize];		
 	static StringBuff buff;
+	buff.Reserve(CalcStringBuffMaxSize());
 
 	vector<string> stringVecL,stringVecR;
 	FOR_EACH(iter,nodeLVector)
 	{
 		//ZeroMemory(buff,ARRAYSIZE(buff));
 		buff.Clear();
-		print(buff.Begin(),**iter,print_attributes_separate_by_enter);
+		//print(buff.Begin(),**iter,print_attributes_separate_by_enter);
+		Print2Buff(*iter,buff);
 		buff.AppendNull();
 		//*out = '\0';
 		stringVecL.push_back(buff.Data());
@@ -653,7 +669,8 @@ std::list<DiffNodeResult> XmlDiff::DiffNodesAcceptModify( const std::vector<xml_
 	{
 		//ZeroMemory(buff,ARRAYSIZE(buff));
 		buff.Clear();
-		print(buff.Begin(),**iter,print_attributes_separate_by_enter);
+		//print(buff.Begin(),**iter,print_attributes_separate_by_enter);
+		Print2Buff(*iter,buff);
 		buff.AppendNull();
 		//*out = '\0';
 		stringVecR.push_back(buff.Data());
@@ -708,21 +725,23 @@ std::list<DiffNodeResult> XmlDiff::DiffNodesAcceptModify( const std::vector<xml_
 
 size_t XmlDiff::NodeStringDistance( xml_node<> *nodeL, xml_node<> *nodeR )
 {
-	static char buffL[2000];
-	static char buffR[2000];
-
-	//ZeroMemory(buffL,ARRAYSIZE(buffL));
-	//ZeroMemory(buffR,ARRAYSIZE(buffR));
-
-	char* out = print(buffL,*nodeL);
-	*out = '\0';
-	out = print(buffR,*nodeR);
-	*out = '\0';
-
-	if (Compare(buffL,buffR))
+	if (CompareNode(nodeL,nodeR))
 		return 0;
 	else
-		return StringDistance(buffL,buffR);
+	{
+		static StringBuff buffL;
+		static StringBuff buffR;
+
+		buffL.Clear();
+		Print2Buff(nodeL,buffL);
+		buffL.AppendNull();
+
+		buffR.Clear();
+		Print2Buff(nodeR,buffR);
+		buffR.AppendNull();
+
+		return DataDistance(buffL.Buff(),buffR.Buff());
+	}
 }
 
 
@@ -1126,6 +1145,11 @@ void XmlDiff::HandleSingleValue( const DiffSingleValueResult& diffSingleValue,Di
 		ui->AppendText(strBuff,TextSide_Right,TextColor_Modify);
 	}
 	ui->ModifyMarkEnd();
+}
+
+size_t XmlDiff::CalcStringBuffMaxSize()
+{
+	return max(xmlFileL.FileSize(),xmlFileR.FileSize())+200;
 }
 
 

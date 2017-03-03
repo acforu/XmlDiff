@@ -19,6 +19,11 @@ class XmlFile
 public:
 	bool Parse(std::string filename);
 	rapidxml::xml_document<> doc;
+	size_t FileSize() const { return fileSize; }
+
+private:
+	size_t fileSize;
+
 };
 
 struct DiffContext
@@ -101,6 +106,8 @@ private:
 	void HandleModifyAttr(DumpContext& context,int indent);
 	void HandleUnchangeAttr(const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent,bool attrChanged,DiffType prevDiffType,int& attrLineCol);
 	void HandleSingleValue(const DiffSingleValueResult& diffSingleValue,DiffUI* ui,int indent);
+
+	size_t CalcStringBuffMaxSize();
 private:
 	DiffUI* diffUIView;
 	std::list<DiffNodeResult> diffResult;

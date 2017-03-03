@@ -20,6 +20,16 @@ public:
 		return &buff[0];
 	}
 
+	size_t Length()
+	{
+		return buff.size();
+	}
+
+	void Reserve(size_t size)
+	{
+		buff.reserve(size);
+	}
+
 	class Iterator
 	{
 	public:
@@ -60,6 +70,11 @@ public:
 	Iterator Begin()
 	{
 		return Iterator(this);
+	}
+
+	const std::vector<char>& Buff()
+	{
+		return buff;
 	}
 
 friend class StringBuffIterator;

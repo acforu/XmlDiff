@@ -211,6 +211,10 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Retail|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fStdAfx.h" "-f../../HotPointBar.h"  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DRETAIL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui"</Command>
     </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_HotPointBar.h" />
+    <ClInclude Include="RapidXml\rapidxml.hpp" />
+    <ClInclude Include="RapidXml\rapidxml_iterators.hpp" />
+    <ClInclude Include="RapidXml\rapidxml_print.hpp" />
+    <ClInclude Include="RapidXml\rapidxml_utils.hpp" />
     <ClInclude Include="StringBuff.h" />
     <ClInclude Include="XmlDiff.h" />
     <ClInclude Include="XmlHelper.h" />

@@ -374,3 +374,83 @@ size_t StringDistSift4( const std::string &s1, const std::string &s2, int maxOff
 	lcss+=local_cs;
 	return round(max(l1,l2)- lcss);
 }
+
+void Print2Buff( rapidxml::xml_node<> *node, StringBuff& buff )
+{
+	if (node->get_text_beg()!=nullptr && node->get_text_end()!=nullptr)
+	{
+		buff.AppendStr(node->get_text_beg(),node->get_text_end());
+	}
+	else
+	{
+		print(buff.Begin(),*node);
+	}
+}
+
+bool CompareData( const char* begL,const char* endL,const char* begR,const char* endR )
+{
+	size_t length = endL - begL;
+	if (endR - begR != length)
+	{
+		return false;
+	}
+
+	for (size_t i = 0; i < length ; ++i)
+	{
+		if (begL[i]!=begR[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+size_t DataDistance( const std::vector<char>& s1, const std::vector<char>& s2 )
+{
+	const size_t m(s1.size());
+	const size_t n(s2.size());
+
+	if( m==0 ) return n;
+	if( n==0 ) return m;
+
+	if (abs(int(m-n)) > 60)
+	{
+		return abs(int(m+n));
+	}
+
+	size_t *costs = new size_t[n + 1];
+
+	for( size_t k=0; k<=n; k++ ) costs[k] = k;
+
+	size_t i = 0;
+	for ( auto it1 = s1.begin(); it1 != s1.end(); ++it1, ++i )
+	{
+		costs[0] = i+1;
+		size_t corner = i;
+
+		size_t j = 0;
+		for ( auto it2 = s2.begin(); it2 != s2.end(); ++it2, ++j )
+		{
+			size_t upper = costs[j+1];
+			if( *it1 == *it2 )
+			{
+				costs[j+1] = corner;
+			}
+			else
+			{
+				size_t t(upper<corner?upper:corner);
+				costs[j+1] = (costs[j]<t?costs[j]:t)+1;
+			}
+
+			corner = upper;
+		}
+	}
+
+	size_t result = costs[n];
+	delete [] costs;
+
+	//qDebug() << "result " << result << endl;
+	//qDebug() << "swift " << StringDistSift4(s1,s2) << endl;
+
+	return result;
+}
