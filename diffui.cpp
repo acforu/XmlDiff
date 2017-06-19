@@ -191,6 +191,8 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	//}
 	//return;
 
+
+
 	QTextCursor* cursor = nullptr;
 	if (side == TextSide_Left)
 		cursor = cursorL;
@@ -488,10 +490,10 @@ bool DiffUI::Diff( std::string file1, std::string file2)
 	bool ret = diffInst->Diff(file1,file2);
 	if (ret)
 	{
-		diffInst->RenderText();
-
-		textEditL->moveCursor(QTextCursor::Start);
-		textEditR->moveCursor(QTextCursor::Start);
+ 		diffInst->RenderText();
+ 
+ 		textEditL->moveCursor(QTextCursor::Start);
+ 		textEditR->moveCursor(QTextCursor::Start);
 	}
 	return ret;
 }
@@ -633,7 +635,8 @@ void DiffUI::updateHotPointBar()
 void UseBeyondCompare( QString fileL, QString fileR )
 {
 	QString params = QString(" ") + "\"" + fileL + "\" \"" +fileR + "\"";
-	QString appPath = QCoreApplication::applicationDirPath() + QString("//BCompare.exe");
+	QString appPath = QCoreApplication::applicationDirPath() + QString("/../../Beyond Compare 4/BCompare.exe");
+	qDebug() << appPath;
 	ShellExecuteA(NULL, "open", appPath.toLocal8Bit().constData(),params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
 }
 

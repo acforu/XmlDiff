@@ -18,11 +18,39 @@ const int AttrMargin = 4;
 
 bool XmlDiff::Diff( std::string file1, std::string file2)
 {
-	if(!xmlFileL.Parse(file1))
-		return false;
+	{
 
-	if(!xmlFileR.Parse(file2))
-		return false;
+		Profiler profile;
+
+		//auto task1 = [=]
+		//{
+		//	this->xmlFileL.Parse(file1);
+		//};
+
+		//auto task2 = [=]
+		//{
+		//	this->xmlFileR.Parse(file2);
+		//};
+
+		//std::thread t1(task1);
+		//std::thread t2(task2);
+
+		//std::cout << "get id : " << endl;
+		//std::cout << t1.get_id() << std::endl;
+		//std::cout << t2.get_id() << std::endl;
+
+		//t1.join();
+		//t2.join();
+
+
+		if(!xmlFileL.Parse(file1))
+			return false;
+
+		if(!xmlFileR.Parse(file2))
+			return false;
+
+		profile.Stop();
+	}
 
 	diffResult = DiffSibling(xmlFileL.doc.first_node(),xmlFileR.doc.first_node());
 
@@ -167,7 +195,7 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 	result.node = nodeL;
 	result.type = DiffType_Modify;
 
-	std::hash_map<int,bool> visited;
+	std::unordered_map<int,bool> visited;
 	for (xml_attribute<> * attrL = nodeL->first_attribute(); attrL; attrL = attrL->next_attribute())
 	{
 		DiffAttrResult attrResult;
@@ -552,10 +580,12 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 std::list<DiffNodeResult> XmlDiff::ConvertTrace( const std::list<std::pair<int,int>>& trace,const std::vector<xml_node<>*>& nodeLVec, const std::vector<xml_node<>*>& nodeRVec)
 {
 	std::list<DiffNodeResult>  ret;
+#if ENABLE_LOG
 	FOR_EACH(iter,trace)
 	{
 		cout << iter->first - 1 << " " << iter->second - 1 <<endl;
 	}
+#endif 
 
 	size_t indexL = 0 , indexR = 0;
 	for(auto iter = trace.rbegin(); iter != trace.rend(); ++iter)
@@ -828,7 +858,7 @@ int XmlDiff::MatchNode( DiffContext& context, int fromL, int fromR )
 	int valueKickB = context.stringVecR[fromR].length() + MatchNode(context,fromL,fromR+1);
 
 	cacheValue = min(valueMatch,min(valueKickA,valueKickB));
-	cout << "write cache:" << fromL << " " << fromR << " "<< cacheValue <<endl;
+	//cout << "write cache:" << fromL << " " << fromR << " "<< cacheValue <<endl;
 	//if (cacheValue == valueMatch)
 	//{
 	//	context.resL[fromL]	= DiffType_Modify;

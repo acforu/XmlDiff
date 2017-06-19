@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <string>
 #include <vector>
-#include <hash_set>
+//#include <hash_set>
 #include "RapidXml/rapidxml.hpp"
 #include <utility>
 #include <list>
