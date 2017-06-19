@@ -28,26 +28,42 @@ enum DiffType
 	DiffType_Unchanged,
 };
 
+struct XmlString
+{
+	XmlString(const char* d, size_t s)
+	{
+		data = d;
+		size = s;
+	}
+	XmlString()
+	{
+		data = nullptr;
+		size = 0;
+	}
+	const char* beg() const
+	{
+		return data;
+	}
+	const char* end() const
+	{
+		return data + size;
+	}
+	const char* data;
+	size_t size;
+};
+
 struct DiffAttrResult
 {
-	DiffAttrResult()
-	{
-		name = prev = curr = nullptr;
-	}
 	DiffType type;
-	const char* name;
-	const char* prev;
-	const char* curr;
+	XmlString name;
+	XmlString prev;
+	XmlString curr;
 };
 
 struct DiffSingleValueResult
 {
-	DiffSingleValueResult()
-	{
-		prev = curr = nullptr;
-	}
-	const char* prev;
-	const char* curr;
+	XmlString prev;
+	XmlString curr;
 };
 
 struct DiffNodeResult

@@ -1,11 +1,12 @@
 #pragma once
 
+struct XmlString;
 class StringBuff
 {
 public:
 	StringBuff();
 	void AppendChar(char c);
-	void AppendStr(const char* str);
+	void AppendStr( const XmlString& str );
 	void AppendStr(const char* beg, const char* end);
 	void FillChars(char c, int count);
 	void Clear();

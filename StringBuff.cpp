@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "StringBuff.h"
+#include "Common.h"
 
 
 using namespace std;
@@ -8,17 +9,22 @@ void StringBuff::AppendChar( char c )
 	buff.push_back(c);
 }
 
-void StringBuff::AppendStr( const char* str )
-{
-	while(*str != 0)
-	{
-		buff.push_back(*str++);
-	}
-}
+//void StringBuff::AppendStr( const char* str )
+//{
+//	while(*str != 0)
+//	{
+//		buff.push_back(*str++);
+//	}
+//}
 
 void StringBuff::AppendStr( const char* beg, const char* end )
 {
 	buff.insert(buff.end(),beg,end);
+}
+
+void StringBuff::AppendStr( const XmlString& str )
+{
+	buff.insert(buff.end(),str.beg(),str.end());
 }
 
 void StringBuff::FillChars( char c, int count )

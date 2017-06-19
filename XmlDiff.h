@@ -64,7 +64,9 @@ public:
 private:
 	//bool DiffLevel( xml_node<> *nodeL, xml_node<> *nodeR, DiffNodeResult& result);
 	//bool MatchNode( xml_node<> *nodeL, xml_node<> *nodeR);
-	bool Compare(const char* strL,const char* strR);
+
+	bool CompareNullTerminatedStr( const char* strL,const char* strR );
+	bool Compare(const char* strL,size_t sizeL,const char* strR,size_t sizeR);
 
 	//DiffNodeResult DumpNode(xml_node<>* node, DiffType type);
 	DiffNodeResult DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR);
@@ -91,7 +93,7 @@ private:
 	int MatchNode( DiffContext& context, int fromL, int fromR );
 	void GenMatchResult(DiffContext& context, int fromL, int fromR);
 
-	void FormatAttr(StringBuff& buff,const char* name, const char* value);
+	void FormatAttr(StringBuff& buff,const XmlString& name, const XmlString& value);
 
 	struct DumpContext
 	{

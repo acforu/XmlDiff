@@ -107,10 +107,19 @@ bool XmlDiff::Diff( std::string file1, std::string file2)
 //	return false;
 //}
 
-bool XmlDiff::Compare( const char* strL,const char* strR )
+
+
+bool XmlDiff::CompareNullTerminatedStr( const char* strL,const char* strR )
 {
 	return std::string(strL) == strR;
 }
+
+
+bool XmlDiff::Compare(const char* strL,size_t sizeL,const char* strR,size_t sizeR)
+{
+	return std::string(strL,sizeL) == std::string(strR,sizeR);
+}
+
 
 //DiffNodeResult XmlDiff::DumpNode( xml_node<>* node, DiffType type )
 //{
@@ -162,11 +171,11 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 	for (xml_attribute<> * attrL = nodeL->first_attribute(); attrL; attrL = attrL->next_attribute())
 	{
 		DiffAttrResult attrResult;
-		attrResult.name = attrL->name();
+		attrResult.name = XmlString(attrL->name(),attrL->name_size());
 
-		if(xml_attribute<> * attrR = nodeR->first_attribute(attrL->name()))
+		if(xml_attribute<> * attrR = nodeR->first_attribute(attrL->name(),attrL->name_size()))
 		{
-			if (Compare(attrL->value(),attrR->value()))
+			if (Compare(attrL->value(),attrL->value_size(),attrR->value(),attrR->value_size()))
 			{
 				attrResult.type = DiffType_Unchanged;
 			}
@@ -174,14 +183,14 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 			{
 				attrResult.type = DiffType_Modify;
 			}
-			attrResult.prev = attrL->value();
-			attrResult.curr = attrR->value();
+			attrResult.prev = XmlString(attrL->value(),attrL->value_size());
+			attrResult.curr = XmlString(attrR->value(),attrR->value_size());
 			visited[AddressType(attrR)] = true;
 		}
 		else
 		{
 			attrResult.type = DiffType_Del;
-			attrResult.prev = attrL->value();
+			attrResult.prev = XmlString(attrL->value(),attrL->value_size());
 		}
 
 		result.attr.push_back(attrResult);
@@ -193,8 +202,8 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 		{
 			DiffAttrResult attrResult;
 			attrResult.type = DiffType_Add;
-			attrResult.name = attrR->name();
-			attrResult.prev = attrR->value();
+			attrResult.name = XmlString(attrR->name(),attrR->name_size());
+			attrResult.prev = XmlString(attrR->value(),attrR->value_size());
 			result.attr.push_back(attrResult);
 		}
 	}
@@ -211,10 +220,10 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 
 	if (nodeL->value_size() > 0 || nodeR->value_size() > 0)
 	{
-		if (!Compare(nodeL->value(),nodeR->value()))
+		if (!Compare(nodeL->value(),nodeL->value_size(),nodeR->value(),nodeR->value_size()))
 		{
-			result.singleValue.prev = nodeL->value();
-			result.singleValue.curr = nodeR->value();
+			result.singleValue.prev = XmlString(nodeL->value(),nodeL->value_size());
+			result.singleValue.curr = XmlString(nodeR->value(),nodeR->value_size());
 		}
 	}
 
@@ -253,15 +262,14 @@ bool XmlFile::Parse( std::string filename )
 	char * filecontent = doc.allocate_string(memblock,size+1);
 	delete[] memblock;
 
-	fileSize = size + 1;
-
 	file.close();
 
 	//cout << "the entire file content is in memory" << endl;
 
 	try
 	{
-		doc.parse<parse_default>(filecontent);
+		doc.parse<parse_non_destructive>(filecontent);
+		//doc.parse<0>(filecontent);
 	}
 	catch(rapidxml::parse_error& error)
 	{
@@ -440,46 +448,45 @@ const char* XmlDiff::GetDiffTypeString(DiffType type)
 
 void XmlDiff::DumpResultLog( const std::list<DiffNodeResult>& diffNodeList)
 {
-	FOR_EACH(iter,diffNodeList)
-	{
-		if (iter->type == DiffType_Unchanged)
-		{
-			print(std::ostream_iterator<char>(cout), *iter->node, 0);
-		}
-		else
-		{
-			if (iter->type != DiffType_Modify)
-			{
-				cout << GetDiffTypeString(iter->type) << endl;
-			}
+	//FOR_EACH(iter,diffNodeList)
+	//{
+	//	if (iter->type == DiffType_Unchanged)
+	//	{
+	//		print(std::ostream_iterator<char>(cout), *iter->node, 0);
+	//	}
+	//	else
+	//	{
+	//		if (iter->type != DiffType_Modify)
+	//		{
+	//			cout << GetDiffTypeString(iter->type) << endl;
+	//		}
 
-			cout << "<" << iter->node->name();
-			rapidxml::internal::print_attributes(std::ostream_iterator<char>(cout), iter->node, 0);
-			cout << ">" << endl;
+	//		cout << "<" << iter->node->name();
+	//		rapidxml::internal::print_attributes(std::ostream_iterator<char>(cout), iter->node, 0);
+	//		cout << ">" << endl;
 
 
-			for (auto attrIt = iter->attr.begin(); attrIt!=iter->attr.end(); ++attrIt)
-			{
-				if (attrIt->type == DiffType_Add)
-				{
-					cout<< attrIt->name << " ";
-					cout << "add " << attrIt->prev << endl;
-				}
-				else if (attrIt->type == DiffType_Del)
-				{
-					cout<< attrIt->name << " ";
-					cout << "del " << attrIt->prev << endl;
-				}
-				else if (attrIt->type == DiffType_Modify)
-				{
-					cout<< attrIt->name << " ";
-					cout << "modify " <<attrIt->prev << " " << attrIt->curr << endl;
-				}
-			}
-			DumpResultLog(iter->child);
-		}
-		//cout <<  *iter->node << endl;
-	}
+	//		for (auto attrIt = iter->attr.begin(); attrIt!=iter->attr.end(); ++attrIt)
+	//		{
+	//			if (attrIt->type == DiffType_Add)
+	//			{
+	//				cout<< attrIt->name << " ";
+	//				cout << "add " << attrIt->prev << endl;
+	//			}
+	//			else if (attrIt->type == DiffType_Del)
+	//			{
+	//				cout<< attrIt->name << " ";
+	//				cout << "del " << attrIt->prev << endl;
+	//			}
+	//			else if (attrIt->type == DiffType_Modify)
+	//			{
+	//				cout<< attrIt->name << " ";
+	//				cout << "modify " <<attrIt->prev << " " << attrIt->curr << endl;
+	//			}
+	//		}
+	//		DumpResultLog(iter->child);
+	//	}
+	//}
 }
 
 
@@ -894,7 +901,7 @@ void XmlDiff::RenderText()
 	diffUIView->EndEditBlock();
 }
 
-void XmlDiff::FormatAttr( StringBuff& buff,const char* name, const char* value )
+void XmlDiff::FormatAttr(StringBuff& buff,const XmlString& name, const XmlString& value)
 {
 	buff.AppendStr(name);
 	buff.AppendChar('=');
