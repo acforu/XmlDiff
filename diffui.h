@@ -1,7 +1,7 @@
 #ifndef DIFFUI_H
 #define DIFFUI_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include "ui_diffui.h"
 #include "DiffTextEdit.h"
 #include "HotPointBar.h"
@@ -38,7 +38,7 @@ class DiffUI : public QMainWindow
 	Q_OBJECT
 
 public:
-	DiffUI(QWidget *parent = 0, Qt::WFlags flags = 0);
+	DiffUI(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~DiffUI();
 
     void resizeEvent(QResizeEvent *event);

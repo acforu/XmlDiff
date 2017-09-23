@@ -4,7 +4,7 @@
 #include "StringBuff.h"
 //#pragma optimize("",off)
 
-DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
+DiffUI::DiffUI(QWidget *parent, Qt::WindowFlags flags)
 	: QMainWindow(parent, flags)
 {
 	ui.setupUi(this);

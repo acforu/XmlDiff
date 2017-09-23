@@ -292,6 +292,8 @@ bool XmlFile::Parse( std::string filename )
 
 	file.close();
 
+	fileSize = size + 1;
+
 	//cout << "the entire file content is in memory" << endl;
 
 	try

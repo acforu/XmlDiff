@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "diffui.h"
-#include <QtGui/QApplication>
+#include <qapplication>
 #include "XmlDiff.h"
 #include <QtDebug>
 #include <QtGlobal>
@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 
 #if ENABLE_CONSOLE 
-	qInstallMsgHandler(myMessageOutput);
+	//qInstallMsgHandler(myMessageOutput);
 #endif
 
 	//if (argc < 3)
@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 
 		//QString casename = "food";
 		//QString casename = "single_value_node";
-		QString casename = "commodity";
-		//QString casename = "firstbuy";
+		//QString casename = "commodity";
+		QString casename = "firstbuy";
 
 		QString paramL = QString(".\\test_case\\%1\\a.xml").arg(casename);
 		QString paramR = QString(".\\test_case\\%1\\b.xml").arg(casename);

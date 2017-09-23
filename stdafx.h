@@ -1,4 +1,5 @@
 #include <QtGui>
+#include <QWidget>
 #include <stdio.h>
 #include <tchar.h>
 #include <string>

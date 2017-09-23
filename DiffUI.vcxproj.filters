@@ -100,44 +100,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_diffui.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XmlDiff.h">
-      <Filter>XmlDiff</Filter>
-    </ClInclude>
-    <ClInclude Include="XmlHelper.h">
-      <Filter>XmlDiff</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_DiffTextEdit.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StringBuff.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_HotPointBar.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RapidXml\rapidxml.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="RapidXml\rapidxml_iterators.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="RapidXml\rapidxml_print.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-    <ClInclude Include="RapidXml\rapidxml_utils.hpp">
-      <Filter>rapidxml</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="diffui.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -158,6 +120,42 @@
     </CustomBuild>
     <CustomBuild Include="HotPointBar.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Common.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="StringBuff.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\ui_DiffTextEdit.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\ui_diffui.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\ui_HotPointBar.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="XmlDiff.h">
+      <Filter>XmlDiff</Filter>
+    </CustomBuild>
+    <CustomBuild Include="XmlHelper.h">
+      <Filter>XmlDiff</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RapidXml\rapidxml.hpp">
+      <Filter>rapidxml</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RapidXml\rapidxml_iterators.hpp">
+      <Filter>rapidxml</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RapidXml\rapidxml_print.hpp">
+      <Filter>rapidxml</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RapidXml\rapidxml_utils.hpp">
+      <Filter>rapidxml</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
