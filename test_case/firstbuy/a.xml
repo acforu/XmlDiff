@@ -8,5 +8,6 @@
 		</FirstBuyCfg>
 	</FirstBuy>
 	<GameObj mFullName="None" mFlags="1024"/>
+	<TestNode/>
 </NewObj>
 

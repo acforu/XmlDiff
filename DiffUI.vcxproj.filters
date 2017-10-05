@@ -98,6 +98,12 @@
     <ClCompile Include="GeneratedFiles\Retail\moc_HotPointBar.cpp">
       <Filter>Generated Files\Retail</Filter>
     </ClCompile>
+    <ClCompile Include="XmlPatch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="diffui.h">
@@ -160,5 +166,16 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DiffUI.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="XmlPatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="XmlFile" />
   </ItemGroup>
 </Project>

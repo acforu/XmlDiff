@@ -258,59 +258,6 @@ DiffNodeResult XmlDiff::DiffMatchedNode( xml_node<> *nodeL, xml_node<> *nodeR )
 	return result;
 }
 
-bool XmlFile::Parse( std::string filename )
-{
-	ifstream file (filename, ios::in|ios::binary|ios::ate);
-	if (!file.is_open())
-	{
-		return false;
-	}
-
-	doc.clear();
-
-	size_t size = (size_t)file.tellg();
-	file.seekg (0, ios::beg);
-
-	char* memblock = new char [size+1];
-	memset(memblock,0,size+1);
-	file.read (memblock, size);
-
-	char* dest = memblock;
-	char* src = memblock;
-	while(*src)
-	{
-		if (*src == '\r')
-			++src;
-		else
-			*dest++ = *src++;
-	}
-
-	*dest = 0;
-
-	char * filecontent = doc.allocate_string(memblock,size+1);
-	delete[] memblock;
-
-	file.close();
-
-	fileSize = size + 1;
-
-	//cout << "the entire file content is in memory" << endl;
-
-	try
-	{
-		doc.parse<parse_non_destructive>(filecontent);
-		//doc.parse<0>(filecontent);
-	}
-	catch(rapidxml::parse_error& error)
-	{
-		string err = filename + " " + error.what();
-		//MessageBoxA(NULL, err.c_str(), "XML Parse Error", MB_OK|MB_ICONERROR|MB_SYSTEMMODAL);
-		cout << "XML Parse Error: " << err << endl;
-		return false;
-	}
-
-	return true;
-}
 
 std::list<DiffNodeResult> XmlDiff::DiffSibling( xml_node<> *nodeL, xml_node<> *nodeR )
 {

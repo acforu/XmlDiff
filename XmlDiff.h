@@ -8,27 +8,14 @@
 #include <list>
 #include <set>
 #include "diffui.h"
+#include "XmlFile.h"
 
 using namespace rapidxml;
 using namespace std;
 
 class StringBuff;
 
-class XmlFile
-{
-public:
-	XmlFile()
-	{
-		fileSize = 0;
-	}
-	bool Parse(std::string filename);
-	rapidxml::xml_document<> doc;
-	size_t FileSize() const { return fileSize; }
 
-private:
-	size_t fileSize;
-
-};
 
 struct DiffContext
 {

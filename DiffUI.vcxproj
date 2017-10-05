@@ -180,7 +180,9 @@
     </ClCompile>
     <ClCompile Include="StringBuff.cpp" />
     <ClCompile Include="XmlDiff.cpp" />
+    <ClCompile Include="XmlFile.cpp" />
     <ClCompile Include="XmlHelper.cpp" />
+    <ClCompile Include="XmlPatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="DiffTextEdit.h">
@@ -572,6 +574,13 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Retail|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Retail|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="XmlFile.h" />
+    <ClInclude Include="XmlPatch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="XmlFile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
