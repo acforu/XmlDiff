@@ -44,8 +44,8 @@ void HotPointBar::paintEvent( QPaintEvent *event )
 		int y = BlockToPiexl(iter->first);
 
 		int w = width()- HOT_SEGMENT_MARGIN*2;
-		int offset = max(iter->second - iter->first,1);
-		int h = max(BlockToPiexl(offset),1);
+		int offset = std::max(iter->second - iter->first,1);
+		int h = std::max(BlockToPiexl(offset),1);
 
 		painter.setBrush(Qt::red); 
 		painter.drawRect(x,y,w,h);
@@ -69,7 +69,7 @@ void HotPointBar::SetHotSegments( std::vector<std::pair<int,int>>& segments, int
 {
 	//qDebug() << "SetHotSegments" << totalBlock << segments.size() << endl;
 	this->segments = segments;
-	this->maxBlock = max(totalBlockCount-1,1);
+	this->maxBlock = std::max(totalBlockCount-1,1);
 	this->pageBlockCount = pageBlockCount;
 	pagePixel = BlockToPiexl(pageBlockCount) /*- BlockToPiexl(0)*/;
 	maxWinUpperPixel = height() - pagePixel;
@@ -116,7 +116,7 @@ int HotPointBar::BlockToPiexl( int block )
 int HotPointBar::PixelToBlock( int y )
 {
 	int block;
-	y = min(y,maxWinUpperPixel);
+	y = std::min(y,maxWinUpperPixel);
 	if (y == maxWinUpperPixel)
 	{
 		//qDebug() << "y == maxWinUpperPixel" << endl;

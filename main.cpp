@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "diffui.h"
-#include <QtGui/QApplication>
+#include <Qtwidgets/QApplication>
 #include "XmlDiff.h"
 #include <QtDebug>
 #include <QtGlobal>

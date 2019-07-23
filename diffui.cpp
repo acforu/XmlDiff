@@ -2,10 +2,11 @@
 #include "diffui.h"
 #include "XmlDiff.h"
 #include "StringBuff.h"
+#include <QScrollBar>
 //#pragma optimize("",off)
 
-DiffUI::DiffUI(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags)
+DiffUI::DiffUI(QWidget *parent)
+	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 
