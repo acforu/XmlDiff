@@ -131,6 +131,7 @@ DiffUI::DiffUI(QWidget *parent)
 	connect(ui.actionANSI, SIGNAL(triggered()), this, SLOT(switchANSI()));
 	connect(ui.actionUtf_8, SIGNAL(triggered()), this, SLOT(switchUTF8()));
 
+
 	
 	hotPointBar = new HotPointBar(ui.centralWidget);
 	hotPointBar->setObjectName(QString::fromUtf8("hotPointBar"));
@@ -636,7 +637,7 @@ void DiffUI::updateHotPointBar()
 void UseBeyondCompare( QString fileL, QString fileR )
 {
 	QString params = QString(" ") + "\"" + fileL + "\" \"" +fileR + "\"";
-	QString appPath = QCoreApplication::applicationDirPath() + QString("/../../Beyond Compare 4/BCompare.exe");
+	QString appPath = QCoreApplication::applicationDirPath() + QString("/Beyond Compare 4/BCompare.exe");
 	qDebug() << appPath;
 	ShellExecuteA(NULL, "open", appPath.toLocal8Bit().constData(),params.toLocal8Bit().constData(), NULL, SW_SHOWNORMAL);		
 }
