@@ -532,6 +532,7 @@ void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* 
 				//StringBuff strBuff;
 				rapidxml::internal::print_node(strBuff.Begin(), iter->node, 0,indent);
 				ui->AppendText(strBuff,TextSide_Both,TextColor_Normal);
+				strBuff.Clear();
 			}
 		}
 		else if (iter->type == DiffType_Add)

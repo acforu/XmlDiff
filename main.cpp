@@ -5,11 +5,12 @@
 #include <QtDebug>
 #include <QtGlobal>
 #include "XmlHelper.h"
+#include "qlogging.h"
 
 
-void myMessageOutput(QtMsgType, const char * msg)
+void outputMessage(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
-	cout << msg << endl;
+	cout << msg.toStdString() << endl;
 	//OutputDebugStringA(msg);
 }
 
@@ -26,7 +27,7 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 
 #if ENABLE_CONSOLE 
-	qInstallMsgHandler(myMessageOutput);
+	qInstallMessageHandler(outputMessage);
 #endif
 
 	//if (argc < 3)
