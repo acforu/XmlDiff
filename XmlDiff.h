@@ -28,11 +28,11 @@ private:
 
 struct DiffContext
 {
-	DiffContext(const std::vector<string>& stringVecL, const std::vector<string>& stringVecR):stringVecL(stringVecL),stringVecR(stringVecR)
+	DiffContext(const std::vector<xml_node<>*>& stringVecL, const std::vector<xml_node<>*>& stringVecR):stringVecL(stringVecL),stringVecR(stringVecR)
 	{
 	}
-	const std::vector<string>& stringVecL;
-	const std::vector<string>& stringVecR;
+	const std::vector<xml_node<>*>& stringVecL;
+	const std::vector<xml_node<>*>& stringVecR;
 	vector<DiffType> resL;
 	vector<DiffType> resR;
 	vector<vector<int>>	cache;
@@ -86,7 +86,7 @@ private:
 	void DumpResultLog(const std::list<DiffNodeResult>& diffNodeList);
 	size_t NodeStringDistance(xml_node<> *nodeL, xml_node<> *nodeR);
 
-	NodeMatchResult XmlDiff::DiffStringListAcceptModify( const std::vector<string>& stringVecL, const std::vector<string>& stringVecR);
+	NodeMatchResult DiffStringListAcceptModify( const std::vector<xml_node<>*>& stringVecL, const std::vector<xml_node<>*>& stringVecR);
 
 
 	

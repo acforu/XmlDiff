@@ -1323,6 +1323,9 @@ namespace rapidxml
 		void set_text_end(Ch* val) { m_text_end = val; }
 
 		bool can_quick_print() {return get_text_beg() && get_text_end();}
+
+        size_t text_length() { assert(can_quick_print());  return m_text_end - m_text_beg; }
+        std::string_view get_stringview() { assert(can_quick_print());  return string_view(m_text_beg, text_length()); }
     private:
 
         ///////////////////////////////////////////////////////////////////////////

@@ -93,17 +93,49 @@ void split(const string &s, char delim, vector<string> &elems) {
 	}
 }
 
-size_t StringDistBasedLine( const std::string &s1, const std::string &s2 )
-{
-	vector<string> stringL,stringR;
-	split(s1,'\n',stringL);
-	split(s2,'\n',stringR);
 
-	return DiffLines(stringL,stringR);
+void split(const string_view s, char delim, vector<string_view>& elems) {
+	for (size_t i = 0, beg = 0; i < s.length(); ++i)
+	{
+		if (s[i] == delim)
+		{
+			elems.push_back(s.substr(beg, i - beg));
+			beg = i + 1;
+		}
+		if (i == s.length() - 1)
+		{
+			elems.push_back(s.substr(beg, i - beg));
+		}
+	}
 }
 
 
-int DiffLines( const std::vector<string>& nodeLVec, const std::vector<string>& nodeRVec)
+size_t StringDistBasedLine(rapidxml::xml_node<>* s1, rapidxml::xml_node<>* s2 )
+{
+	vector<string_view> stringL,stringR;
+	split(s1->get_stringview(), '\n', stringL);
+	split(s2->get_stringview(), '\n', stringR);
+
+	//the first attr is almost id or key, and the modification of the key is less often, so we give the nodes share the same key with more weight of similarity
+	bool firstAttrIsSame = false;
+	if (string_view(s1->name(),s1->name_size()) == string_view(s2->name(),s2->name_size()))
+	{
+		if (s1->first_attribute() && s2->first_attribute())
+		{
+			if (string_view(s1->first_attribute()->name(), s1->first_attribute()->name_size()) == string_view(s2->first_attribute()->name(), s2->first_attribute()->name_size()) &&
+				string_view(s1->first_attribute()->value(), s1->first_attribute()->value_size()) == string_view(s2->first_attribute()->value(), s2->first_attribute()->value_size()))
+			{
+				firstAttrIsSame = true;
+			}			
+		}
+	}
+	
+	//#todo make sure move right value
+	return DiffLines(stringL,stringR) * firstAttrIsSame?0.75:1;
+}
+
+
+int DiffLines(std::vector<string_view> nodeLVec, std::vector<string_view> nodeRVec)
 {
 	int ret = 0;
 
@@ -210,7 +242,7 @@ std::list<std::pair<int,int>> LCSTrace( const vector<BiasArray>& VList, int k, i
 	return ret;
 }
 
-int CalcStringDist( const std::list<std::pair<int,int>>& trace,const std::vector<string>& nodeLVec, const std::vector<string>& nodeRVec)
+int CalcStringDist( const std::list<std::pair<int,int>>& trace,const std::vector<string_view>& nodeLVec, const std::vector<string_view>& nodeRVec)
 {
 	int ret = 0;
 

@@ -689,6 +689,8 @@ std::list<DiffNodeResult> XmlDiff::DiffNodesAcceptModify( const std::vector<xml_
 	//return ret;
 
 	//static char buff[XmlTextBuffSize];		
+
+	/*
 	static StringBuff buff;
 	buff.Reserve(CalcStringBuffMaxSize());
 
@@ -714,9 +716,11 @@ std::list<DiffNodeResult> XmlDiff::DiffNodesAcceptModify( const std::vector<xml_
 		stringVecR.push_back(buff.Data());
 	}
 	
+	*/
+
 	std::list<DiffNodeResult> ret;
 
-	NodeMatchResult result = DiffStringListAcceptModify(stringVecL,stringVecR);
+	NodeMatchResult result = DiffStringListAcceptModify(nodeLVector, nodeRVector);
 	auto& resL = result.resL;
 	auto& resR = result.resR;
 
@@ -783,7 +787,7 @@ size_t XmlDiff::NodeStringDistance( xml_node<> *nodeL, xml_node<> *nodeR )
 }
 
 
-NodeMatchResult XmlDiff::DiffStringListAcceptModify( const std::vector<string>& stringVecL, const std::vector<string>& stringVecR )
+NodeMatchResult XmlDiff::DiffStringListAcceptModify( const std::vector<xml_node<>*>& stringVecL, const std::vector<xml_node<>*>& stringVecR )
 {
 	int maxValue = 1000;
 	int n = stringVecL.size();
@@ -836,7 +840,7 @@ int XmlDiff::MatchNode( DiffContext& context, int fromL, int fromR )
 		int ret = 0;
 		for (size_t i = fromR; i < context.stringVecR.size(); ++i)
 		{
-			ret += context.stringVecR[i].length();
+			ret += context.stringVecR[i]->text_length();
 		}
 		cacheValue = ret;
 		return ret;
@@ -848,15 +852,15 @@ int XmlDiff::MatchNode( DiffContext& context, int fromL, int fromR )
 		int ret = 0;
 		for (size_t i = fromL; i < context.stringVecL.size(); ++i)
 		{
-			ret += context.stringVecL[i].length();
+			ret += context.stringVecL[i]->text_length();
 		}
 		cacheValue = ret;
 		return ret;
 	}
 
 	int valueMatch = MatchNode(context,fromL+1,fromR+1) + StringDistBasedLine(context.stringVecL[fromL],context.stringVecR[fromR]);
-	int valueKickA = context.stringVecL[fromL].length() + MatchNode(context,fromL+1,fromR);
-	int valueKickB = context.stringVecR[fromR].length() + MatchNode(context,fromL,fromR+1);
+	int valueKickA = context.stringVecL[fromL]->text_length() + MatchNode(context,fromL+1,fromR);
+	int valueKickB = context.stringVecR[fromR]->text_length() + MatchNode(context,fromL,fromR+1);
 
 	cacheValue = min(valueMatch,min(valueKickA,valueKickB));
 	//cout << "write cache:" << fromL << " " << fromR << " "<< cacheValue <<endl;
@@ -899,8 +903,8 @@ void XmlDiff::GenMatchResult( DiffContext& context, int fromL, int fromR )
 	}
 
 	int value = context.cache[fromL][fromR];
-	int valueKickA = context.stringVecL[fromL].length() + context.cache[fromL+1][fromR];
-	int valueKickB = context.stringVecR[fromR].length() + context.cache[fromL][fromR+1];
+	int valueKickA = context.stringVecL[fromL]->text_length() + context.cache[fromL+1][fromR];
+	int valueKickB = context.stringVecR[fromR]->text_length() + context.cache[fromL][fromR+1];
 
 	//if (cacheValue == valueMatch)
 	//{
