@@ -10,7 +10,7 @@
 #ifdef RETAIL
 	#define ENABLE_CONSOLE 0
 #else
-	#define ENABLE_CONSOLE 0
+	#define ENABLE_CONSOLE 1
 #endif // RETAIL
 
 #define HOT_SEGMENT_PIXEL_PER_BLOCK 1

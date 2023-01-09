@@ -12,11 +12,15 @@ class XmlHelper
 
 std::list<std::pair<int,int>> LCSTrace( const std::vector<BiasArray>& VList, int k, int finalD);
 
-size_t StringDistance(const std::string &s1, const std::string &s2);
+
+size_t StringDistance(const std::string_view s1, const std::string_view s2, int maxDistance = 0);
 size_t DataDistance(const std::vector<char>& s1, const std::vector<char>& s2);
 size_t StringDistBasedLine(rapidxml::xml_node<>* s1, rapidxml::xml_node<>* s2);
 size_t StringDistSimplify(const std::string &s1, const std::string &s2);
-size_t StringDistSift4(const std::string &s1, const std::string &s2, int maxOffset = 5);
+
+//size_t StringDistSift4(const std::string_view s1, const std::string_view s2, int maxOffset = 5);
+size_t sift4(const std::string_view s1, const std::string_view s2, int maxOffset = 5, int maxDistance = 0);
+
 
 int DiffLines(std::vector<std::string_view> nodeLVec, std::vector<std::string_view> nodeRVec);
 int CalcStringDist( const std::list<std::pair<int,int>>& trace,const std::vector<std::string_view>& nodeLVec, const std::vector<std::string_view>& nodeRVec);

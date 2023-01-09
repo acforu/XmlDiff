@@ -22,7 +22,7 @@ public:
 	size_t FileSize() const { return fileSize; }
 
 private:
-	size_t fileSize;
+	size_t fileSize = 0;
 
 };
 

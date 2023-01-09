@@ -251,3 +251,10 @@ paket-files/
 .idea/
 *.sln.iml
 /Beyond Compare 4
+GeneratedFiles/ui_HotPointBar.h
+GeneratedFiles/ui_diffui.h
+GeneratedFiles/ui_DiffTextEdit.h
+GeneratedFiles/Retail/moc_HotPointBar.cpp
+GeneratedFiles/Retail/moc_diffui.cpp
+GeneratedFiles/Retail/moc_DiffTextEdit.cpp
+GeneratedFiles/qrc_diffui.cpp

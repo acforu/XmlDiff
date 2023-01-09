@@ -42,6 +42,14 @@ int main(int argc, char *argv[])
 	Profiler profile;
 #endif // RETAIL
 
+	//{
+	//	std::string a = "123abcE";
+	//	std::string b = "321aeb1c2";
+	//	int diff = StringDistance(a, b);
+	//	(diff);
+	//}
+	
+
 
 	DiffUI w;
 
@@ -78,10 +86,12 @@ int main(int argc, char *argv[])
 #else
 		w.showMaximized();
 
-		//QString casename = "food";
+		//QString casename = "1";
 		//QString casename = "single_value_node";
-		QString casename = "commodity";
 		//QString casename = "firstbuy";
+		QString casename = "big_count_children";
+		//QString casename = "key_priority";
+		//QString casename = "comment";
 
 		QString paramL = QString(".\\test_case\\%1\\a.xml").arg(casename);
 		QString paramR = QString(".\\test_case\\%1\\b.xml").arg(casename);
@@ -92,6 +102,9 @@ int main(int argc, char *argv[])
 		//w.Diff(".\\test_case\\firstbuy\\a.xml",".\\test_case\\firstbuy\\b.xml");
 		//w.Diff(".\\test_case\\quest1\\a.xml",".\\test_case\\quest1\\b.xml");
 		//w.Diff(".\\test_case\\meili\\a.xml",".\\test_case\\meili\\b.xml");
+
+
+
 #endif
 	}
 	

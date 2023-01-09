@@ -774,7 +774,7 @@ namespace rapidxml
             return m_parent;
         }
 
-    protected:
+        protected:
 
         // Return empty string
         static Ch *nullstr()
@@ -1324,7 +1324,18 @@ namespace rapidxml
 
 		bool can_quick_print() {return get_text_beg() && get_text_end();}
 
-        size_t text_length() { assert(can_quick_print());  return m_text_end - m_text_beg; }
+        size_t text_length() {
+            if (can_quick_print())
+            {
+                return m_text_end - m_text_beg;
+            }
+            else
+            {
+                assert(type() == node_data);
+                return value_size();
+            }
+            
+        }
         std::string_view get_stringview() { assert(can_quick_print());  return string_view(m_text_beg, text_length()); }
     private:
 

@@ -307,6 +307,8 @@ bool XmlFile::Parse( std::string filename )
 		return false;
 	}
 
+	fileSize = size;
+
 	return true;
 }
 
@@ -858,7 +860,8 @@ int XmlDiff::MatchNode( DiffContext& context, int fromL, int fromR )
 		return ret;
 	}
 
-	int valueMatch = MatchNode(context,fromL+1,fromR+1) + StringDistBasedLine(context.stringVecL[fromL],context.stringVecR[fromR]);
+	int dist = StringDistBasedLine(context.stringVecL[fromL], context.stringVecR[fromR]);
+	int valueMatch = MatchNode(context,fromL+1,fromR+1) + dist;
 	int valueKickA = context.stringVecL[fromL]->text_length() + MatchNode(context,fromL+1,fromR);
 	int valueKickB = context.stringVecR[fromR]->text_length() + MatchNode(context,fromL,fromR+1);
 
