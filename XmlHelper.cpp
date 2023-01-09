@@ -79,10 +79,8 @@ size_t StringDistBasedLine(rapidxml::xml_node<>* s1, rapidxml::xml_node<>* s2 )
 	std::string_view const s1view = (s1->name_size() == 0) ? std::string_view(s1->value(), s1->value_size()) : s1->get_stringview();
 	std::string_view const s2view = (s2->name_size() == 0) ? std::string_view(s2->value(), s2->value_size()) : s2->get_stringview();
 
-	return StringDistance(s1view, s2view,20) * (firstAttrIsSame ? 0.75 : 1);
-	
 	//#todo make sure move right value
-	//return DiffLines(stringL,stringR) * firstAttrIsSame?0.75:1;
+	return StringDistance(s1view, s2view,20) * (firstAttrIsSame ? 0.75 : 1);
 }
 
 
@@ -303,60 +301,6 @@ namespace
 // maxOffset is the number of characters to search for matching letters
 
 //https://siderite.dev/blog/super-fast-and-accurate-string-distance.html/#at1214062680
-
-size_t StringDistSift4(const std::string_view s1, const std::string_view s2, int maxOffset)
-{
-	const int s1_size = s1.length();
-	const int s2_size = s2.length();
-
-	if (s1.empty() || !s1_size) {
-		if (s2.empty()) {
-			return 0;
-		}
-		return s2_size;
-	}
-
-	if (s2.empty() || !s2_size) {
-		return s1_size;
-	}
-
-	int l1=s1.size();
-	int l2=s2.size();
-
-	int c1 = 0;  //cursor for string 1
-	int c2 = 0;  //cursor for string 2
-	int lcss = 0;  //largest common subsequence
-	int local_cs = 0; //local common substring
-
-	while ((c1 < l1) && (c2 < l2)) {
-		if (s1[(c1)] == s2[(c2)]) {
-			local_cs++;
-		} else {
-			lcss+=local_cs;
-			local_cs=0;
-			if (c1!=c2) {
-				c1=c2=max(c1,c2); //using max to bypass the need for computer transpositions ('ab' vs 'ba')
-			}
-			for (int i = 0; i < maxOffset && (c1+i<l1 || c2+i<l2); i++) {
-				if ((c1 + i < l1) && (s1[(c1 + i)] == s2[(c2)])) {
-					c1+= i;
-					local_cs++;
-					break;
-				}
-				if ((c2 + i < l2) && (s1[(c1)] == s2[(c2 + i)])) {
-					c2+= i;
-					local_cs++;
-					break;
-				}
-			}
-		}
-		c1++;
-		c2++;
-	}
-	lcss+=local_cs;
-	return round(max(l1,l2)- lcss);
-}
-
 
 struct sift_offset {
 	int c1;

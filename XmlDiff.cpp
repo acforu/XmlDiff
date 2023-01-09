@@ -13,7 +13,7 @@ typedef  size_t AddressType;
 
 const int IndentInc = 1;
 const int ColAlignCount = 20;
-const int MaxAttrLineCol = 80;
+const int MaxAttrLineCol = 400;
 const int AttrMargin = 4;
 
 bool XmlDiff::Diff( std::string file1, std::string file2)
@@ -791,7 +791,7 @@ size_t XmlDiff::NodeStringDistance( xml_node<> *nodeL, xml_node<> *nodeR )
 
 NodeMatchResult XmlDiff::DiffStringListAcceptModify( const std::vector<xml_node<>*>& stringVecL, const std::vector<xml_node<>*>& stringVecR )
 {
-	int maxValue = 1000;
+	int maxValue = -1;
 	int n = stringVecL.size();
 	int m = stringVecR.size();
 
@@ -1139,6 +1139,12 @@ void XmlDiff::HandleModifyAttr( DumpContext& context,int indent)
 
 void XmlDiff::HandleUnchangeAttr( const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent,bool attrChanged,DiffType prevDiffType,int& attrLineCol )
 {
+	if (std::string_view(iter->name.data,iter->name.size) ==  "nBreakSkillIdName")
+	{
+		int a = 1;
+		++a;
+	}
+
 	StringBuff strBuff;
 	if (prevDiffType == DiffType_Unchanged)
 	{
