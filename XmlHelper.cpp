@@ -2,6 +2,7 @@
 #include "XmlHelper.h"
 #include <iosfwd>
 #include <cmath>
+#include <array>
 
 using namespace std;
 
@@ -333,7 +334,7 @@ size_t sift4(const std::string_view s1, const std::string_view s2, int maxOffset
 	int lcss = 0; //largest common subsequence
 	int local_cs = 0; //local common substring
 	int trans = 0; //number of transpositions ('ab' vs 'ba')
-	std::vector < sift_offset > offset_arr; //offset pair array, for computing the transpositions
+	std::vector<sift_offset> offset_arr; //offset pair array, for computing the transpositions
 	offset_arr.reserve(10);
 
 	while ((c1 < l1) && (c2 < l2)) {
@@ -374,13 +375,6 @@ size_t sift4(const std::string_view s1, const std::string_view s2, int maxOffset
 			  c2,
 			  isTrans
 				});
-
-			static int s = 0;
-			if (offset_arr.size() > s)
-			{
-				s = offset_arr.size();
-				cout << "offset_arr.size() " << offset_arr.size() << endl;
-			}
 
 		}
 		else {

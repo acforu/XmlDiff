@@ -4,6 +4,7 @@
 #include "XmlHelper.h"
 #include "StringBuff.h"
 #include <xutility>
+#include <algorithm>
 
 using namespace rapidxml;
 using namespace std;
@@ -791,20 +792,10 @@ size_t XmlDiff::NodeStringDistance( xml_node<> *nodeL, xml_node<> *nodeR )
 
 NodeMatchResult XmlDiff::DiffStringListAcceptModify( const std::vector<xml_node<>*>& stringVecL, const std::vector<xml_node<>*>& stringVecR )
 {
-	int maxValue = -1;
-	int n = stringVecL.size();
-	int m = stringVecR.size();
+
 
 	DiffContext context(stringVecL,stringVecR);
-	context.resL.assign(n,DiffType_Unchanged);
-	context.resR.assign(m,DiffType_Unchanged);
-	context.cache.resize(n+1);
-	context.maxValue = maxValue;
 
-	FOR_EACH(iter,context.cache)
-	{
-		iter->assign(m+1,maxValue);
-	}
 
 	MatchNode(context,0,0);
 	GenMatchResult(context,0,0);
@@ -832,7 +823,7 @@ NodeMatchResult XmlDiff::DiffStringListAcceptModify( const std::vector<xml_node<
 int XmlDiff::MatchNode( DiffContext& context, int fromL, int fromR )
 {
 	int& cacheValue = context.cache[fromL][fromR];
-	if (cacheValue != context.maxValue)
+	if (cacheValue != context.defaultValue)
 	{
 		return cacheValue;
 	}
@@ -860,7 +851,9 @@ int XmlDiff::MatchNode( DiffContext& context, int fromL, int fromR )
 		return ret;
 	}
 
-	int dist = StringDistBasedLine(context.stringVecL[fromL], context.stringVecR[fromR]);
+	//int dist = StringDistBasedLine(context.stringVecL[fromL], context.stringVecR[fromR]);
+	int dist = context.distCache[fromL][fromR];
+	assert(dist != context.defaultValue);
 	int valueMatch = MatchNode(context,fromL+1,fromR+1) + dist;
 	int valueKickA = context.stringVecL[fromL]->text_length() + MatchNode(context,fromL+1,fromR);
 	int valueKickB = context.stringVecR[fromR]->text_length() + MatchNode(context,fromL,fromR+1);
@@ -1205,3 +1198,64 @@ size_t XmlDiff::CalcStringBuffMaxSize()
 
 
 
+DiffContext::DiffContext(const std::vector<xml_node<>*>& stringVecL, const std::vector<xml_node<>*>& stringVecR) :stringVecL(stringVecL), stringVecR(stringVecR)
+{
+	const int n = stringVecL.size();
+	const int m = stringVecR.size();
+	resL.assign(n, DiffType_Unchanged);
+	resR.assign(m, DiffType_Unchanged);
+	cache.resize(n + 1);
+
+	FOR_EACH(iter, cache)
+	{
+		iter->assign(m + 1, defaultValue);
+	}
+
+	distCache.resize(stringVecL.size());
+	for (auto& dist : distCache)
+	{
+		dist.assign(stringVecR.size(), defaultValue);
+	}
+
+	const int coreCount = std::max(int(thread::hardware_concurrency()) - 2, 1);
+
+	auto func = [&](int beg, int end)
+	{
+		for (int i = beg; i < end; ++i)
+		{
+			for (int j = 0; j < stringVecR.size(); ++j)
+			{
+				distCache[i][j] = StringDistBasedLine(stringVecL[i], stringVecR[j]);
+			}
+		}
+	};
+
+	if (stringVecL.size() * stringVecR.size() < 20000)
+	{
+		func(0, stringVecL.size());
+	}
+	else
+	{
+		std::vector<std::thread> threads;
+
+		const int linesPerThread = std::max(int(stringVecL.size()) / coreCount, 1);
+
+		int start = 0;
+		while (true)
+		{
+			int end = std::min(start + linesPerThread, int(stringVecL.size()));
+			threads.emplace_back(std::thread(func, start, end));
+
+			start = end;
+
+			if (end == stringVecL.size())
+				break;
+		}
+
+		for (auto& t : threads)
+		{
+			t.join();
+		}
+	}
+	
+}

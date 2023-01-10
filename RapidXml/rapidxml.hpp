@@ -12,6 +12,7 @@
     #include <cassert>      // For assert
     #include <new>          // For placement new
 #endif
+#include <string_view>
 
 // On MSVC, disable "conditional expression is constant" warning (level 4). 
 // This warning is almost impossible to avoid with certain types of templated code
@@ -1322,9 +1323,9 @@ namespace rapidxml
 		Ch* get_text_end() const { return m_text_end; }
 		void set_text_end(Ch* val) { m_text_end = val; }
 
-		bool can_quick_print() {return get_text_beg() && get_text_end();}
+		bool can_quick_print() const {return get_text_beg() && get_text_end();}
 
-        size_t text_length() {
+        size_t text_length() const{
             if (can_quick_print())
             {
                 return m_text_end - m_text_beg;
@@ -1332,11 +1333,11 @@ namespace rapidxml
             else
             {
                 assert(type() == node_data);
-                return value_size();
+                return this->value_size();
             }
             
         }
-        std::string_view get_stringview() { assert(can_quick_print());  return string_view(m_text_beg, text_length()); }
+        std::string_view get_stringview() const { assert(can_quick_print());  return std::string_view(m_text_beg, text_length()); }
     private:
 
         ///////////////////////////////////////////////////////////////////////////

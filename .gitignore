@@ -258,3 +258,7 @@ GeneratedFiles/Retail/moc_HotPointBar.cpp
 GeneratedFiles/Retail/moc_diffui.cpp
 GeneratedFiles/Retail/moc_DiffTextEdit.cpp
 GeneratedFiles/qrc_diffui.cpp
+test_case/key_priority/b.xml
+test_case/key_priority/a.xml
+test_case/big_count_children/b.xml
+test_case/big_count_children/a.xml

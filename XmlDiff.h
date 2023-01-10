@@ -28,15 +28,16 @@ private:
 
 struct DiffContext
 {
-	DiffContext(const std::vector<xml_node<>*>& stringVecL, const std::vector<xml_node<>*>& stringVecR):stringVecL(stringVecL),stringVecR(stringVecR)
-	{
-	}
+	DiffContext(const std::vector<xml_node<>*>& stringVecL, const std::vector<xml_node<>*>& stringVecR);
+
 	const std::vector<xml_node<>*>& stringVecL;
 	const std::vector<xml_node<>*>& stringVecR;
 	vector<DiffType> resL;
 	vector<DiffType> resR;
+
 	vector<vector<int>>	cache;
-	int maxValue;
+	vector<vector<int>> distCache;
+	static const int defaultValue = -1;
 };
 
 struct NodeMatchResult
