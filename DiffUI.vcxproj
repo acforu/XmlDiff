@@ -316,6 +316,7 @@
     </ClCompile>
     <ClCompile Include="HotPointBar.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyersDiff.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -385,6 +386,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fStdAfx.h" "-f../../HotPointBar.h"  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DRETAIL "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui"</Command>
     </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_HotPointBar.h" />
+    <ClInclude Include="MyersDiff.h" />
     <ClInclude Include="RapidXml\rapidxml.hpp" />
     <ClInclude Include="RapidXml\rapidxml_iterators.hpp" />
     <ClInclude Include="RapidXml\rapidxml_print.hpp" />

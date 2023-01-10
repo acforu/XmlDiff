@@ -98,6 +98,9 @@
     <ClCompile Include="GeneratedFiles\Retail\moc_HotPointBar.cpp">
       <Filter>Generated Files\Retail</Filter>
     </ClCompile>
+    <ClCompile Include="MyersDiff.cpp">
+      <Filter>XmlDiff</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -135,6 +138,9 @@
     </ClInclude>
     <ClInclude Include="RapidXml\rapidxml_utils.hpp">
       <Filter>rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="MyersDiff.h">
+      <Filter>XmlDiff</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
