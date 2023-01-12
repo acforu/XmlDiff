@@ -3,6 +3,9 @@
 #include "XmlDiff.h"
 #include "StringBuff.h"
 #include <QScrollBar>
+#include <locale>
+#include <codecvt>
+#include "MyersDiff.h"
 //#pragma optimize("",off)
 
 DiffUI::DiffUI(QWidget *parent)
@@ -19,6 +22,14 @@ DiffUI::DiffUI(QWidget *parent)
 	textEditR->setLineWrapMode(QPlainTextEdit::NoWrap);
 	textEditR ->setObjectName(QString::fromUtf8("textEditR"));
 
+	textEditLineCompareUp = new QPlainTextEdit(ui.centralWidget);
+	textEditLineCompareUp->setLineWrapMode(QPlainTextEdit::NoWrap);
+	textEditLineCompareUp->setObjectName(QString::fromUtf8("textEditLineCompareUp"));
+
+	textEditLineCompareDown = new QPlainTextEdit(ui.centralWidget);
+	textEditLineCompareDown->setLineWrapMode(QPlainTextEdit::NoWrap);
+	textEditLineCompareDown->setObjectName(QString::fromUtf8("textEditLineCompareDown"));
+
 	QFont font = QFont("Microsoft YaHei UI", 11, QFont::Normal, false);
 	//QFont font = QFont("SimSun", 12, QFont::Normal, false);
 	
@@ -30,6 +41,10 @@ DiffUI::DiffUI(QWidget *parent)
 	//font.setPointSize(11);
 	textEditL->setFont(font);
 	textEditR->setFont(font);
+
+	QFont lineCompareFont = QFont("Microsoft YaHei UI", 14, QFont::Normal, false);
+	textEditLineCompareUp->setFont(lineCompareFont);
+	textEditLineCompareDown->setFont(lineCompareFont);
 
 	const int tabStop = 10;  
 	QFontMetrics metrics(textEditL->font());
@@ -68,8 +83,18 @@ DiffUI::DiffUI(QWidget *parent)
 	//textEditL->setHorizontalScrollBar(hbar);
 	//textEditR->setHorizontalScrollBar(hbar);
 
+
+	textEditLineCompareUp->setReadOnly(true);
+	textEditLineCompareUp->setUndoRedoEnabled(false);
+
+	textEditLineCompareDown->setReadOnly(true);
+	textEditLineCompareDown->setUndoRedoEnabled(false);
+
 	cursorL = new QTextCursor(textEditL->document());
 	cursorR = new QTextCursor(textEditR->document());
+
+	cursorTextEditLineCompareUp = new QTextCursor(textEditLineCompareUp->document());
+	cursorTextEditLineCompareDown = new QTextCursor(textEditLineCompareDown->document());
 
 	
 	//textEditPlain = new QPlainTextEdit(ui.centralWidget);
@@ -155,13 +180,17 @@ void DiffUI::resizeEvent( QResizeEvent *event )
 //	qDebug() << "resizeEvent" <<ui.centralWidget->width() << endl;
 
 	const int barWidth = 50;
-	int textWidth = (ui.centralWidget->width() - barWidth) *0.5;
-	int textHeight = ui.centralWidget->height();
+	const int lineCompareTextAreaHeight = 120;
+	const int lineCompareBarHeight = 20;
+
+	const int textWidth = (ui.centralWidget->width() - barWidth) *0.5;
+	const int textHeight = ui.centralWidget->height() - lineCompareTextAreaHeight - lineCompareBarHeight;
 	textEditL->setGeometry(QRect(barWidth, 0, textWidth, textHeight));
 	textEditR->setGeometry(QRect(barWidth+ textWidth, 0, textWidth, textHeight));
 
 	hotPointBar->setGeometry(QRect(0, 0, barWidth, textHeight - 20));
-
+	textEditLineCompareUp->setGeometry(QRect(0, textHeight, ui.centralWidget->width(), lineCompareTextAreaHeight * 0.5));
+	textEditLineCompareDown->setGeometry(QRect(0, textHeight + lineCompareTextAreaHeight*0.5, ui.centralWidget->width(), lineCompareTextAreaHeight * 0.5));
 
 	//textEditPlain->setGeometry(QRect(0, 0, ui.centralWidget->width()*0.5, ui.centralWidget->height()));
 }
@@ -353,6 +382,45 @@ int DiffUI::GetTotalBlocks()
 	return textEditL->blockCount();
 }
 
+void DiffUI::AppendLineCompareText(std::wstring str, TexTSide side, DiffType type)
+{	
+	QTextCursor* cursor = nullptr;
+	if (side == TextSide_Left)
+	{
+		cursor = cursorTextEditLineCompareUp;
+	}
+	else
+	{
+		cursor = cursorTextEditLineCompareDown;
+	}
+
+	QString text;
+
+	if (type == DiffType_Add || type == DiffType_Modify)
+	{
+		text = QString("<p style='color:red; '><strong>%1</strong></p>").arg(QString::fromWCharArray(str.c_str()));
+	}
+	else if (type == DiffType_Del)
+	{
+		text = QString("<p style='color:red; '><strong><s>%1</s></strong></p>").arg(QString::fromWCharArray(str.c_str()));
+	}
+	else
+	{
+		text = QString("<p style='color:black; '>%1</p>").arg(QString::fromWCharArray(str.c_str()));
+	}
+
+	cursor->insertHtml(text);
+}
+
+void DiffUI::ResetLineCompareText()
+{
+	textEditLineCompareUp->document()->clear();
+	textEditLineCompareUp->moveCursor(QTextCursor::Start);
+
+	textEditLineCompareDown->document()->clear();
+	textEditLineCompareDown->moveCursor(QTextCursor::Start);
+}
+
 void DiffUI::MoveToBlock( int block )
 {
 	
@@ -365,13 +433,25 @@ void DiffUI::MoveToBlock( int block )
 
 	//qDebug() << "lineCount " << lineCount << endl;
 
+	std::wstring lineTextLeft, lineTextRight;
+
 	if (block < textEditL->document()->blockCount())
 	{
 		textEditL->moveCursor(QTextCursor::End);
 		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
 		cursorL.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.777);
 
+		
+		//std::cout << str << std::endl;
+
 		textEditL->setTextCursor(cursorL);
+
+		auto str = GetModifyText(block, true);
+		if (!str.isEmpty())
+		{
+			std::string log = str.toLocal8Bit().constData();
+			lineTextLeft = ToWstring(log);
+		}
 	}
 
 	if (block < textEditR->document()->blockCount())
@@ -381,9 +461,59 @@ void DiffUI::MoveToBlock( int block )
 		cursorR.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.777);
 
 		textEditR->setTextCursor(cursorR);
+
+		auto str = GetModifyText(block, false);
+		if (!str.isEmpty())
+		{
+			std::string log = str.toLocal8Bit().constData();
+			lineTextRight = ToWstring(log);
+		}
 	}
 
 	HighLightDiffBlocks(block);
+
+	
+
+	std::vector<wchar_t> charVecL(lineTextLeft.begin(),lineTextLeft.end());
+	std::vector<wchar_t> charVecR(lineTextRight.begin(), lineTextRight.end());
+
+	auto compare = [](const wchar_t& a, const wchar_t& b)
+	{
+		return a == b;
+	};
+
+	MyersDiff::DiffResult<wchar_t> result = MyersDiff::DiffNodes<wchar_t>(charVecL,charVecR, compare);
+
+	ResetLineCompareText();
+
+	for (auto& block : result.results)
+	{
+		if (block.type == DiffType_Add)
+		{
+			std::wstring text(block.first.begin(),block.first.end());
+			AppendLineCompareText(text, TextSide_Right, DiffType_Add);
+		}
+		else if (block.type == DiffType_Del)
+		{
+			std::wstring text(block.first.begin(), block.first.end());
+			AppendLineCompareText(text, TextSide_Left, DiffType_Del);
+		}
+		else if (block.type == DiffType_Modify)
+		{
+			std::wstring textL(block.first.begin(), block.first.end());
+			AppendLineCompareText(textL, TextSide_Left, DiffType_Modify);
+
+			std::wstring textR(block.second.begin(), block.second.end());
+			AppendLineCompareText(textR, TextSide_Right, DiffType_Modify);
+		}
+		else
+		{
+			std::wstring text(block.first.begin(), block.first.end());
+			AppendLineCompareText(text, TextSide_Left, DiffType_Unchanged);
+			AppendLineCompareText(text, TextSide_Right, DiffType_Unchanged);
+		}
+		
+	}
 	//hotPointBar->NotifyCurBlock(block);
 	/*qDebug() << "firstBlockVisable " << curBlockNum << endl;
 	qDebug() << "block top line " << textEditL->BlockTopLinePos(block) << endl;*/
@@ -627,6 +757,79 @@ int DiffUI::VisualContentHeight()
 		textHeight -= textEditR->horizontalScrollBar()->sizeHint().height() ;
 	}
 	return textHeight;
+}
+
+QString DiffUI::GetModifyText(int startBlock, bool isLeft)
+{
+	QString ret;
+
+	auto iter = ModifyEndTags.upper_bound(startBlock);
+	if (iter == ModifyEndTags.end())
+		return ret;
+
+	int endBlock = *iter;
+	DiffTextEdit* textEdit = isLeft ? textEditL : textEditR;
+
+	for (int i = startBlock; i < endBlock; ++i)
+	{
+		auto textBlock = textEdit->document()->findBlockByNumber(i);
+		ret += textBlock.text();
+	}
+
+	return ret;
+	
+	//QString str = textBlock.text();
+	//if (!str.isEmpty())
+	//{
+	//	std::string log = str.toLocal8Bit().constData();
+	//	cout << log << endl;
+	//}
+}
+
+
+const static int kMaxCharacterLength = 1024 * 5;
+
+bool Utf8ToUnicode(const char* pcUtf8Src, std::wstring* pwUniStrDest)
+{
+	if (!pcUtf8Src || !pwUniStrDest) return false;
+
+	wchar_t buffer[kMaxCharacterLength];
+
+	int dwBefore = MultiByteToWideChar(CP_UTF8, 0, pcUtf8Src, -1, NULL, 0);
+	if (dwBefore < 0 || dwBefore >= kMaxCharacterLength)
+	{
+		return false;
+	}
+
+	wchar_t* pwBuffer = buffer;
+
+	int dwAfter = MultiByteToWideChar(CP_UTF8, 0, pcUtf8Src, -1, pwBuffer, dwBefore);
+	if (dwBefore == dwAfter)
+	{
+		pwBuffer[dwBefore] = L'\0';
+		*pwUniStrDest = pwBuffer;
+	}
+
+	return dwBefore == dwAfter;
+}
+
+std::wstring DiffUI::ToWstring(const std::string& str)
+{
+	std::wstring ret;
+	if (encodeType == EncodeType_UTF8)
+	{
+		Utf8ToUnicode(str.c_str(), &ret);
+	}
+//#todo convert gbk
+	//else 
+	//{
+	//	assert(encodeType == EncodeType_ANSI);
+	//	const char* LOCALE_NAME = ".936"; //GBKÔÚwindowsÏÂµÄlocale name
+	//	std::wstring_convert<codecvt_byname<wchar_t, char, mbstate_t>> Conver_GBK(new codecvt_byname<wchar_t, char, mbstate_t>(LOCALE_NAME));    //GBK - whar
+	//	return Conver_GBK.from_bytes(str);
+	//}
+
+	return ret;
 }
 
 void DiffUI::updateHotPointBar()

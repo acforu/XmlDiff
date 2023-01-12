@@ -13,8 +13,8 @@ typedef  size_t AddressType;
 
 
 const int IndentInc = 1;
-const int ColAlignCount = 20;
-const int MaxAttrLineCol = 400;
+const int ColAlignCount = 1;
+const int MaxAttrLineCol = 100;
 const int AttrMargin = 4;
 
 bool XmlDiff::Diff( std::string file1, std::string file2)
@@ -1132,12 +1132,6 @@ void XmlDiff::HandleModifyAttr( DumpContext& context,int indent)
 
 void XmlDiff::HandleUnchangeAttr( const std::list<DiffAttrResult>::const_iterator iter,DiffUI* ui,int indent,bool attrChanged,DiffType prevDiffType,int& attrLineCol )
 {
-	if (std::string_view(iter->name.data,iter->name.size) ==  "nBreakSkillIdName")
-	{
-		int a = 1;
-		++a;
-	}
-
 	StringBuff strBuff;
 	if (prevDiffType == DiffType_Unchanged)
 	{

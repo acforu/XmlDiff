@@ -5,6 +5,7 @@
 #include "ui_diffui.h"
 #include "DiffTextEdit.h"
 #include "HotPointBar.h"
+#include "Common.h"
 
 enum TextFormatType
 {
@@ -50,6 +51,9 @@ public:
 	void AppendText(StringBuff& buff,TexTSide side, TextFormatType type);
 	int GetTotalBlocks();
 
+	void AppendLineCompareText(std::wstring str, TexTSide side, DiffType type);
+	void ResetLineCompareText();
+
 	void ModifyMarkBegin();
 	void ModifyMarkEnd();
 	void ClearModifyMark();
@@ -66,6 +70,10 @@ public:
 
 	int PageLineCount();
 	int VisualContentHeight();
+
+	QString GetModifyText(int startBlock, bool isLeft);
+
+	std::wstring ToWstring(const std::string& str);
 private slots: 
 	void onLScrollContentChanged();
 	void onRScrollContentChanged();
@@ -88,7 +96,13 @@ private:
 	Ui::DiffUIClass ui;
     DiffTextEdit *textEditL;
     DiffTextEdit *textEditR;
-    //QPlainTextEdit  *textEditPlain;
+
+	QPlainTextEdit* textEditLineCompareUp;
+	QPlainTextEdit* textEditLineCompareDown;
+
+	QTextCursor* cursorTextEditLineCompareUp;
+	QTextCursor* cursorTextEditLineCompareDown;
+
 
 	QAction * nextModifyAction;
 	QAction * prevModifyAction;

@@ -132,7 +132,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
@@ -176,7 +176,7 @@
       <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
@@ -225,7 +225,7 @@
       <DebugInformationFormat>
       </DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
