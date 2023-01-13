@@ -51,7 +51,7 @@ public:
 	void AppendText(StringBuff& buff,TexTSide side, TextFormatType type);
 	int GetTotalBlocks();
 
-	void AppendLineCompareText(std::wstring str, TexTSide side, DiffType type);
+	void AppendLineCompareText(std::wstring str, TexTSide side, DiffType type,bool singleDiffType = false);
 	void ResetLineCompareText();
 
 	void ModifyMarkBegin();
@@ -73,7 +73,7 @@ public:
 
 	QString GetModifyText(int startBlock, bool isLeft);
 
-	std::wstring ToWstring(const std::string& str);
+	std::wstring GBKToUnicode(const std::string& str);
 private slots: 
 	void onLScrollContentChanged();
 	void onRScrollContentChanged();

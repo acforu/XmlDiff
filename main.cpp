@@ -6,6 +6,7 @@
 #include <QtGlobal>
 #include "XmlHelper.h"
 #include "qlogging.h"
+#include "MyersDiff.h"
 
 
 void outputMessage(QtMsgType type, const QMessageLogContext& context, const QString& msg)
@@ -29,6 +30,18 @@ int main(int argc, char *argv[])
 #if ENABLE_CONSOLE 
 	qInstallMessageHandler(outputMessage);
 #endif
+
+	//std::vector<char> a1 = {'a','b','c', 'd','e'};
+	//std::vector<char> a2 = { 'a', '1', 'b', 'w','d'};
+
+	//auto func = [](const char& a, const char& b)
+	//{
+	//	return a == b;
+	//};
+
+	//auto res = MyersDiff::DiffNodes<char>(a1,a2,func);
+
+
 
 	//if (argc < 3)
 	//{
@@ -87,9 +100,9 @@ int main(int argc, char *argv[])
 		w.showMaximized();
 
 		//QString casename = "1";
-		//QString casename = "single_value_node";
-		//QString casename = "firstbuy";
-		QString casename = "big_count_children";
+//		QString casename = "single_value_node";
+		QString casename = "firstbuy";
+		//QString casename = "big_count_children";
 		//QString casename = "key_priority";
 		//QString casename = "comment";
 

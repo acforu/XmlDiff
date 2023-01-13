@@ -8,6 +8,94 @@
 #include "MyersDiff.h"
 //#pragma optimize("",off)
 
+
+bool GbkToUnicode_NoLimit(const char* pcMbSrc, std::wstring* pwUniStrDest)
+{
+	if (!pcMbSrc || !pwUniStrDest) return false;
+
+	const unsigned int CP_GBK = 936;
+
+	int dwBefore = MultiByteToWideChar(CP_GBK, 0, pcMbSrc, -1, NULL, 0);
+	if (dwBefore <= 0)
+	{
+		return false;
+	}
+
+	wchar_t* pwBuffer = (wchar_t*)malloc((dwBefore + 1) * sizeof(wchar_t));
+	if (NULL == pwBuffer)
+	{
+		return false;
+	}
+
+	int dwAfter = MultiByteToWideChar(CP_GBK, 0, pcMbSrc, -1, pwBuffer, dwBefore);
+
+	if (dwBefore == dwAfter)
+	{
+		pwBuffer[dwBefore] = L'\0';
+		*pwUniStrDest = (wchar_t*)pwBuffer;
+	}
+	free(pwBuffer);
+	return dwBefore == dwAfter;
+}
+
+bool Utf8ToUnicode_NoLimit(const char* pcUtf8Src, std::wstring* pwUniStrDest)
+{
+	if (!pcUtf8Src || !pwUniStrDest) return false;
+
+	int dwBefore = MultiByteToWideChar(CP_UTF8, 0, pcUtf8Src, -1, NULL, 0);
+	if (dwBefore <= 0)
+	{
+		return false;
+	}
+
+	wchar_t* pwBuffer = (wchar_t*)malloc((dwBefore + 1) * sizeof(wchar_t));
+	if (NULL == pwBuffer)
+	{
+		return false;
+	}
+
+	int dwAfter = MultiByteToWideChar(CP_UTF8, 0, pcUtf8Src, -1, pwBuffer, dwBefore);
+	if (dwBefore == dwAfter)
+	{
+		pwBuffer[dwBefore] = L'\0';
+		*pwUniStrDest = pwBuffer;
+	}
+
+	free(pwBuffer);
+
+	return dwBefore == dwAfter;
+}
+
+bool UnicodeToUtf8_NoLimit(const wchar_t* pwUniSrc, std::string* pUtf8StrDest)
+{
+	if (!pwUniSrc || !pUtf8StrDest) return false;
+
+	int dwBefore = WideCharToMultiByte(CP_UTF8, 0, pwUniSrc, -1, NULL, 0, NULL, NULL);
+	if (dwBefore <= 0)
+	{
+		return false;
+	}
+
+	char* pcBuffer = (char*)malloc((dwBefore + 1) * sizeof(char));
+	if (NULL == pcBuffer)
+	{
+		return false;
+	}
+
+	int dwAfter = WideCharToMultiByte(CP_UTF8, 0, pwUniSrc, -1, pcBuffer, dwBefore * sizeof(char), NULL, NULL);
+
+	if (dwBefore == dwAfter)
+	{
+		pcBuffer[dwBefore] = '\0';
+		*pUtf8StrDest = pcBuffer;
+	}
+
+	free(pcBuffer);
+
+	return dwBefore == dwAfter;
+}
+
+
 DiffUI::DiffUI(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -382,7 +470,8 @@ int DiffUI::GetTotalBlocks()
 	return textEditL->blockCount();
 }
 
-void DiffUI::AppendLineCompareText(std::wstring str, TexTSide side, DiffType type)
+
+void DiffUI::AppendLineCompareText(std::wstring str, TexTSide side, DiffType type, bool singleDiffType)
 {	
 	QTextCursor* cursor = nullptr;
 	if (side == TextSide_Left)
@@ -394,20 +483,34 @@ void DiffUI::AppendLineCompareText(std::wstring str, TexTSide side, DiffType typ
 		cursor = cursorTextEditLineCompareDown;
 	}
 
-	QString text;
+	std::string utf8Str;
+	bool ret = UnicodeToUtf8_NoLimit(str.c_str(), &utf8Str);
+	assert(ret);
 
-	if (type == DiffType_Add || type == DiffType_Modify)
+	QString text;
+	QString originalText = QString::fromUtf8(utf8Str.c_str()).toHtmlEscaped();
+		//QString::fromWCharArray(str.c_str()).toHtmlEscaped();
+
+	if (singleDiffType)
 	{
-		text = QString("<p style='color:red; '><strong>%1</strong></p>").arg(QString::fromWCharArray(str.c_str()));
-	}
-	else if (type == DiffType_Del)
-	{
-		text = QString("<p style='color:red; '><strong><s>%1</s></strong></p>").arg(QString::fromWCharArray(str.c_str()));
+		text = QString("<p style='color:black; '>%1</p>").arg(originalText);
 	}
 	else
 	{
-		text = QString("<p style='color:black; '>%1</p>").arg(QString::fromWCharArray(str.c_str()));
+		if (type == DiffType_Add || type == DiffType_Modify)
+		{
+			text = QString("<p style='color:red; '><strong>%1</strong></p>").arg(originalText);
+		}
+		else if (type == DiffType_Del)
+		{
+			text = QString("<p style='color:LightPink; '><strong><s>%1</s></strong></p>").arg(originalText);
+		}
+		else
+		{
+			text = QString("<p style='color:black; '>%1</p>").arg(originalText);
+		}
 	}
+	
 
 	cursor->insertHtml(text);
 }
@@ -450,7 +553,7 @@ void DiffUI::MoveToBlock( int block )
 		if (!str.isEmpty())
 		{
 			std::string log = str.toLocal8Bit().constData();
-			lineTextLeft = ToWstring(log);
+			lineTextLeft = GBKToUnicode(log);
 		}
 	}
 
@@ -466,7 +569,7 @@ void DiffUI::MoveToBlock( int block )
 		if (!str.isEmpty())
 		{
 			std::string log = str.toLocal8Bit().constData();
-			lineTextRight = ToWstring(log);
+			lineTextRight = GBKToUnicode(log);
 		}
 	}
 
@@ -486,31 +589,33 @@ void DiffUI::MoveToBlock( int block )
 
 	ResetLineCompareText();
 
+	bool singleDiffType = result.results.size() == 1;
+
 	for (auto& block : result.results)
 	{
 		if (block.type == DiffType_Add)
 		{
 			std::wstring text(block.first.begin(),block.first.end());
-			AppendLineCompareText(text, TextSide_Right, DiffType_Add);
+			AppendLineCompareText(text, TextSide_Right, DiffType_Add, singleDiffType);
 		}
 		else if (block.type == DiffType_Del)
 		{
 			std::wstring text(block.first.begin(), block.first.end());
-			AppendLineCompareText(text, TextSide_Left, DiffType_Del);
+			AppendLineCompareText(text, TextSide_Left, DiffType_Del, singleDiffType);
 		}
 		else if (block.type == DiffType_Modify)
 		{
 			std::wstring textL(block.first.begin(), block.first.end());
-			AppendLineCompareText(textL, TextSide_Left, DiffType_Modify);
+			AppendLineCompareText(textL, TextSide_Left, DiffType_Modify, singleDiffType);
 
 			std::wstring textR(block.second.begin(), block.second.end());
-			AppendLineCompareText(textR, TextSide_Right, DiffType_Modify);
+			AppendLineCompareText(textR, TextSide_Right, DiffType_Modify, singleDiffType);
 		}
 		else
 		{
 			std::wstring text(block.first.begin(), block.first.end());
-			AppendLineCompareText(text, TextSide_Left, DiffType_Unchanged);
-			AppendLineCompareText(text, TextSide_Right, DiffType_Unchanged);
+			AppendLineCompareText(text, TextSide_Left, DiffType_Unchanged, singleDiffType);
+			AppendLineCompareText(text, TextSide_Right, DiffType_Unchanged, singleDiffType);
 		}
 		
 	}
@@ -777,13 +882,6 @@ QString DiffUI::GetModifyText(int startBlock, bool isLeft)
 	}
 
 	return ret;
-	
-	//QString str = textBlock.text();
-	//if (!str.isEmpty())
-	//{
-	//	std::string log = str.toLocal8Bit().constData();
-	//	cout << log << endl;
-	//}
 }
 
 
@@ -813,22 +911,11 @@ bool Utf8ToUnicode(const char* pcUtf8Src, std::wstring* pwUniStrDest)
 	return dwBefore == dwAfter;
 }
 
-std::wstring DiffUI::ToWstring(const std::string& str)
+std::wstring DiffUI::GBKToUnicode(const std::string& str) //GBK
 {
 	std::wstring ret;
-	if (encodeType == EncodeType_UTF8)
-	{
-		Utf8ToUnicode(str.c_str(), &ret);
-	}
-//#todo convert gbk
-	//else 
-	//{
-	//	assert(encodeType == EncodeType_ANSI);
-	//	const char* LOCALE_NAME = ".936"; //GBKÔÚwindowsÏÂµÄlocale name
-	//	std::wstring_convert<codecvt_byname<wchar_t, char, mbstate_t>> Conver_GBK(new codecvt_byname<wchar_t, char, mbstate_t>(LOCALE_NAME));    //GBK - whar
-	//	return Conver_GBK.from_bytes(str);
-	//}
-
+	bool res = GbkToUnicode_NoLimit(str.c_str(), &ret);
+	assert(res);
 	return ret;
 }
 
