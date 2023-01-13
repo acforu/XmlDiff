@@ -101,6 +101,9 @@
     <ClCompile Include="MyersDiff.cpp">
       <Filter>XmlDiff</Filter>
     </ClCompile>
+    <ClCompile Include="CharEncode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -140,6 +143,9 @@
       <Filter>rapidxml</Filter>
     </ClInclude>
     <ClInclude Include="MyersDiff.h">
+      <Filter>XmlDiff</Filter>
+    </ClInclude>
+    <ClInclude Include="CharEncode.h">
       <Filter>XmlDiff</Filter>
     </ClInclude>
   </ItemGroup>

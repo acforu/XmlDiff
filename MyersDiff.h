@@ -63,17 +63,13 @@ namespace MyersDiff
 	};
 
 
-
-	template<typename T>
-	DiffResult<T> DiffNodes(const std::vector<T>& nodeLVec, const std::vector<T>& nodeRVec, std::function<bool(const T&, const T&)> CompareNodeFunc);
-
 	std::vector<std::pair<int, int>> LCSTrace(const std::vector<BiasArray>& VList, int k, int finalD);
 
 	template<typename T>
 	DiffResult<T> ConvertTrace(const std::vector<std::pair<int, int>>& trace, const std::vector<T>& nodeLVec, const std::vector<T>& nodeRVec);
 
-	template<typename T>
-	DiffResult<T> DiffNodes(const std::vector<T>& nodeLVec, const std::vector<T>& nodeRVec, std::function<bool(const T&,const T&)> CompareNodeFunc)
+	template<typename T, typename R>
+	DiffResult<T> DiffNodes(const std::vector<T>& nodeLVec, const std::vector<T>& nodeRVec, std::function<bool(R,R)> CompareNodeFunc)
 	{
 		DiffResult<T> ret;
 

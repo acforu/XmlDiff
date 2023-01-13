@@ -244,6 +244,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CharEncode.cpp" />
     <ClCompile Include="DiffTextEdit.cpp" />
     <ClCompile Include="diffui.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_DiffTextEdit.cpp">
@@ -356,6 +357,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Retail|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DRETAIL  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-fStdAfx.h" "-f../../DiffTextEdit.h"</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Retail|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DRETAIL  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-fStdAfx.h" "-f../../DiffTextEdit.h"</Command>
     </CustomBuild>
+    <ClInclude Include="CharEncode.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="GeneratedFiles\ui_DiffTextEdit.h" />
     <ClInclude Include="GeneratedFiles\ui_diffui.h" />
