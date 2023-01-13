@@ -114,9 +114,9 @@ DiffUI::DiffUI(QWidget *parent)
 	textEditLineCompareUp->setLineWrapMode(QPlainTextEdit::NoWrap);
 	textEditLineCompareUp->setObjectName(QString::fromUtf8("textEditLineCompareUp"));
 
-	textEditLineCompareDown = new QPlainTextEdit(ui.centralWidget);
-	textEditLineCompareDown->setLineWrapMode(QPlainTextEdit::NoWrap);
-	textEditLineCompareDown->setObjectName(QString::fromUtf8("textEditLineCompareDown"));
+	//textEditLineCompareDown = new QPlainTextEdit(ui.centralWidget);
+	//textEditLineCompareDown->setLineWrapMode(QPlainTextEdit::NoWrap);
+	//textEditLineCompareDown->setObjectName(QString::fromUtf8("textEditLineCompareDown"));
 
 	QFont font = QFont("Microsoft YaHei UI", 11, QFont::Normal, false);
 	//QFont font = QFont("SimSun", 12, QFont::Normal, false);
@@ -132,7 +132,7 @@ DiffUI::DiffUI(QWidget *parent)
 
 	QFont lineCompareFont = QFont("Microsoft YaHei UI", 14, QFont::Normal, false);
 	textEditLineCompareUp->setFont(lineCompareFont);
-	textEditLineCompareDown->setFont(lineCompareFont);
+	//textEditLineCompareDown->setFont(lineCompareFont);
 
 	const int tabStop = 10;  
 	QFontMetrics metrics(textEditL->font());
@@ -175,14 +175,14 @@ DiffUI::DiffUI(QWidget *parent)
 	textEditLineCompareUp->setReadOnly(true);
 	textEditLineCompareUp->setUndoRedoEnabled(false);
 
-	textEditLineCompareDown->setReadOnly(true);
-	textEditLineCompareDown->setUndoRedoEnabled(false);
+	//textEditLineCompareDown->setReadOnly(true);
+	//textEditLineCompareDown->setUndoRedoEnabled(false);
 
 	cursorL = new QTextCursor(textEditL->document());
 	cursorR = new QTextCursor(textEditR->document());
 
 	cursorTextEditLineCompareUp = new QTextCursor(textEditLineCompareUp->document());
-	cursorTextEditLineCompareDown = new QTextCursor(textEditLineCompareDown->document());
+	//cursorTextEditLineCompareDown = new QTextCursor(textEditLineCompareDown->document());
 
 	
 	//textEditPlain = new QPlainTextEdit(ui.centralWidget);
@@ -277,10 +277,7 @@ void DiffUI::resizeEvent( QResizeEvent *event )
 	textEditR->setGeometry(QRect(barWidth+ textWidth, 0, textWidth, textHeight));
 
 	hotPointBar->setGeometry(QRect(0, 0, barWidth, textHeight - 20));
-	textEditLineCompareUp->setGeometry(QRect(0, textHeight, ui.centralWidget->width(), lineCompareTextAreaHeight * 0.5));
-	textEditLineCompareDown->setGeometry(QRect(0, textHeight + lineCompareTextAreaHeight*0.5, ui.centralWidget->width(), lineCompareTextAreaHeight * 0.5));
-
-	//textEditPlain->setGeometry(QRect(0, 0, ui.centralWidget->width()*0.5, ui.centralWidget->height()));
+	textEditLineCompareUp->setGeometry(QRect(0, textHeight, ui.centralWidget->width(), lineCompareTextAreaHeight));
 }
 
 void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
@@ -291,26 +288,6 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 		AppendText(text,TextSide_Right,type);
 		return;
 	}
-	//if (side == TextSide_Left)
-	//{
-	//	qDebug() << "block prev " << GetTotalBlocks() << endl;
-	//}
-	//textEditL->setUpdatesEnabled( false );
-	//textEditPlain->appendPlainText(text);
-	//textEditL->setUpdatesEnabled( true );
-	//return;
-
-	//if (side == TextSide_Left)
-	//{
-	//	textEditL->insertPlainText(text);
-	//}
-	//else
-	//{
-	//	textEditR->insertPlainText(text);
-	//}
-	//return;
-
-
 
 	QTextCursor* cursor = nullptr;
 	if (side == TextSide_Left)
@@ -337,10 +314,6 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 {
 		 bf.clearBackground();
 	 }
-
-
-
-
 	 cursor->setBlockFormat(bf);
 
 	 QTextCharFormat format;
@@ -365,20 +338,6 @@ void DiffUI::AppendText( const char* text,TexTSide side, TextFormatType type )
 	 {
 		cursor->insertText(QString::fromLocal8Bit(text),format);
 	 }
-
-	 //textEditL->appendPlainText(text);
-	
-	 //cursor->insertText("\n");
-	 //cursor->endEditBlock();
-
-	 //if (side == TextSide_Left)
-	 //{
-		// qDebug() << "content: " << QString::fromUtf8(text) << endl;
-		// qDebug() << "block after " << GetTotalBlocks() << endl;
-	 //}
-	 
-	 //cursor.movePosition(QTextCursor::Down);
-
 }
 
 void DiffUI::AppendText( StringBuff& buff,TexTSide side, TextFormatType type )
@@ -471,17 +430,17 @@ int DiffUI::GetTotalBlocks()
 }
 
 
-void DiffUI::AppendLineCompareText(std::wstring str, TexTSide side, DiffType type, bool singleDiffType)
+QString DiffUI::AppendLineCompareText(std::wstring str, TexTSide side, DiffType type, bool singleDiffType)
 {	
-	QTextCursor* cursor = nullptr;
-	if (side == TextSide_Left)
-	{
-		cursor = cursorTextEditLineCompareUp;
-	}
-	else
-	{
-		cursor = cursorTextEditLineCompareDown;
-	}
+	//QTextCursor* cursor = nullptr;
+	//if (side == TextSide_Left)
+	//{
+	//	cursor = cursorTextEditLineCompareUp;
+	//}
+	//else
+	//{
+	//	cursor = cursorTextEditLineCompareDown;
+	//}
 
 	std::string utf8Str;
 	bool ret = UnicodeToUtf8_NoLimit(str.c_str(), &utf8Str);
@@ -493,26 +452,35 @@ void DiffUI::AppendLineCompareText(std::wstring str, TexTSide side, DiffType typ
 
 	if (singleDiffType)
 	{
-		text = QString("<p style='color:black; '>%1</p>").arg(originalText);
+		if (type == DiffType_Del)
+		{
+			text = QString("<span style='color:black; '><s>%1</s></span>").arg(originalText);
+		}
+		else
+		{
+			text = QString("<span  style='color:black; '>%1</span>").arg(originalText);
+		}
 	}
 	else
 	{
 		if (type == DiffType_Add || type == DiffType_Modify)
 		{
-			text = QString("<p style='color:red; '><strong>%1</strong></p>").arg(originalText);
+			text = QString("<span  style='color:red; '><strong>%1</strong></span>").arg(originalText);
 		}
 		else if (type == DiffType_Del)
 		{
-			text = QString("<p style='color:LightPink; '><strong><s>%1</s></strong></p>").arg(originalText);
+			text = QString("<span  style='color:red; '><strong><s>%1</s></strong></span>").arg(originalText);
 		}
 		else
 		{
-			text = QString("<p style='color:black; '>%1</p>").arg(originalText);
+			text = QString("<span  style='color:black; '>%1</span>").arg(originalText);
 		}
 	}
 	
 
-	cursor->insertHtml(text);
+	return text;
+
+	//cursor->insertHtml(text);
 }
 
 void DiffUI::ResetLineCompareText()
@@ -520,8 +488,8 @@ void DiffUI::ResetLineCompareText()
 	textEditLineCompareUp->document()->clear();
 	textEditLineCompareUp->moveCursor(QTextCursor::Start);
 
-	textEditLineCompareDown->document()->clear();
-	textEditLineCompareDown->moveCursor(QTextCursor::Start);
+	//textEditLineCompareDown->document()->clear();
+	//textEditLineCompareDown->moveCursor(QTextCursor::Start);
 }
 
 void DiffUI::MoveToBlock( int block )
@@ -586,43 +554,38 @@ void DiffUI::MoveToBlock( int block )
 	};
 
 	MyersDiff::DiffResult<wchar_t> result = MyersDiff::DiffNodes<wchar_t>(charVecL,charVecR, compare);
-
-	ResetLineCompareText();
-
 	bool singleDiffType = result.results.size() == 1;
-
+	QString leftLine, rightLine;
 	for (auto& block : result.results)
 	{
+		//leftLine.clear();
 		if (block.type == DiffType_Add)
 		{
 			std::wstring text(block.first.begin(),block.first.end());
-			AppendLineCompareText(text, TextSide_Right, DiffType_Add, singleDiffType);
+			rightLine += AppendLineCompareText(text, TextSide_Right, DiffType_Add, singleDiffType);
 		}
 		else if (block.type == DiffType_Del)
 		{
 			std::wstring text(block.first.begin(), block.first.end());
-			AppendLineCompareText(text, TextSide_Left, DiffType_Del, singleDiffType);
+			leftLine += AppendLineCompareText(text, TextSide_Left, DiffType_Del, singleDiffType);
 		}
 		else if (block.type == DiffType_Modify)
 		{
 			std::wstring textL(block.first.begin(), block.first.end());
-			AppendLineCompareText(textL, TextSide_Left, DiffType_Modify, singleDiffType);
+			leftLine += AppendLineCompareText(textL, TextSide_Left, DiffType_Modify, singleDiffType);
 
 			std::wstring textR(block.second.begin(), block.second.end());
-			AppendLineCompareText(textR, TextSide_Right, DiffType_Modify, singleDiffType);
+			rightLine += AppendLineCompareText(textR, TextSide_Right, DiffType_Modify, singleDiffType);
 		}
 		else
 		{
 			std::wstring text(block.first.begin(), block.first.end());
-			AppendLineCompareText(text, TextSide_Left, DiffType_Unchanged, singleDiffType);
-			AppendLineCompareText(text, TextSide_Right, DiffType_Unchanged, singleDiffType);
+			leftLine += AppendLineCompareText(text, TextSide_Left, DiffType_Unchanged, singleDiffType);
+			rightLine += AppendLineCompareText(text, TextSide_Right, DiffType_Unchanged, singleDiffType);
 		}
-		
 	}
-	//hotPointBar->NotifyCurBlock(block);
-	/*qDebug() << "firstBlockVisable " << curBlockNum << endl;
-	qDebug() << "block top line " << textEditL->BlockTopLinePos(block) << endl;*/
-
+	ResetLineCompareText();
+	cursorTextEditLineCompareUp->insertHtml(leftLine + "<br>" + rightLine);
 }
 
 void DiffUI::nextDiffLine()

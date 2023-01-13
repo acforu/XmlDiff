@@ -51,7 +51,7 @@ public:
 	void AppendText(StringBuff& buff,TexTSide side, TextFormatType type);
 	int GetTotalBlocks();
 
-	void AppendLineCompareText(std::wstring str, TexTSide side, DiffType type,bool singleDiffType = false);
+	QString AppendLineCompareText(std::wstring str, TexTSide side, DiffType type,bool singleDiffType = false);
 	void ResetLineCompareText();
 
 	void ModifyMarkBegin();
@@ -98,10 +98,10 @@ private:
     DiffTextEdit *textEditR;
 
 	QPlainTextEdit* textEditLineCompareUp;
-	QPlainTextEdit* textEditLineCompareDown;
+	//QPlainTextEdit* textEditLineCompareDown;
 
 	QTextCursor* cursorTextEditLineCompareUp;
-	QTextCursor* cursorTextEditLineCompareDown;
+	//QTextCursor* cursorTextEditLineCompareDown;
 
 
 	QAction * nextModifyAction;
