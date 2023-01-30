@@ -419,8 +419,8 @@ bool XmlDiff::CompareNode( xml_node<> *nodeL, xml_node<> *nodeR )
 			nodeR->get_text_beg(),nodeR->get_text_end());
 	}
 
-	static StringBuff buffL;
-	static StringBuff buffR;
+	StringBuff buffL;
+	StringBuff buffR;
 
 	buffL.Clear();
 	Print2Buff(nodeL,buffL);
@@ -524,7 +524,7 @@ void XmlDiff::DumpResultLog( const std::list<DiffNodeResult>& diffNodeList)
 
 void XmlDiff::DumpResult( const std::list<DiffNodeResult>& diffNodeList,DiffUI* ui,int indent ,bool parentChanged )
 {
-	static StringBuff strBuff;
+	StringBuff strBuff;
 	strBuff.Reserve(CalcStringBuffMaxSize());
 	FOR_EACH(iter,diffNodeList)
 	{
@@ -774,8 +774,8 @@ size_t XmlDiff::NodeStringDistance( xml_node<> *nodeL, xml_node<> *nodeR )
 		return 0;
 	else
 	{
-		static StringBuff buffL;
-		static StringBuff buffR;
+		StringBuff buffL;
+		StringBuff buffR;
 
 		buffL.Clear();
 		Print2Buff(nodeL,buffL);
