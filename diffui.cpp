@@ -169,6 +169,9 @@ DiffUI::DiffUI(QWidget *parent)
 
 	//connect(textEditL->verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScrollbarValueChanged(int)));
 
+	QObject::connect(textEditL, SIGNAL(selectBlock(int)), this, SLOT(highLightSelectBlock(int)));
+	QObject::connect(textEditR, SIGNAL(selectBlock(int)), this, SLOT(highLightSelectBlock(int)));
+
 
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateHotPointBar()));
@@ -408,7 +411,7 @@ void DiffUI::ResetLineCompareText()
 	//textEditLineCompareDown->moveCursor(QTextCursor::Start);
 }
 
-void DiffUI::MoveToBlock( int block )
+void DiffUI::MoveAndHighlightBlock( int block , bool moveCursor)
 {
 	
 	//int curBlockNum  = textEditL->firstBlockInViewport().blockNumber();
@@ -424,14 +427,15 @@ void DiffUI::MoveToBlock( int block )
 
 	if (block < textEditL->document()->blockCount())
 	{
-		textEditL->moveCursor(QTextCursor::End);
-		QTextCursor cursorL(textEditL->document()->findBlockByNumber(block)); 
-		cursorL.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.777);
-
-		
 		//std::cout << str << std::endl;
-
-		textEditL->setTextCursor(cursorL);
+		if (moveCursor)
+		{
+			textEditL->moveCursor(QTextCursor::End);
+			QTextCursor cursorL(textEditL->document()->findBlockByNumber(block));
+			cursorL.movePosition(QTextCursor::Up, QTextCursor::MoveAnchor, lineCount * 0.777);
+			textEditL->setTextCursor(cursorL);
+		}
+		
 
 		auto str = GetModifyText(block, true);
 		if (!str.isEmpty())
@@ -443,11 +447,14 @@ void DiffUI::MoveToBlock( int block )
 
 	if (block < textEditR->document()->blockCount())
 	{
-		textEditR->moveCursor(QTextCursor::End);
-		QTextCursor cursorR(textEditR->document()->findBlockByNumber(block)); 
-		cursorR.movePosition(QTextCursor::Up,QTextCursor::MoveAnchor,lineCount*0.777);
-
-		textEditR->setTextCursor(cursorR);
+		if (moveCursor)
+		{
+			textEditR->moveCursor(QTextCursor::End);
+			QTextCursor cursorR(textEditR->document()->findBlockByNumber(block));
+			cursorR.movePosition(QTextCursor::Up, QTextCursor::MoveAnchor, lineCount * 0.777);
+			textEditR->setTextCursor(cursorR);
+		}
+		
 
 		auto str = GetModifyText(block, false);
 		if (!str.isEmpty())
@@ -502,6 +509,8 @@ void DiffUI::MoveToBlock( int block )
 	}
 	ResetLineCompareText();
 	cursorTextEditLineCompareUp->insertHtml(leftLine + "<br>" + rightLine);
+
+
 }
 
 void DiffUI::nextDiffLine()
@@ -512,14 +521,14 @@ void DiffUI::nextDiffLine()
 	auto iter = ModifyBegTags.upper_bound(curBlockNum);
 	if (iter != ModifyBegTags.end())
 	{
-		MoveToBlock(*iter);
+		MoveAndHighlightBlock(*iter);
 	}
 	else
 	{
 		if (!ModifyBegTags.empty())
 		{
 			auto iter = ModifyBegTags.end();
-			MoveToBlock(*(--iter));
+			MoveAndHighlightBlock(*(--iter));
 		}
 	}
 }
@@ -550,14 +559,14 @@ void DiffUI::prevDiffLine()
 	if (iter != ModifyBegTags.begin())
 	{
 		int target = *(--iter);
-		MoveToBlock(target);
+		MoveAndHighlightBlock(target);
 	}
 	else
 	{
 		if (!ModifyBegTags.empty())
 		{
 			int target = *(ModifyBegTags.begin());
-			MoveToBlock(target);
+			MoveAndHighlightBlock(target);
 		}
 			
 	}
@@ -610,6 +619,8 @@ bool DiffUI::Diff( std::string file1, std::string file2)
  
  		textEditL->moveCursor(QTextCursor::Start);
  		textEditR->moveCursor(QTextCursor::Start);
+
+		nextDiffLine();
 	}
 	return ret;
 }
@@ -721,6 +732,39 @@ void DiffUI::showSelectBlock( int block )
 	//hotPointBar->NotifyCurBlock(block);
 }
 
+void DiffUI::highLightSelectBlock(int block)
+{
+	auto begIter = ModifyBegTags.begin();
+	auto endIter = ModifyEndTags.begin();
+
+	for (;begIter != ModifyBegTags.end() && endIter != ModifyEndTags.end(); )
+	{
+		int beg = *begIter;
+		int end = *endIter;
+		if (block >= beg && block < end)
+		{
+			MoveAndHighlightBlock(beg, false);
+
+			//sometimes repaint doesn't work
+			textEditL->scrollContentsBy(1, 0);
+			textEditL->scrollContentsBy(-1, 0);
+
+			textEditR->scrollContentsBy(1, 0);
+			textEditR->scrollContentsBy(-1, 0);
+			break;
+		}
+		else
+		{
+			if (block < beg)
+			{
+				break;
+			}
+		}
+		
+		++begIter;
+		++endIter;
+	}
+}
 //void DiffUI::verticalScrollbarValueChanged( int value )
 //{
 //	//hotPointBar->NotifyCurBlock(textEditL->firstBlockInViewport().blockNumber());
@@ -800,7 +844,7 @@ std::wstring DiffUI::GBKToUnicode(const std::string& str) //GBK
 
 void DiffUI::updateHotPointBar()
 {
-	hotPointBar->NotifyCurBlock(textEditL->firstBlockInViewport().blockNumber());
+	hotPointBar->NotifyCurBlock(curHighLightBeginBlockNum);
 }
 
 void UseBeyondCompare( QString fileL, QString fileR )

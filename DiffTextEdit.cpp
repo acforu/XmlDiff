@@ -24,9 +24,9 @@ void DiffTextEdit::scrollContentsBy( int dx, int dy )
 	//emit scrollContentChanged();
 }
 
-void DiffTextEdit::update()
-{
-}
+//void DiffTextEdit::update()
+//{
+//}
 
 QTextBlock DiffTextEdit::firstBlockInViewport() const
 {
@@ -43,31 +43,32 @@ int DiffTextEdit::BlockTopLinePos(int blockNum)
 	return top;
 }
 
-void DiffTextEdit::paintEvent( QPaintEvent *event )
+void DiffTextEdit::mousePressEvent(QMouseEvent* event)
 {
-	//{
-	//	QPainter painter(viewport());
-	//	painter.eraseRect(viewport()->rect());
-	//}
+	QTextCursor tc = cursorForPosition(event->pos());
+	tc.block();
+	emit selectBlock(tc.block().blockNumber());
+}
 
 
+void DiffTextEdit::paintEvent(QPaintEvent* event)
+{
 	QPlainTextEdit::paintEvent(event);
 
-	
 	if (diffBeginBlockNum < 0 || diffEndBlockNum < 0)
 	{
 		return;
 	}
 
-	QPainter painter(viewport());	
+	QPainter painter(viewport());
 	painter.setPen(QPen(Qt::red, 2, Qt::SolidLine, Qt::FlatCap));
 
 
 	int top = BlockTopLinePos(diffBeginBlockNum);
 	painter.drawLine(0, top, viewport()->width(), top);
 
-	int bottom = BlockTopLinePos(diffEndBlockNum) ;//+ (int) blockBoundingRect(document()->findBlockByNumber(diffEndBlockNum)).height();
-	painter.drawLine(0, bottom , viewport()->width(), bottom );
+	int bottom = BlockTopLinePos(diffEndBlockNum);//+ (int) blockBoundingRect(document()->findBlockByNumber(diffEndBlockNum)).height();
+	painter.drawLine(0, bottom, viewport()->width(), bottom);
 
 }
 
@@ -104,7 +105,6 @@ void DiffTextEdit::Reset()
 {
 	diffBeginBlockNum = diffEndBlockNum = -1;
 }
-
 
 //void DiffTextEdit::changeEvent( QEvent *e )
 //{

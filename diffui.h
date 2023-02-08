@@ -66,7 +66,7 @@ public:
 	void ClearText();
 	void UseBeyondCompare();
 	void UpdateHotSegments();
-	void MoveToBlock(int block);
+	void MoveAndHighlightBlock(int block, bool moveCursor = true);
 
 	int PageLineCount();
 	int VisualContentHeight();
@@ -88,6 +88,7 @@ private slots:
 	void switchANSI();
 	void hideUnchanged();
 	void showSelectBlock(int block);
+	void highLightSelectBlock(int block);
 	//void verticalScrollbarValueChanged(int value);
 	void updateHotPointBar();
 

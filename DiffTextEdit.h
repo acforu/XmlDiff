@@ -25,14 +25,21 @@ public:
 	void DiffEndBlockNum(int val) { diffEndBlockNum = val; }
 
 	void Reset();
+
 protected:
 	void paintEvent(QPaintEvent *event);
-	//void changeEvent(QEvent *e);
-signals:
-	void scrollContentChanged();
+	void mousePressEvent(QMouseEvent* event);
 
-private slots:
-	void update();
+	//void changeEvent(QEvent *e);
+Q_SIGNALS:
+	void selectBlock(int block);
+
+//signals:
+	//void scrollContentChanged();
+
+
+//private slots:
+//	void update();
 private:
 	Ui::DiffTextEdit ui;
 	int diffBeginBlockNum;
